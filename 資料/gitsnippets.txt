@@ -13,13 +13,17 @@ cd Desktop
 
 cd git --git為自創資料夾的名稱
 
-git clone https://github.com/EEIT-Final-Project-Bookstore/Final-Project--Bookstore.git
+git clone https://github.com/EEIT-Final-Project-Bookstore/Final-Project--Bookstore.git --第一次下載專案時使用
 
 cd Final-Project--Bookstore
+
+git pull --同步遠端repository
 
 將要上傳的檔案放到 Final-Project--Bookstore
 
 git branch --確認分支
+
+git switch branch --切換到自己的分支
 
 git add .
 
