@@ -1,7 +1,15 @@
+INSERT INTO Categories (
+    CategoryID,   
+    CategoryName     
+)
+VALUES 
+(1,'ParentChild');
+
+
 INSERT INTO Subcategories (
-    SubcategoryID,  -- ¤lÃş§OID¡A¤â°Ê«ü©w
-    CategoryID,     -- ¥DÃş§OID¡A¥²¶·¦b Categories ªí¤¤¦s¦b
-	SubCategoryName            -- ¤lÃş§O¦WºÙ
+    SubcategoryID,  -- å­é¡åˆ¥IDï¼Œæ‰‹å‹•æŒ‡å®š
+    CategoryID,     -- ä¸»é¡åˆ¥IDï¼Œå¿…é ˆåœ¨ Categories è¡¨ä¸­å­˜åœ¨
+	SubCategoryName            -- å­é¡åˆ¥åç¨±
 )
 VALUES 
 (1,1,'ChildLiterature')
@@ -9,16 +17,11 @@ VALUES
 
 
 INSERT INTO Publishers (
-    PublisherID,  -- ¥Xª©ªÀID¡A¤â°Ê«ü©w
-    PublisherName       -- ¥Xª©ªÀ¦WºÙ
+    PublisherID,  -- å‡ºç‰ˆç¤¾IDï¼Œæ‰‹å‹•æŒ‡å®š
+    PublisherName       -- å‡ºç‰ˆç¤¾åç¨±
 ) 
 VALUES
-(1,'¤p¤s¥C')
+(1,'å°å±±ä¸˜')
 
 
-INSERT INTO Categories (
-    CategoryID,   
-    CategoryName     
-)
-VALUES 
-(1,'ParentChild');
+ 
