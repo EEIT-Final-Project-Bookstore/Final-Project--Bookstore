@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Management</title>
+    <style>
+        .star-rating {
+            direction: rtl;
+            display: inline-flex;
+        }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 2em;
+            color: lightgray;
+            cursor: pointer;
+        }
+
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: gold;
+        }
+    </style>
+    <script>
+        async function fetchReviews() {
+            const response = await fetch('/reviews');
+            const reviews = await response.json();
+            const tableBody = document.getElementById('reviewTableBody');
+            tableBody.innerHTML = '';
+            reviews.forEach(review => {
+                const row = `<tr>
+                    <td>${review.reviewID}</td>
+                    <td>${review.customer.customerID}</td>
+                    <td>${review.book.bookID}</td>
+                    <td>${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</td>
+                    <td>${review.content}</td>
+                    <td>${review.reviewTime}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        async function fetchCustomerReviews() {
+            const customerID = document.getElementById('searchCustomerID').value;
+            const response = await fetch(`/reviews/customer/${customerID}`);
+            if (response.ok) {
+                const reviews = await response.json();
+                const tableBody = document.getElementById('customerReviewTableBody');
+                tableBody.innerHTML = '';
+                reviews.forEach(review => {
+                    const row = `<tr>
+                        <td>${review.reviewID}</td>
+                        <td>${review.book.bookID}</td>
+                        <td>${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</td>
+                        <td>${review.content}</td>
+                        <td>${review.reviewTime}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } else {
+                alert('No reviews found for the given Customer ID.');
+            }
+        }
+
+        async function addReview() {
+            const customerID = document.getElementById('customerID').value;
+            const bookID = document.getElementById('bookID').value;
+            const rating = document.querySelector('input[name="rating"]:checked').value;
+            const content = document.getElementById('content').value;
+
+            const review = {
+                customer: { customerID: customerID },
+                book: { bookID: bookID },
+                rating: parseInt(rating),
+                content: content
+            };
+
+            const response = await fetch('/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(review)
+            });
+
+            if (response.ok) {
+                fetchReviews();
+                alert('Review added successfully!');
+            } else {
+                alert('Failed to add review.');
+            }
+        }
+
+        async function updateReview() {
+            const reviewID = document.getElementById('updateReviewID').value;
+            const rating = document.querySelector('input[name="updateRating"]:checked').value;
+            const content = document.getElementById('updateContent').value;
+
+            const reviewDetails = { rating: parseInt(rating), content: content };
+
+            const response = await fetch(`/reviews/${reviewID}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reviewDetails)
+            });
+
+            if (response.ok) {
+                fetchReviews();
+                alert('Review updated successfully!');
+            } else {
+                alert('Failed to update review.');
+            }
+        }
+
+        async function deleteReview() {
+            const reviewID = document.getElementById('deleteReviewID').value;
+
+            const response = await fetch(`/reviews/${reviewID}`, { method: 'DELETE' });
+
+            if (response.ok) {
+                fetchReviews();
+                alert('Review deleted successfully!');
+            } else {
+                alert('Failed to delete review.');
+            }
+        }
+
+        window.onload = fetchReviews;
+    </script>
+</head>
+<body>
+    <h1>Review Management</h1>
+
+    <h2>Add Review</h2>
+    <form onsubmit="event.preventDefault(); addReview();">
+        <label>Customer ID: <input type="number" id="customerID" required></label><br>
+        <label>Book ID: <input type="number" id="bookID" required></label><br>
+        <label>Rating: 
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            </div>
+        </label><br>
+        <label>Content: <textarea id="content" required></textarea></label><br>
+        <button type="submit">Add Review</button>
+    </form>
+
+    <h2>Update Review</h2>
+    <form onsubmit="event.preventDefault(); updateReview();">
+        <label>Review ID: <input type="number" id="updateReviewID" required></label><br>
+        <label>Rating: 
+            <div class="star-rating">
+                <input type="radio" id="updateStar5" name="updateRating" value="5" required><label for="updateStar5">★</label>
+                <input type="radio" id="updateStar4" name="updateRating" value="4"><label for="updateStar4">★</label>
+                <input type="radio" id="updateStar3" name="updateRating" value="3"><label for="updateStar3">★</label>
+                <input type="radio" id="updateStar2" name="updateRating" value="2"><label for="updateStar2">★</label>
+                <input type="radio" id="updateStar1" name="updateRating" value="1"><label for="updateStar1">★</label>
+            </div>
+        </label><br>
+        <label>Content: <textarea id="updateContent" required></textarea></label><br>
+        <button type="submit">Update Review</button>
+    </form>
+
+    <h2>Delete Review</h2>
+    <form onsubmit="event.preventDefault(); deleteReview();">
+        <label>Review ID: <input type="number" id="deleteReviewID" required></label><br>
+        <button type="submit">Delete Review</button>
+    </form>
+
+    <h2>Search Reviews by Customer ID</h2>
+    <form onsubmit="event.preventDefault(); fetchCustomerReviews();">
+        <label>Customer ID: <input type="number" id="searchCustomerID" required></label><br>
+        <button type="submit">Search</button>
+    </form>
+
+    <h3>Your Reviews</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Review ID</th>
+                <th>Book ID</th>
+                <th>Rating</th>
+                <th>Content</th>
+                <th>Review Time</th>
+            </tr>
+        </thead>
+        <tbody id="customerReviewTableBody"></tbody>
+    </table>
+
+    <h2>All Reviews</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Review ID</th>
+                <th>Customer ID</th>
+                <th>Book ID</th>
+                <th>Rating</th>
+                <th>Content</th>
+                <th>Review Time</th>
+            </tr>
+        </thead>
+        <tbody id="reviewTableBody"></tbody>
+    </table>
+</body>
+</html>
