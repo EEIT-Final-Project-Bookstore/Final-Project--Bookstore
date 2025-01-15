@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: customers
+  thymeleaf: 
+    prefix: classpath:/templates
+  messages:
+    basename: i18N.messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+
+#DataSource
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://localhost:1433;database=storedb;trustServerCertificate=true
+    username: sa
+    password: P@ssw0rd
+
+#JPA
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.SQLServerDialect
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+server:
+  servlet:
+      encoding.force: true
