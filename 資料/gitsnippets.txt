@@ -1,11 +1,11 @@
-將分支推送到遠端
-git push -u origin branch --遠端的repository預設為origin
-
 創造新分支並且切換分支
-git switch -c branch 
+git switch -c branch --branch改為自己分支的名字
+
+將分支推送到遠端
+git push -u origin branch --遠端的repository預設為origin，branch改為自己分支的名字
 
 常用
-git status
+git status --確認當前位置的檔案狀態
 
 檔案上傳步驟
 
@@ -13,17 +13,17 @@ cd Desktop
 
 cd git --git為自創資料夾的名稱
 
-git clone https://github.com/EEIT-Final-Project-Bookstore/Final-Project--Bookstore.git --第一次下載專案時使用
+git clone https://github.com/EEIT-Final-Project-Bookstore/Final-Project--Bookstore.git --第一次下載專案時使用，第二次以後用git pull
 
-cd Final-Project--Bookstore
+cd Final-Project--Bookstore --這個repository的資料夾名稱
 
-git pull --同步遠端repository
+git pull --同步遠端repository，第二次以後要上傳檔案到repository時使用
 
 將要上傳的檔案放到 Final-Project--Bookstore
 
 git branch --確認分支
 
-git switch branch --切換到自己的分支
+git switch branch --切換到自己的分支，branch改為自己分支的名字
 
 git add .
 
