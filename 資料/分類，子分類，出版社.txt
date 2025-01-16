@@ -1,0 +1,141 @@
+Categories
+
+[{
+	“CategoryID”:”1”,
+	“CategoryName”:”ParentChild”,	
+},
+{
+	“CategoryID”:”2”,
+	“CategoryName”:”Life”,	
+},
+{
+	“CategoryID”:”3”,
+	“CategoryName”:”LanguageLearn”,	
+},
+{
+	“CategoryID”:”4”,
+	“CategoryName”:”LiteratureWork”,	
+},
+{
+	“CategoryID”:”5”,
+	“CategoryName”:”LifeStyle”,	
+},
+{
+	“CategoryID”:”6”,
+	“CategoryName”:”Art”,	
+},
+{
+	“CategoryID”:”7”,
+	“CategoryName”:”Medical”,	
+},]
+
+Subcategories
+
+[{
+	"SubcategoryID":"1",
+	"SubcategoryName":"ChildLiterature",
+	"CategoryID":"1"
+},
+{
+	"SubcategoryID":"2",
+	"SubcategoryName":"Fairytale",
+	"CategoryID":"1"
+},{
+	"SubcategoryID":"3",
+	"SubcategoryName":"Comic",
+	"CategoryID":"2"
+},{
+	"SubcategoryID":"4",
+	"SubcategoryName":"Sports",
+	"CategoryID":"2"
+},{
+	"SubcategoryID":"5",
+	"SubcategoryName":"LearnChinese",
+	"CategoryID":"3"
+},{
+	"SubcategoryID":"6",
+	"SubcategoryName":"LearnEnglish",
+	"CategoryID":"3"
+},{
+	"SubcategoryID":"7",
+	"SubcategoryName":"Literature",
+	"CategoryID":"4"
+},{
+	"SubcategoryID":"8",
+	"SubcategoryName":"Novel",
+	"CategoryID":"4"
+},{
+	"SubcategoryID":"9",
+	"SubcategoryName":"Cooking",
+	"CategoryID":"5"
+},{
+	"SubcategoryID":"10",
+	"SubcategoryName":"Travel",
+	"CategoryID":"5"
+},{
+	"SubcategoryID":"11",
+	"SubcategoryName":"Game",
+	"CategoryID":"5"
+},{
+	"SubcategoryID":"12",
+	"SubcategoryName":"Building",
+	"CategoryID":"6"
+},{
+	"SubcategoryID":"13",
+	"SubcategoryName":"Design",
+	"CategoryID":"6"
+},{
+	"SubcategoryID":"14",
+	"SubcategoryName":"Medicine",
+	"CategoryID":"7"
+},{
+	"SubcategoryID":"15",
+	"SubcategoryName":"Health",
+	"CategoryID":"7"
+}, 
+ ]
+
+Publishers
+[{
+	"PublisherID":"1",
+	"PublisherName":"小山丘",
+	"PublisherDescription":"",
+},
+{
+	"PublisherID":"2",
+	"PublisherName":"青文",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"3",
+	"PublisherName":"小兵",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"4",
+	"PublisherName":"大展",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"5",
+	"PublisherName":"山田社",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"6",
+	"PublisherName":"風雲時代",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"7",
+	"PublisherName":"PUBN INTL",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"8",
+	"PublisherName":"ORO ED",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"9",
+	"PublisherName":"NEW HARBINGER PUBN",
+	"PublisherDescription":"",
+},{
+	"PublisherID":"10",
+	"PublisherName":"Mountaineers Books",
+	"PublisherDescription":"",
+},]
+
