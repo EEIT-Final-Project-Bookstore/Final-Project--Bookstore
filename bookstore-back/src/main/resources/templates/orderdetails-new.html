@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購物車明細</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: #800040;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .links {
+            display: flex;
+            gap: 15px;
+        }
+
+        header .links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar {
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .navbar a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            color: #d92b3e;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #f0f0f0;
+        }
+
+        .product-image {
+            width: 80px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+<!--     <header> -->
+<!--         <div>三民網路書店</div> -->
+<!--         <div class="links"> -->
+<!--             <a href="#" @click.prevent="showLogin">會員登入</a> -->
+<!--             <a href="#">會員專區</a> -->
+<!--             <a href="#">購物車</a> -->
+<!--             <a href="#">通知</a> -->
+<!--         </div> -->
+<!--         <div> -->
+<!--             <input type="text" v-model="searchQuery" placeholder="搜尋..."> -->
+<!--             <button @click="performSearch">GO</button> -->
+<!--         </div> -->
+<!--     </header> -->
+
+<!--     Navigation Bar -->
+<!--     <div class="navbar"> -->
+<!--         <a href="#">首頁</a> -->
+<!--         <a href="#">商品推薦</a> -->
+<!--         <a href="#">中文</a> -->
+<!--         <a href="#">外文</a> -->
+<!--         <a href="#">簡體</a> -->
+<!--         <a href="#">三民東大</a> -->
+<!--         <a href="#">電子書</a> -->
+<!--         <a href="#">親子</a> -->
+<!--         <a href="#">文具</a> -->
+<!--     </div> -->
+
+    <!-- Main Container -->
+    <div id="app" class="container">
+        <h1>購物車明細</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        <label for="">
+                            <input type="checkbox" v-model="selectAll" @change="toggleSelectAll">
+                        </label>
+                    </th>
+                    <th>圖片</th>
+                    <th>商品</th>
+                    <th>數量</th>
+                    <th>單價</th>
+                    <th>小計</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in orderItems" :key="item.id">
+                    <td>
+                        <label for="">
+                            <input type="checkbox" v-model="item.selected">
+                        </label>
+                    </td>
+                    <td><img :src="item.image" alt="{{ item.name }}" class="product-image"></td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.quantity * item.price }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>總計:</strong> {{ total }}</p>
+        <div class="actions">
+            <button @click="nextStep">下一步</button>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                searchQuery: '',
+                selectAll: false,
+                orderItems: [
+                    {
+                        id: 1,
+                        name: 'Bookscape Board Books: A Marvelous Museum',
+                        quantity: 1,
+                        price: 225,
+                        image: 'https://via.placeholder.com/80', // 替換為實際圖片 URL
+                        selected: false
+                    },
+                    {
+                        id: 2,
+                        name: 'The Great Adventure Book',
+                        quantity: 2,
+                        price: 300,
+                        image: 'https://via.placeholder.com/80', // 替換為實際圖片 URL
+                        selected: false
+                    }
+                ]
+            },
+            computed: {
+                total() {
+                    return this.orderItems.reduce((sum, item) => {
+                        if (item.selected) {
+                            return sum + item.quantity * item.price;
+                        }
+                        return sum;
+                    }, 0);
+                }
+            },
+            methods: {
+                performSearch() {
+                    alert(`搜尋：${this.searchQuery}`);
+                },
+                showLogin() {
+                    alert('登入功能尚未實作');
+                },
+                nextStep() {
+                    window.location.href = 'payway.html';
+                },
+                toggleSelectAll() {
+                    this.orderItems.forEach(item => {
+                        item.selected = this.selectAll;
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
