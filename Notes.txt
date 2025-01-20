@@ -1,0 +1,19 @@
+ 注意事項:
+ 1. 需新增表格CartItems:
+
+--33
+ CREATE TABLE CartItems (
+    CartItemID INT IDENTITY(1,1) PRIMARY KEY,  -- 自增主鍵
+    CartID INT NOT NULL,                      -- 外鍵連接到 Cart 表的 CartID
+    BookID INT NOT NULL,                      -- 外鍵連接到 Book 表的 BookID
+    Quantity INT NOT NULL,                    -- 數量欄位
+    CONSTRAINT FK_CartItems_Cart FOREIGN KEY (CartID) REFERENCES Cart(CartID) ON DELETE CASCADE,
+    CONSTRAINT FK_CartItems_Book FOREIGN KEY (BookID) REFERENCES Book(BookID) ON DELETE CASCADE
+);
+
+   ***最新完整版 sql 指令見 SQLTable-new0120.sql 檔案***
+
+ 3. 程式裡目前假設購物車狀態ID為:
+	4=保留; 5=移除
+    (測試請先 Insert 測試資料)
+
