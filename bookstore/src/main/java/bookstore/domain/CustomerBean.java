@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -37,6 +38,17 @@ public class CustomerBean {
     @Column(nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime registrationTime;
 
+    
+    @PrePersist
+	public void prePersist() {
+		this.registrationTime = LocalDateTime.now();
+	}
+
+	
+	public String toString() {
+		return "CustomerBean [" + customerID + "," + username + "," + customerName + "," + password + "," + email + ","
+				+ phoneNumber + "," + registrationTime + "," + mobileNumber + "]";
+	}
     // Getters and Setters
     public Integer getCustomerID() {
         return customerID;

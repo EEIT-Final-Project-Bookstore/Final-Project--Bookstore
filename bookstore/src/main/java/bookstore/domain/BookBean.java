@@ -9,6 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -27,8 +30,22 @@ public class BookBean {
     @Column(name = "BookName", nullable = false, length = 200)
     private String bookName;
 
-    @Column(name = "PublisherID", nullable = false)
-    private Integer publisherId;
+    @ManyToOne
+    @JoinColumn(name = "PublisherID", nullable = false)
+    private PublisherBean publisher;
+
+    @ManyToOne
+    @JoinColumn(name = "AuthorID", nullable = false)
+    private AuthorBean author;
+
+    @ManyToOne
+    @JoinColumn(name = "LanguageID", nullable = false)
+    private LanguageBean language;
+
+    @ManyToOne
+    @JoinColumn(name = "SubcategoryID", nullable = false)
+    private SubcategoryBean subcategory;
+
 
     @Column(name = "Price", nullable = false)
     private Integer price;
@@ -36,7 +53,7 @@ public class BookBean {
     @Column(name = "Stock", nullable = false)
     private Integer stock;
 
-    @Column(name = "Description")
+    @Column(name = "Description", columnDefinition = "TEXT")
     private String description;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -51,14 +68,17 @@ public class BookBean {
     @Column(name = "PublishDate", nullable = false)
     private Date publishDate;
 
-    @Column(name = "SubcategoryID", nullable = false)
-    private Integer subcategoryId;
+   
 
     @Column(name = "ImageURL", length = 200)
     private String imageUrl;
 
     @Column(name = "ImageDescription", length = 200)
     private String imageDescription;
+
+    
+    @ManyToMany(mappedBy = "books")
+    private List<CartBean> carts; // 反向多對多關聯
 
     // Getter 和 Setter
     public Integer getBookId() {
@@ -77,12 +97,12 @@ public class BookBean {
         this.bookName = bookName;
     }
 
-    public Integer getPublisherId() {
-        return publisherId;
+    public PublisherBean getPublisher() {
+        return publisher;
     }
 
-    public void setPublisherId(Integer publisherId) {
-        this.publisherId = publisherId;
+    public void setPublisher(PublisherBean publisher) {
+        this.publisher = publisher;
     }
 
     public Integer getPrice() {
@@ -133,13 +153,30 @@ public class BookBean {
         this.publishDate = publishDate;
     }
 
-    public Integer getSubcategoryId() {
-        return subcategoryId;
+    public AuthorBean getAuthor() {
+        return author;
     }
 
-    public void setSubcategoryId(Integer subcategoryId) {
-        this.subcategoryId = subcategoryId;
+    public void setAuthor(AuthorBean author) {
+        this.author = author;
     }
+
+    public LanguageBean getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(LanguageBean language) {
+        this.language = language;
+    }
+
+    public SubcategoryBean getSubcategory() {
+        return subcategory;
+    }
+
+    public void setSubcategory(SubcategoryBean subcategory) {
+        this.subcategory = subcategory;
+    }
+
 
     public String getImageUrl() {
         return imageUrl;

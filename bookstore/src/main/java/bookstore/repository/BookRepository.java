@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import bookstore.domain.BookBean;
+import bookstore.domain.CartBean;
+import bookstore.domain.CustomerBean;
 
 @Repository
 public interface BookRepository extends JpaRepository<BookBean, Integer> {
@@ -15,6 +17,6 @@ public interface BookRepository extends JpaRepository<BookBean, Integer> {
     //模糊查詢
     List<BookBean> findByBookNameContainingIgnoreCase(String keyword);
 
-
+   
     Optional<BookBean> findByBookId(Integer bookId);
 }

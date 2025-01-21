@@ -1,10 +1,18 @@
-package bookstore.repository;
+package customers.repository;
+
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-import bookstore.domain.CustomerBean;
+import customers.domain.CustomerBean;
 
-@Repository
-public interface CustomerRepository extends JpaRepository<CustomerBean, Integer> {
+public interface CustomerRepository extends JpaRepository<CustomerBean, Long>, CustomerDAO {
+
+	Optional<CustomerBean> findByUsername(String username);
+
+	boolean existsByUsername(String username);
+
+	void deleteByUsername(String username);
+
+	boolean existsByEmail(String email);
 }

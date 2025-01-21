@@ -22,14 +22,21 @@ public class BookController {
     }
 
     //已修改 變成亨版本   
+//    @GetMapping("/{id}")
+//    public ResponseEntity<BookBean> getBookById(@PathVariable Integer id) {
+//        Optional<BookBean> book = bookService.getBookById(id); // 可改為透過服務層查詢
+//        if (book.isPresent()) {
+//            return ResponseEntity.ok(book.get());
+//        } else {
+//            return ResponseEntity.status(404).body(null); // 可避免多餘訊息，維持一致性
+//        }
+//    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<BookBean> getBookById(@PathVariable Integer id) {
-        Optional<BookBean> book = bookService.getBookById(id); // 可改為透過服務層查詢
-        if (book.isPresent()) {
-            return ResponseEntity.ok(book.get());
-        } else {
-            return ResponseEntity.status(404).body(null); // 可避免多餘訊息，維持一致性
-        }
+        return bookService.getBookById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
