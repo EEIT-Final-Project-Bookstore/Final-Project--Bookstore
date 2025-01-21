@@ -49,11 +49,12 @@ public class CartService {
         }
 
         // 查詢書籍
-        BookBean book = bookRepository.findByBookId(bookId);
-        if (book == null) {
+        Optional<BookBean> optionalBook = bookRepository.findByBookId(bookId);
+        if (optionalBook.isEmpty()) {
             return "書籍不存在";
         }
-
+        BookBean book = optionalBook.get();
+        
         // 檢查庫存
         if (book.getStock() < quantity) {
             return "庫存不足";
@@ -92,11 +93,12 @@ public class CartService {
             return "購物車不存在";
         }
 
-        BookBean book = bookRepository.findByBookId(bookId);
-        if (book == null) {
+        Optional<BookBean> optionalBook = bookRepository.findByBookId(bookId);
+        if (optionalBook.isEmpty()) {
             return "書籍不存在";
         }
-
+        BookBean book = optionalBook.get();
+        
         // 檢查庫存
         if (book.getStock() < quantity) {
             return "庫存不足";
@@ -135,11 +137,11 @@ public class CartService {
         }
         
         // 查詢書籍
-        BookBean book = bookRepository.findByBookId(bookId);
-        if (book == null) {
+        Optional<BookBean> optionalBook = bookRepository.findByBookId(bookId);
+        if (optionalBook.isEmpty()) {
             return "書籍不存在";
         }
-
+        
         // 查詢購物車項目
         Optional<CartItemBean> itemToRemove = cart.getItems().stream()
                 .filter(item -> item.getBook().getBookId().equals(bookId))
