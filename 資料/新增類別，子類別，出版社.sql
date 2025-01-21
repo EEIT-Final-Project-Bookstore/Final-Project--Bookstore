@@ -1,3 +1,10 @@
+INSERT INTO Categories (
+    CategoryID,   
+    CategoryName     
+)
+VALUES 
+(1,'ParentChild');
+
 INSERT INTO Subcategories (
     SubcategoryID,  -- 子類別ID，手動指定
     CategoryID,     -- 主類別ID，必須在 Categories 表中存在
@@ -16,9 +23,19 @@ VALUES
 (1,'小山丘')
 
 
-INSERT INTO Categories (
-    CategoryID,   
-    CategoryName     
+ 
+
+INSERT INTO Authors(
+	AuthorID,
+	AuthorName,
+	AuthorDescription
 )
-VALUES 
-(1,'ParentChild');
+VALUES
+(1,'Shai','chill');
+
+INSERT INTO Languages(
+	LanguageID,
+	Language
+)
+VALUES
+(1,'chinese');
