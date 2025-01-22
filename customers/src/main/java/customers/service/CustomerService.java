@@ -1,6 +1,7 @@
 package customers.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +19,25 @@ public class CustomerService {
 	@Autowired
 	private CustomerRepository customerRepository;
 
+	public CustomerBean login(String username, String password) {
+		if(username!=null && username.length()!=0 &&
+				password!=null && password.length()!=0) {
+			Optional<CustomerBean> optional = customerRepository.findByUsername(username);
+			if(optional.isPresent()) {
+				CustomerBean bean = optional.get();
+				byte[] pass = bean.getPassword();	//資料庫抓出
+				byte[] temp = password.getBytes();	//使用者輸入
+				if(Arrays.equals(pass, temp)) {
+					return bean;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public List<CustomerBean> select(CustomerBean bean) {
 		List<CustomerBean> result = null;
-		if (bean != null && bean.getCustomerId() != null && bean.getCustomerId() > 0) {
+		if (bean != null && bean.getCustomerID() != null && bean.getCustomerID() > 0) {
 			Optional<CustomerBean> optional = customerRepository.findByUsername(bean.getUsername());
 			if (optional.isPresent()) {
 				result = new ArrayList<CustomerBean>();
@@ -40,41 +57,43 @@ public class CustomerService {
 
 		return null;
 	};
+
 	@Transactional
 	public CustomerBean insert(CustomerBean bean) {
 		if (bean != null && bean.getUsername() != null && bean.getUsername().length() > 0) {
 			if (customerRepository.existsByUsername(bean.getUsername())) {
-				return null; 
+				return null;
 			}
-			return customerRepository.save(bean); 
+			return customerRepository.save(bean);
 		}
-		return null; 
+		return null;
 	}
+
 	@Transactional
 	public CustomerBean update(CustomerBean bean) {
-	    Optional<CustomerBean> optional = customerRepository.findByUsername(bean.getUsername());
-	    if (optional.isPresent()) {
-	    	CustomerBean existingBean = optional.get();
-	        existingBean.setCustomerName(bean.getCustomerName());
-	        existingBean.setPassword(bean.getPassword());
-	        existingBean.setPhoneNumber(bean.getPhoneNumber());
-	        existingBean.setMobileNumber(bean.getMobileNumber());
-	        return customerRepository.save(existingBean);
-	    }
-	    return null;
+		Optional<CustomerBean> optional = customerRepository.findByUsername(bean.getUsername());
+		if (optional.isPresent()) {
+			CustomerBean existingBean = optional.get();
+			existingBean.setCustomerName(bean.getCustomerName());
+			existingBean.setPassword(bean.getPassword());
+			existingBean.setPhoneNumber(bean.getPhoneNumber());
+			existingBean.setMobileNumber(bean.getMobileNumber());
+			return customerRepository.save(existingBean);
+		}
+		return null;
 	}
 
 	@Transactional
 	public boolean delete(CustomerBean bean) {
 		if (bean != null && bean.getUsername() != null && bean.getUsername().length() > 0) {
 			if (customerRepository.existsByUsername(bean.getUsername())) {
-				customerRepository.deleteByUsername(bean.getUsername()); 
+				customerRepository.deleteByUsername(bean.getUsername());
 				return true;
 			} else {
-				return false; 
+				return false;
 			}
 		}
-		return false; 
+		return false;
 	}
 
 	public boolean exists(String username) {
@@ -87,7 +106,7 @@ public class CustomerService {
 	public CustomerBean create(String json) {
 		try {
 			JSONObject obj = new JSONObject(json);
-			Long customerId = obj.isNull("customerId") ? null : obj.getLong("customerId");
+			Long customerID = obj.isNull("customerID") ? null : obj.getLong("customerID");
 			String username = obj.isNull("username") ? null : obj.getString("username");
 			String customerName = obj.isNull("customerName") ? null : obj.getString("customerName");
 			byte[] password = obj.isNull("password") ? null : obj.getString("password").getBytes();
@@ -95,16 +114,16 @@ public class CustomerService {
 			String phoneNumber = obj.isNull("phoneNumber") ? null : obj.getString("phoneNumber");
 			String mobileNumber = obj.isNull("mobileNumber") ? null : obj.getString("mobileNumber");
 
-			if (username != null && !customerRepository.existsByUsername(username) && username.length()!=0) {
+			if (username != null && !customerRepository.existsByUsername(username) && username.length() != 0) {
 				CustomerBean insert = new CustomerBean();
-				insert.setCustomerId(customerId);
+				insert.setCustomerID(customerID);
 				insert.setUsername(username);
 				insert.setCustomerName(customerName);
 				insert.setPassword(password);
 				insert.setEmail(email);
 				insert.setPhoneNumber(phoneNumber);
 				insert.setMobileNumber(mobileNumber);
-				
+
 				return customerRepository.save(insert);
 			}
 		} catch (Exception e) {
@@ -116,7 +135,7 @@ public class CustomerService {
 	public CustomerBean modify(String json) {
 		try {
 			JSONObject obj = new JSONObject(json);
-			Long customerId = obj.isNull("customerId") ? null : obj.getLong("customerId");
+			Long customerID = obj.isNull("customerID") ? null : obj.getLong("customerID");
 			String username = obj.isNull("username") ? null : obj.getString("username");
 			String customerName = obj.isNull("customerName") ? null : obj.getString("customerName");
 			byte[] password = obj.isNull("password") ? null : obj.getString("password").getBytes();
@@ -128,7 +147,7 @@ public class CustomerService {
 				Optional<CustomerBean> optional = customerRepository.findByUsername(username);
 				if (optional.isPresent()) {
 					CustomerBean update = optional.get();
-					update.setCustomerId(customerId);
+					update.setCustomerID(customerID);
 					update.setUsername(username);
 					update.setCustomerName(customerName);
 					update.setPassword(password);
@@ -150,25 +169,5 @@ public class CustomerService {
 			return true;
 		}
 		return false;
-	}
-
-	public long count(String json) {
-		try {
-			JSONObject obj = new JSONObject(json);
-			return customerRepository.count(obj);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
-
-	public List<CustomerBean> find(String json) {
-		try {
-			JSONObject obj = new JSONObject(json);
-			return customerRepository.find(obj);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 }

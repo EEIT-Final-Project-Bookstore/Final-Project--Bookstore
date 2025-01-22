@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import customers.domain.CustomerBean;
 
-public interface CustomerRepository extends JpaRepository<CustomerBean, Long>, CustomerDAO {
+public interface CustomerRepository extends JpaRepository<CustomerBean, Long> {
 
 	Optional<CustomerBean> findByUsername(String username);
 
