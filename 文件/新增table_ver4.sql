@@ -1,25 +1,25 @@
 --1
 CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,  
-    Username VARCHAR(50) UNIQUE NOT NULL,  
     CustomerName NVARCHAR(100),  
+    Username VARCHAR(50) UNIQUE NOT NULL,  
     Password VARCHAR(50) NOT NULL,  
     Email VARCHAR(100) UNIQUE NOT NULL,  
     PhoneNumber INT,  
+    MobileNumber INT,  
     RegistrationTime DATETIME DEFAULT GETDATE(),  
-    MobileNumber INT  
 );
 
 --2
 CREATE TABLE Ranks (
-    RankID INT PRIMARY KEY, -- 主鍵
+    RankID INT IDENTITY(1,1) PRIMARY KEY, -- 主鍵
     RankName NVARCHAR(50) NOT NULL -- 階級名稱
 );
 
 --3
 CREATE TABLE Admins (
-    AdminID INT PRIMARY KEY, -- 主鍵
-    Username VARCHAR(50) NOT NULL, -- 帳號
+    AdminID INT IDENTITY(1,1) PRIMARY KEY, -- 主鍵
+    AdminsAccount VARCHAR(50) UNIQUE NOT NULL, -- 帳號
     Password VARCHAR(50) NOT NULL, -- 密碼
     Email VARCHAR(100) NOT NULL, -- 電子郵件
     RankID INT NOT NULL, -- 階級ID，外鍵
@@ -28,7 +28,7 @@ CREATE TABLE Admins (
 
 --4
 CREATE TABLE PasswordResetRequests (
-    RequestID INT PRIMARY KEY, -- 主鍵
+    RequestID INT IDENTITY(1,1) PRIMARY KEY, -- 主鍵
     CustomerID INT UNIQUE NOT NULL, -- 外鍵且唯一，與客戶表一對一關係
     ResetCode VARCHAR(100) NOT NULL, -- 識別重設請求的代碼
     RequestTime DATETIME NOT NULL, -- 顧客發起重設請求的時間

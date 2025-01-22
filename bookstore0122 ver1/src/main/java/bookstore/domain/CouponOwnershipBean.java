@@ -17,18 +17,18 @@ public class CouponOwnershipBean {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SerialID")
 	private Integer serialId;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "CustomerId", nullable = false)
 	private CustomerBean customer;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "CouponId", nullable = false)
 	private CouponBean coupon;
-
+	
 	@ManyToOne
 	@JoinColumn(name = "StatusId", nullable = false)
-	private StatusBean status; // 已使用、未使用、已過期
+	private StatusBean status;  //已使用、未使用、已過期
 
 	public Integer getSerialId() {
 		return serialId;

@@ -17,7 +17,7 @@ public class CustomerBean {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "CustomerID")
-	private Long customerId;
+	private Long customerID;
 
 	@Column(unique = true, name = "Username")
 	private String username;
@@ -46,16 +46,16 @@ public class CustomerBean {
 	}
 
 	public String toString() {
-		return "CustomerBean [" + customerId + "," + username + "," + customerName + "," + password + "," + email + ","
+		return "CustomerBean [" + customerID + "," + username + "," + customerName + "," + password + "," + email + ","
 				+ phoneNumber + "," + registrationTime + "," + mobileNumber + "]";
 	}
 
-	public Long getCustomerId() {
-		return customerId;
+	public Long getCustomerID() {
+		return customerID;
 	}
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
+	public void setCustomerID(Long customerID) {
+		this.customerID = customerID;
 	}
 
 	public String getUsername() {
