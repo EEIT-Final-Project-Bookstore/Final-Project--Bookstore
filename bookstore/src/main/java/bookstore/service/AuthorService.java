@@ -20,9 +20,10 @@ public class AuthorService {
         return authorRepository.findAll();
     }
 
-    // 查詢單一作者
-    public Optional<AuthorBean> getAuthorById(Integer id) {
-        return authorRepository.findById(id);
+ // 依 ID 查詢作者
+    public AuthorBean getAuthorById(Integer id) {
+        return authorRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Author not found"));
     }
 
     // 新增作者 (手動指定 ID)
@@ -44,6 +45,9 @@ public class AuthorService {
 
     // 刪除作者
     public void deleteAuthor(Integer id) {
+    	if (!authorRepository.existsById(id)) {
+            throw new RuntimeException("Author not found");
+        }
         authorRepository.deleteById(id);
     }
 }
