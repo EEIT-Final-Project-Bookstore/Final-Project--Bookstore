@@ -1,5 +1,7 @@
  [{
         "book_id": "1",
+        "author_id":"1",
+        "language_id":"1",
         "title": " 小鳥憂憂好想飛",
         "publisher_id": "1",
         "price": 350,
@@ -15,6 +17,8 @@
 {
         "book_id": "2",
         "title": "黑暗集會03 ",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "2",
         "price": 99,
         "stock": 150,
@@ -28,6 +32,8 @@
     },{
         "book_id": "3",
         "title": "負責任的小猴子 ",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "3",
         "price": 160,
         "stock": 100,
@@ -41,6 +47,8 @@
     },{
         "book_id": "4",
         "title": "NBA經典進攻戰術解析",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "4",
         "price": 280,
         "stock": 150,
@@ -54,6 +62,8 @@
     },{
         "book_id": "5",
         "title": "中學＆初級英檢，1500單字 × 文法，一書制霸！（25K+QR碼線上音檔）",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "5",
         "price": 369,
         "stock": 200,
@@ -67,6 +77,8 @@
     },{
         "book_id": "6",
         "title": "生活英語，每天看點，每天聽點 閒聊就上手！",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "5",
         "price": 325,
         "stock": 50,
@@ -80,6 +92,8 @@
     },{
         "book_id": "7",
         "title": "風鈴中的刀聲（上）【珍藏限量紀念版】",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "6",
         "price": 340,
         "stock": 150,
@@ -93,6 +107,8 @@
     },{
         "book_id": "8",
         "title": "Sips & Snacks: Food and Drinks for Fun and Festive Occasions",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "7",
         "price": 600,
         "stock": 50,
@@ -106,6 +122,8 @@
     },{
         "book_id": "9",
         "title": "Brain Games - To Go - Stress Free: Sudoku Puzzles (Purple): Volume 2",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "7",
         "price": 380,
         "stock": 200,
@@ -119,6 +137,8 @@
     },{
         "book_id": "10",
         "title": "Reimagining Environmental Identity: Selected Works by Atelier Ping Jiang Eid Arch 2015-2023",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "8",
         "price": 2000,
         "stock": 100,
@@ -132,6 +152,8 @@
     },{
         "book_id": "11",
         "title": "Intuitive Eating for Diabetes: The No Shame, No Blame, Non-Diet Approach to Managing Your Blood Sugar",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "9",
         "price": 760,
         "stock": 100,
@@ -145,6 +167,8 @@
     },{
         "book_id": "12",
         "title": "Campfire Stories: Chesapeake Bay: Tales & Travel Companion",
+        "author_id":"1",
+        "language_id":"1",
         "publisher_id": "10",
         "price": 720,
         "stock": 50,
