@@ -18,7 +18,7 @@ public class LoginController {
     @Autowired
     private JsonWebTokenUtility jsonWebTokenUtility;
 
-    @PostMapping("/ajax/secure/login")
+    @PostMapping("/api/customers/login")
     public String login(@RequestBody String entity) {
         JSONObject responseJson = new JSONObject();
 

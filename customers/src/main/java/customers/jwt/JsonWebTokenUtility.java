@@ -23,7 +23,7 @@ public class JsonWebTokenUtility {
 	@Value("${jwt.token.expire}")
 	private long expire;
 	
-	private String issuer = "ispan";
+	private String issuer = "eeit195-bookstore";
 	private byte[] sharedKey;	//用在簽章
 	@PostConstruct
 	public void init() {
