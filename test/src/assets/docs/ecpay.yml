@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: ECPay Payment Result Notification API
+  version: 1.0.0
+servers:
+  - url: https://payment.ecpay.com.tw
+    description: Production Environment
+  - url: https://payment-stage.ecpay.com.tw
+    description: Testing Environment
+paths:
+  /payment/notification:
+    post:
+      summary: Payment Result Notification
+      description: Notify the merchant of the payment result.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - MerchantID
+                - RqHeader
+                - Data
+              properties:
+                MerchantID:
+                  type: string
+                  description: Merchant identifier
+                RqHeader:
+                  type: object
+                  properties:
+                    Timestamp:
+                      type: string
+                      format: date-time
+                      description: Timestamp of the request
+                    Revision:
+                      type: string
+                      description: Revision number
+                Data:
+                  type: object
+                  properties:
+                    MerchantTradeNo:
+                      type: string
+                      description: Merchant's trade number
+                    RtnCode:
+                      type: integer
+                      description: Return code
+                    RtnMsg:
+                      type: string
+                      description: Return message
+                    TradeNo:
+                      type: string
+                      description: ECPay trade number
+                    TradeAmt:
+                      type: integer
+                      description: Trade amount
+                    PaymentDate:
+                      type: string
+                      format: date-time
+                      description: Payment date
+                    PaymentType:
+                      type: string
+                      description: Payment type
+                    PaymentTypeChargeFee:
+                      type: number
+                      description: Payment type charge fee
+                    TradeDate:
+                      type: string
+                      format: date-time
+                      description: Trade date
+                    SimulatePaid:
+                      type: integer
+                      description: Whether the payment is simulated
+                    CustomField1:
+                      type: string
+                      description: Custom field 1
+                    CustomField2:
+                      type: string
+                      description: Custom field 2
+                    CustomField3:
+                      type: string
+                      description: Custom field 3
+                    CustomField4:
+                      type: string
+                      description: Custom field 4
+                    CheckMacValue:
+                      type: string
+                      description: Check MAC value
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 1|OK
+        '400':
+          description: Invalid request
+        '500':
+          description: Server error
