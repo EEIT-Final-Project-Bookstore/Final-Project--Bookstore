@@ -21,14 +21,20 @@ public class StatusBean {
     @Column(name="DetailedStatus", length = 50, nullable = false)
     private String detailedStatus;
 
-//    @OneToMany(mappedBy = "status")
-//    private List<CartBean> carts;
+    @OneToMany(mappedBy = "status")
+    private List<CartBean> carts;
     
     @OneToMany(mappedBy = "status")
     private List<OrderBean> orders;
     
 	@OneToMany(mappedBy = "status")
 	private List<CouponOwnershipBean> couponOwnerships;
+
+	public StatusBean() {
+	}
+
+	public StatusBean(String string) {
+	}
 
 	public Integer getStatusId() {
 		return statusId;

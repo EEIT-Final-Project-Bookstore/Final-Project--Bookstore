@@ -9,4 +9,7 @@ import com.finalproject.ispan.domain.CustomerBean;
 public interface CustomerRepository extends JpaRepository<CustomerBean, Integer> {
 	Optional<CustomerBean> findByUsername(String username);
 	Optional<CustomerBean> findById(Integer customerId);
+	boolean existsByUsername(String username);
+	void deleteByUsername(String username);
+	boolean existsByEmail(String email);
 }

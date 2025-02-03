@@ -25,13 +25,41 @@ public class CartItemBean {
     private CartBean cart;
 
     @ManyToOne
+    @JoinColumn(name = "CustomerID", referencedColumnName = "CustomerID")
+    @JsonBackReference
+    private CustomerBean customer;
+    
+    @ManyToOne
     @JoinColumn(name = "BookID", referencedColumnName = "BookID")
     private BookBean book;
 
     @Column(name = "Quantity")
     private Integer quantity;
+    
+    @Column(name = "Price")
+    private Integer price;
 
+	// 計算小計
+    @Column(name = "Subtotal")
+    private Integer subtotal;
+    
     // Getters and Setters
+    public Integer getSubtotal() {
+        return price * quantity; // 小計 = 單價 * 數量
+    }
+
+	public void setSubtotal(Integer subtotal) {
+	    this.subtotal = subtotal;
+	}
+    
+	public CustomerBean getCustomer() {
+	    return customer;
+	}
+
+	public void setCustomer(CustomerBean customer) {
+	    this.customer = customer;
+	}
+	
     public Integer getCartItemID() {
         return cartItemID;
     }
@@ -63,5 +91,13 @@ public class CartItemBean {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+    public Integer getPrice() {
+    	return price;
+    }
+    
+    public void setPrice(Integer price) {
+    	this.price = price;
+    }
+    
 }
 

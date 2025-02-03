@@ -12,22 +12,21 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "CouponOwnership")
 public class CouponOwnershipBean {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "SerialID")
 	private Integer serialId;
 	
 	@ManyToOne
-	@JoinColumn(name = "CustomerId", nullable = false)
+	@JoinColumn(name = "CustomerID", nullable = false)
 	private CustomerBean customer;
 	
 	@ManyToOne
-	@JoinColumn(name = "CouponId", nullable = false)
+	@JoinColumn(name = "CouponID", nullable = false)
 	private CouponBean coupon;
 	
 	@ManyToOne
-	@JoinColumn(name = "StatusId", nullable = false)
+	@JoinColumn(name = "StatusID", nullable = false)
 	private StatusBean status;  //已使用、未使用、已過期
 
 	public Integer getSerialId() {

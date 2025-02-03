@@ -3,12 +3,16 @@ package com.finalproject.ispan.domain;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -24,8 +28,25 @@ public class BookBean {
     @Column(name = "BookName", nullable = false, length = 200)
     private String bookName;
 
-    @Column(name = "PublisherID", nullable = false)
-    private Integer publisherId;
+    @ManyToOne
+    @JoinColumn(name = "PublisherID", nullable = false)
+    @JsonIgnore // 忽略序列化 books，避免輪迴
+    private PublisherBean publisher;
+
+    @ManyToOne
+    @JoinColumn(name = "AuthorID", nullable = false)
+    @JsonIgnore
+    private AuthorBean author;
+
+    @ManyToOne
+    @JoinColumn(name = "LanguageID", nullable = false)
+    @JsonIgnore
+    private LanguageBean language;
+
+    @ManyToOne
+    @JoinColumn(name = "SubcategoryID", nullable = false)
+    @JsonIgnore
+    private SubcategoryBean subcategory;
 
     @Column(name = "Price", nullable = false)
     private Integer price;
@@ -48,9 +69,6 @@ public class BookBean {
     @Column(name = "PublishDate", nullable = false)
     private Date publishDate;
 
-    @Column(name = "SubcategoryID", nullable = false)
-    private Integer subcategoryId;
-
     @Column(name = "ImageURL", length = 200)
     private String imageUrl;
 
@@ -58,102 +76,126 @@ public class BookBean {
     private String imageDescription;
 
     @ManyToMany(mappedBy = "books")
+    @JsonIgnore // 忽略序列化 carts，避免輪迴
     private List<CartBean> carts; // 反向多對多關聯
 
-    // Getter 和 Setter
-    public Integer getBookId() {
-        return bookId;
-    }
+	public Integer getBookId() {
+		return bookId;
+	}
 
-    public void setBookId(Integer bookId) {
-        this.bookId = bookId;
-    }
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
 
-    public String getBookName() {
-        return bookName;
-    }
+	public String getBookName() {
+		return bookName;
+	}
 
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
 
-    public Integer getPublisherId() {
-        return publisherId;
-    }
+	public PublisherBean getPublisher() {
+		return publisher;
+	}
 
-    public void setPublisherId(Integer publisherId) {
-        this.publisherId = publisherId;
-    }
+	public void setPublisher(PublisherBean publisher) {
+		this.publisher = publisher;
+	}
 
-    public Integer getPrice() {
-        return price;
-    }
+	public AuthorBean getAuthor() {
+		return author;
+	}
 
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
+	public void setAuthor(AuthorBean author) {
+		this.author = author;
+	}
 
-    public Integer getStock() {
-        return stock;
-    }
+	public LanguageBean getLanguage() {
+		return language;
+	}
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
+	public void setLanguage(LanguageBean language) {
+		this.language = language;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public SubcategoryBean getSubcategory() {
+		return subcategory;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setSubcategory(SubcategoryBean subcategory) {
+		this.subcategory = subcategory;
+	}
 
-    public Date getShelfTime() {
-        return shelfTime;
-    }
+	public Integer getPrice() {
+		return price;
+	}
 
-    public void setShelfTime(Date shelfTime) {
-        this.shelfTime = shelfTime;
-    }
+	public void setPrice(Integer price) {
+		this.price = price;
+	}
 
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
+	public Integer getStock() {
+		return stock;
+	}
 
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
+	public void setStock(Integer stock) {
+		this.stock = stock;
+	}
 
-    public Date getPublishDate() {
-        return publishDate;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setPublishDate(Date publishDate) {
-        this.publishDate = publishDate;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Integer getSubcategoryId() {
-        return subcategoryId;
-    }
+	public Date getShelfTime() {
+		return shelfTime;
+	}
 
-    public void setSubcategoryId(Integer subcategoryId) {
-        this.subcategoryId = subcategoryId;
-    }
+	public void setShelfTime(Date shelfTime) {
+		this.shelfTime = shelfTime;
+	}
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
 
-    public String getImageDescription() {
-        return imageDescription;
-    }
+	public Date getPublishDate() {
+		return publishDate;
+	}
 
-    public void setImageDescription(String imageDescription) {
-        this.imageDescription = imageDescription;
-    }
+	public void setPublishDate(Date publishDate) {
+		this.publishDate = publishDate;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getImageDescription() {
+		return imageDescription;
+	}
+
+	public void setImageDescription(String imageDescription) {
+		this.imageDescription = imageDescription;
+	}
+
+	public List<CartBean> getCarts() {
+		return carts;
+	}
+
+	public void setCarts(List<CartBean> carts) {
+		this.carts = carts;
+	}
 }

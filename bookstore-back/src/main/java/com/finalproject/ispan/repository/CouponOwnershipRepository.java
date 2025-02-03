@@ -1,0 +1,30 @@
+package com.finalproject.ispan.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.finalproject.ispan.domain.CouponBean;
+import com.finalproject.ispan.domain.CouponOwnershipBean;
+import com.finalproject.ispan.domain.CustomerBean;
+
+public interface CouponOwnershipRepository extends JpaRepository<CouponOwnershipBean, Integer>{
+	// 根據用戶 ID 和優惠券代碼查詢記錄
+	@Query("SELECT co FROM CouponOwnershipBean co " +
+		       "WHERE co.customer.customerId = :customerId " +
+		       "AND co.coupon.couponId = :couponId")
+	CouponOwnershipBean findByCustomerIdAndCouponId(@Param("customerId") Integer customerId, 
+		                                            @Param("couponId") Integer couponId);
+	
+	// 根據優惠券 ID 刪除所有擁有該優惠券的 CouponOwnership 記錄
+    @Transactional
+    void deleteByCoupon_CouponId(Integer couponId);
+    
+ // 查詢指定 customer 和 coupon 的關聯
+    Optional<CouponOwnershipBean> findByCustomerAndCoupon(CustomerBean customer, CouponBean coupon);
+    
+//    List<CouponOwnershipBean> findByCustomer_CustomerId(Long customerId);
+}

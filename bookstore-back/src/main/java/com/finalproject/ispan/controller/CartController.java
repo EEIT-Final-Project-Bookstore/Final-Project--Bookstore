@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.finalproject.ispan.domain.CartItemBean;
+import com.finalproject.ispan.dto.CartItemDto;
 import com.finalproject.ispan.dto.CartItemRequest;
 import com.finalproject.ispan.service.CartService;
 
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
-
     @Autowired
     private CartService cartService;
-
+    
+    //購物車相關:
     // 使用 POST 方法查詢顧客的購物車內容
     @GetMapping("/view/{customerId}")
-    public List<CartItemBean> viewCart(@PathVariable Integer customerId) {
-        return cartService.getCartContents(customerId);
+    public List<CartItemDto> viewCart(@PathVariable Integer customerId) {
+        return cartService.getCartItemDtos(customerId);  // 返回轉換後的 DTO
     }
     
     @PostMapping("/add")
@@ -53,7 +53,4 @@ public class CartController {
     public String clearCart(@PathVariable Integer customerId) {
         return cartService.clearCart(customerId);
     }
-    
-    //應用、移除和驗證優惠券
-    
 }

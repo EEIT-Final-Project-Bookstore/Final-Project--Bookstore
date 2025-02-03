@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.finalproject.ispan.domain.BookBean;
+import com.finalproject.ispan.dto.BookDTO;
 import com.finalproject.ispan.service.BookService;
 
 @RestController
@@ -23,32 +23,31 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    // 取得所有書籍
     @GetMapping
-    public List<BookBean> getAllBooks() {
+    public List<BookDTO> getAllBooks() {
         return bookService.getAllBooks();
     }
 
+    // 依 ID 取得書籍
     @GetMapping("/{id}")
-    public ResponseEntity<BookBean> getBookById(@PathVariable Integer id) {
-        return bookService.getBookById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BookDTO> getBookById(@PathVariable Integer id) {
+        return ResponseEntity.ok(bookService.getBookById(id));
     }
-    
+
+    // 新增書籍
     @PostMapping
-    public BookBean createBook(@RequestBody BookBean book) {
-        return bookService.createBook(book);
+    public ResponseEntity<BookDTO> createBook(@RequestBody BookDTO bookDTO) {
+        return ResponseEntity.ok(bookService.createBook(bookDTO));
     }
 
+    // 更新書籍
     @PutMapping("/{id}")
-    public ResponseEntity<BookBean> updateBook(@PathVariable Integer id, @RequestBody BookBean book) {
-        try {
-            return ResponseEntity.ok(bookService.updateBook(id, book));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<BookDTO> updateBook(@PathVariable Integer id, @RequestBody BookDTO bookDTO) {
+        return ResponseEntity.ok(bookService.updateBook(id, bookDTO));
     }
 
+    // 刪除書籍
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {
         bookService.deleteBook(id);

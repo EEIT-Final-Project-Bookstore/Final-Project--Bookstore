@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,16 +30,16 @@ public class CustomerBean {
     private String customerName;
 
     @Column(name = "Password", nullable = false, length = 50)
-    private String password;
+    private byte[] password;
 
     @Column(name = "Email", unique = true, nullable = false, length = 100)
     private String email;
     
     @Column(name = "PhoneNumber", length = 50)
-    private String phoneNumber;
+    private Integer phoneNumber;
     
     @Column(name = "MobileNumber", length = 50)
-    private String mobileNumber;
+    private Integer mobileNumber;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "RegistrationTime", length = 50)
@@ -50,11 +51,20 @@ public class CustomerBean {
     @OneToOne(mappedBy = "customer")
     private CartBean cart;
 
+    @PrePersist
+	public void prePersist() {
+		this.registrationTime = LocalDateTime.now();
+	}
     
 	public CustomerBean() {
 	}
 
 	public CustomerBean(Integer customerId) {
+	}
+
+	public String toString() {
+		return "CustomerBean [" + customerId + "," + username + "," + customerName + "," + password + "," + email + ","
+				+ phoneNumber + "," + registrationTime + "," + mobileNumber + "]";
 	}
 
 	public Integer getCustomerId() {
@@ -64,7 +74,6 @@ public class CustomerBean {
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
 	}
-
 	public String getUsername() {
 		return username;
 	}
@@ -73,11 +82,11 @@ public class CustomerBean {
 		this.username = username;
 	}
 
-	public String getPassword() {
+	public byte[] getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(byte[] password) {
 		this.password = password;
 	}
 
@@ -97,19 +106,19 @@ public class CustomerBean {
 		this.email = email;
 	}
 
-	public String getPhoneNumber() {
+	public Integer getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(String phoneNumber) {
+	public void setPhoneNumber(Integer phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getMobileNumber() {
+	public Integer getMobileNumber() {
 		return mobileNumber;
 	}
 
-	public void setMobileNumber(String mobileNumber) {
+	public void setMobileNumber(Integer mobileNumber) {
 		this.mobileNumber = mobileNumber;
 	}
 

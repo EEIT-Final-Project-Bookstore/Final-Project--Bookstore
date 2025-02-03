@@ -2,6 +2,8 @@ package com.finalproject.ispan.domain;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,16 +19,18 @@ public class CouponBean {
     @Column(name = "CouponID")
     private Integer couponId;
 
-    @Column(name = "CouponCode", nullable = false)
+    @Column(name = "CouponCode", unique = true, nullable = false)
     private String couponCode;
 
     @Column(name = "Discount", nullable = false)
     private Integer discount;
 
     @Column(name = "StartDate", nullable = false)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")  // 設定日期格式
     private LocalDateTime startDate;
 
     @Column(name = "EndDate", nullable = false)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss")  // 設定日期格式
     private LocalDateTime endDate;
 
     @Column(name = "MinimumAmount", nullable = false)
@@ -85,5 +89,4 @@ public class CouponBean {
 	public void setMinimumAmount(Integer minimumAmount) {
 		this.minimumAmount = minimumAmount;
 	}
-
 }

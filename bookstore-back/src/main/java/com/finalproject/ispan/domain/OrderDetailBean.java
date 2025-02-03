@@ -25,26 +25,25 @@ public class OrderDetailBean {
     @JoinColumn(name = "BookId", nullable = false)
     private BookBean book;
 
-    @Column(name = "TotalAmount")
-    private Integer totalAmount;
+    @Column(name = "Subtotal")
+    private Integer subtotal;
     
     @Column(name = "Quantity")
     private Integer quantity;
     
-    
-	public OrderDetailBean(Integer detailId, OrderBean order, BookBean book, Integer totalAmount, Integer quantity) {
+	public OrderDetailBean() {
+	}
+	public OrderDetailBean(Integer detailId, OrderBean order, BookBean book, Integer subtotal, Integer quantity) {
 		this.detailId = detailId;
 		this.order = order;
 		this.book = book;
-		this.totalAmount = totalAmount;
+		this.subtotal = subtotal;
 		this.quantity = quantity;
 	}
-	
 	public OrderDetailBean(BookBean book, Integer quantity) {
 		this.book = book;
 		this.quantity = quantity;
 	}
-
 	public Integer getDetailId() {
 		return detailId;
 	}
@@ -63,11 +62,11 @@ public class OrderDetailBean {
 	public void setBook(BookBean book) {
 		this.book = book;
 	}
-	public Integer getTotalAmount() {
-		return totalAmount;
+	public Integer getSubtotal() {
+		return subtotal;
 	}
-	public void setTotalAmount(Integer totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setSubtotal(Integer subtotal) {
+		this.subtotal = subtotal;
 	}
 	public Integer getQuantity() {
 		return quantity;

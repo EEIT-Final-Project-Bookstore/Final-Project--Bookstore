@@ -39,14 +39,15 @@ public class CartBean {
     @Column(name = "Quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "StatusID")
-    private Integer statusId;
+    @ManyToOne
+	@JoinColumn(name = "StatusID", nullable = false)
+	private StatusBean status;  // 保留、移除
     
     @JsonManagedReference  // 這裡使用 JsonManagedReference，指示 CartBean 是序列化的根節點
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItemBean> items = new ArrayList<>();  // 購物車中的所有商品項目，初始化為空列表，避免為 null
     
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
       name = "Cart_Books", 
       joinColumns = @JoinColumn(name = "CartID"), 
@@ -57,35 +58,35 @@ public class CartBean {
     @ManyToOne
     @JoinColumn(name = "CustomerID", referencedColumnName = "CustomerID", insertable = false, updatable = false)
     private CustomerBean customer;
+    
+    // 計算購物車總金額
+    public Integer getTotalAmount() {
+        int totalAmount = 0;
+        for (CartItemBean item : items) {
+            totalAmount += item.getSubtotal();  // 依賴 CartItemBean 中的 Subtotal 屬性
+        }
+        return totalAmount;
+    }
 
     public CartBean() {
 	}
 
-	public CartBean(Integer cartId, Integer customerId, LocalDateTime creationTime, LocalDateTime lastUpdatedTime,
-			Integer quantity, Integer statusId, List<CartItemBean> items, List<BookBean> books, CustomerBean customer) {
+    public CartBean(Integer cartId, Integer customerId, LocalDateTime creationTime, LocalDateTime lastUpdatedTime,
+			Integer quantity, StatusBean status, List<CartItemBean> items, List<BookBean> books,
+			CustomerBean customer) {
+		super();
 		this.cartId = cartId;
 		this.customerId = customerId;
 		this.creationTime = creationTime;
 		this.lastUpdatedTime = lastUpdatedTime;
 		this.quantity = quantity;
-		this.statusId = statusId;
+		this.status = status;
 		this.items = items;
 		this.books = books;
 		this.customer = customer;
 	}
 
-	// 當實體保存到資料庫之前自動設置 creationTime 和 lastUpdatedTime
-//    @PrePersist
-//    public void prePersist() {
-//        if (this.creationTime == null) {
-//            this.creationTime = LocalDateTime.now();
-//        }
-//        if (this.lastUpdatedTime == null) {
-//            this.lastUpdatedTime = LocalDateTime.now();
-//        }
-//    }
-    
-    // Add item method
+	// Add item method
     public void addItem(CartItemBean item) {
         if (!this.items.contains(item)) {
             this.items.add(item);
@@ -139,14 +140,23 @@ public class CartBean {
 		this.quantity = quantity;
 	}
 
-	public Integer getStatusId() {
-		return statusId;
+    public StatusBean getStatus() {
+		return status;
 	}
 
-	public void setStatusId(Integer statusId) {
-		this.statusId = statusId;
+	public void setStatus(StatusBean status) {
+		this.status = status;
 	}
-    public CustomerBean getCustomer() {
+
+	public List<BookBean> getBooks() {
+		return books;
+	}
+
+	public void setBooks(List<BookBean> books) {
+		this.books = books;
+	}
+
+	public CustomerBean getCustomer() {
         return customer;
     }
 
