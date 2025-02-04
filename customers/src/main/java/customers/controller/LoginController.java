@@ -54,6 +54,7 @@ public class LoginController {
             responseJson.put("token", token);
             responseJson.put("user", bean.getEmail());
             responseJson.put("customerName", bean.getCustomerName());
+            responseJson.put("customerID", bean.getCustomerID());
         }
         return responseJson.toString();
     }

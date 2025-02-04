@@ -43,34 +43,30 @@ export default {
 
     const handleLogin = async () => {
       try {
-        // 1. 呼叫後端 /api/customers/login
-        //    注意後端期待的JSON欄位是 username、password
-        //    若後端參數需要其他欄位名稱，請自行修改
         const response = await axios.post("http://localhost:8080/api/customers/login", {
           username: loginForm.value.account,
           password: loginForm.value.password,
         });
 
-        // 2. 處理後端回傳的結果
         const data = response.data;
         if (data.success) {
-          // 登入成功
-          // token可以存進 pinia、Vuex 或 localStorage
+          // 從後端取回 token、user 等資訊
           const token = data.token;
-          const user = data.user; // email
+          const user = data.user; // email or username
           const customerName = data.customerName;
+          const customerID = data.customerID;
 
-          // 2.1 在Pinia做紀錄 (假設 authStore 有個 login 方法可存 token 和使用者資訊)
+          // 呼叫 Pinia 的 login()
           authStore.login({
             token,
             user,
-            customerName
+            customerName,
+            customerID,
           });
 
-          // 2.2 跳轉頁面，例如導向首頁
+          // 登入後跳轉首頁
           router.push("/");
         } else {
-          // 登入失敗
           alert(data.message || "登入失敗，請稍後重試");
         }
       } catch (error) {
@@ -80,7 +76,6 @@ export default {
     };
 
     const navigateToRegister = () => {
-      // 改用 Vue Router 方式跳轉
       router.push("/register");
     };
 
