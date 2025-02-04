@@ -2,6 +2,7 @@ package customers.controller;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import customers.jwt.JsonWebTokenUtility;
 import customers.service.CustomerService;
 
 @RestController
+@CrossOrigin("*")
 public class LoginController {
     @Autowired
     private CustomerService customerService;
@@ -51,6 +53,7 @@ public class LoginController {
             String token = jsonWebTokenUtility.createToken(user.toString());
             responseJson.put("token", token);
             responseJson.put("user", bean.getEmail());
+            responseJson.put("customerName", bean.getCustomerName());
         }
         return responseJson.toString();
     }

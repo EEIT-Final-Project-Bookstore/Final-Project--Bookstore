@@ -1,18 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
-import Login from '@/views/Login.vue';
+import Login_Customer from '@/views/Login_Customer.vue';
 import Regist from '@/views/Regist.vue';
 import ForgetPassword from '@/views/ForgetPassword.vue';
-import CustomerList from '@/views/CustomerList.vue'
+import List_Customer from '@/views/List_Customer.vue'
 import Modify from '@/views/Modify.vue';
+import List_Admin from '@/views/List_Admin.vue';
+import Login_Admin from '@/views/Login_Admin.vue';
+import Navbar from '@/views/Navbar.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
-    { path: '/login', name: 'Login', component: Login },
+    { path: '/login', name: 'Login', component: Login_Customer },
     { path: '/register', name: 'Regist', component: Regist },
     { path: '/forget', name: 'ForgetPassword', component: ForgetPassword },
-    { path: '/customers', component: CustomerList },
+    { path: '/customers', component: List_Customer },
     { path: '/modify', component: Modify },
+    { path: '/admins', component: List_Admin },
+    { path: '/login/admin', component: Login_Admin },
+    { path: '/navbar', component: Navbar },
 ];
 
 const router = createRouter({

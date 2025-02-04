@@ -1,26 +1,24 @@
 <template>
     <div class="login-container">
       <div class="login-content">
-        <h1>會員登入</h1>
+        <h1>管理員登入</h1>
         <ul class="benefits">
           <li>松鼠 之各項優惠及會員折扣，限網路訂書使用。</li>
         </ul>
   
         <form @submit.prevent="handleLogin">
           <div class="form-group">
-            <label for="account">會員帳號</label>
+            <label for="account">管理員帳號</label>
             <input v-model="loginForm.account" type="text" id="account" placeholder="請輸入帳號">
           </div>
   
           <div class="form-group">
-            <label for="password">會員密碼</label>
+            <label for="password">管理員密碼</label>
             <input v-model="loginForm.password" type="password" id="password" placeholder="請輸入密碼">
-            <a href="http://localhost:5173/forget" class="forgot">忘記密碼</a>
           </div>
   
           <div class="form-actions">
             <button type="submit" class="btn login-btn">登入</button>
-            <button type="button" class="btn register-btn" @click="navigateToRegister">加入會員</button>
           </div>
         </form>
       </div>
