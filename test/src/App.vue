@@ -1,20 +1,33 @@
 <template>
   <div>
-    <!-- 喇叭按鈕 -->
-    <button @click="openModal" class="notification-button">
-      喇叭
-    </button>
+    <nav class="bg-gray-800 p-4 text-white">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">System Dashboard</h1>
+        <div class="flex space-x-4">
+          <!-- 喇叭按鈕 -->
+          <button @click="openNotificationModal" class="px-4 py-2 bg-orange-500 rounded-md hover:bg-orange-600">
+            🛎 系統通知
+          </button>
+          <!-- 書籍評論按鈕 -->
+          <button @click="navigateTo('reviews')" class="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700">
+            書籍評論管理
+          </button>
+        </div>
+      </div>
+    </nav>
 
-    <!-- 模態框 -->
-    <div v-if="isModalOpen" class="modal-overlay">
+    <!-- 動態內容顯示區域 -->
+    <div>
+      <router-view></router-view>
+    </div>
+
+    <!-- 通知模態框 -->
+    <div v-if="isNotificationModalOpen" class="modal-overlay">
       <div class="modal">
-        <!-- 標題與已讀全部按鈕 -->
         <div class="modal-header">
           <h3>系統通知</h3>
-          <button @click="markAllAsRead" class="mark-all-read-button">已讀全部</button>
+          <button @click="markAllAsRead" class="mark-all-read-button">全部已讀</button>
         </div>
-
-        <!-- 通知列表 -->
         <div class="modal-body">
           <div
             v-for="notification in notifications"
@@ -25,10 +38,8 @@
             通知內容: {{ notification.content }}
           </div>
         </div>
-
-        <!-- 關閉按鈕 -->
         <div class="modal-footer">
-          <button @click="closeModal" class="close-button">關閉</button>
+          <button @click="closeNotificationModal" class="close-button">關閉</button>
         </div>
       </div>
     </div>
@@ -39,21 +50,21 @@
 export default {
   data() {
     return {
-      isModalOpen: false,
+      isNotificationModalOpen: false,
       notifications: [],
     };
   },
   methods: {
-    // 打開模態框並獲取通知
-    openModal() {
-      this.isModalOpen = true;
+    navigateTo(routeName) {
+      this.$router.push({ name: routeName });
+    },
+    openNotificationModal() {
+      this.isNotificationModalOpen = true;
       this.fetchNotifications();
     },
-    // 關閉模態框
-    closeModal() {
-      this.isModalOpen = false;
+    closeNotificationModal() {
+      this.isNotificationModalOpen = false;
     },
-    // 獲取通知列表
     async fetchNotifications() {
       const customerID = sessionStorage.getItem("customerID"); // 從 sessionStorage 獲取 customerID
       if (!customerID) {
@@ -73,9 +84,8 @@ export default {
         alert("伺服器錯誤，請稍後再試！");
       }
     },
-    // 標記所有通知為已讀
     async markAllAsRead() {
-      const customerID = sessionStorage.getItem("customerID"); // 從 sessionStorage 獲取 customerID
+      const customerID = sessionStorage.getItem("customerID");
       if (!customerID) {
         alert("未檢測到用戶登錄，請先登錄！");
         return;
@@ -86,7 +96,7 @@ export default {
         });
         if (response.ok) {
           alert("所有通知已標記為已讀！");
-          this.fetchNotifications(); // 更新通知列表
+          this.fetchNotifications();
         } else {
           alert("標記失敗，請稍後再試！");
         }
