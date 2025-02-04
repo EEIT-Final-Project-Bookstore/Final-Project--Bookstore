@@ -27,6 +27,7 @@ public class NotificationsController {
 
     @Autowired
     private StatusesRepository statusesRepository;
+   
 
     /**
      * 获取某个顾客的所有通知
@@ -73,5 +74,13 @@ public class NotificationsController {
     public String markAllNotificationsAsRead(@PathVariable int customerID) {
         notificationsService.markAllAsRead(customerID);
         return "所有通知已标记为已读！";
+    }
+    
+    /**
+     * 获取所有通知
+     */
+    @GetMapping("/all")
+    public List<NotificationsBean> getAllNotifications() {
+        return notificationsService.getAllNotifications();
     }
 }

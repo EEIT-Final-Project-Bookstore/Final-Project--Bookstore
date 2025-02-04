@@ -100,4 +100,7 @@ public class NotificationsService {
         // 批量保存
         notificationRepository.saveAll(notifications);
     }
+    public List<NotificationsBean> getAllNotifications() {
+        return notificationRepository.findAll(); // 使用 JPA 的內建方法
+    }
 }
