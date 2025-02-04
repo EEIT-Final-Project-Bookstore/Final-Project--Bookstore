@@ -12,6 +12,10 @@
           <button @click="navigateTo('reviews')" class="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700">
             書籍評論管理
           </button>
+          <!-- 通知管理按鈕 -->
+          <button @click="navigateTo('notification-management')" class="px-4 py-2 bg-green-500 rounded-md hover:bg-green-600">
+            通知管理
+          </button>
         </div>
       </div>
     </nav>
