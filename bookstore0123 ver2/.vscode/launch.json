@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BookstoreApplication<bookstore>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "bookstore.BookstoreApplication",
+            "projectName": "bookstore",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EcpayBootApplication<bookstore>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "bookstore.EcpayBootApplication",
+            "projectName": "bookstore",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

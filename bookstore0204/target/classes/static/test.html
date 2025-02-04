@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Management</title>
+    <script>
+        const apiBaseUrl = "/admin/notifications";
+
+        // 获取某个顾客的所有通知
+        async function getNotifications() {
+            const customerID = document.getElementById("customerID").value;
+            if (!customerID) {
+                alert("请输入顾客ID！");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/customer/${customerID}`);
+                if (response.ok) {
+                    const notifications = await response.json();
+                    const output = document.getElementById("output");
+                    output.innerHTML = ""; // 清空内容
+
+                    notifications.forEach(notification => {
+                        const div = document.createElement("div");
+                        div.style.padding = "10px";
+                        div.style.margin = "5px 0";
+                        div.style.border = "1px solid #ccc";
+                        div.style.borderRadius = "5px";
+
+                        // 根据状态设置背景颜色
+                        div.style.backgroundColor = notification.status.statusID === 4 ? "#FFD700" : "#E6E6E6";
+                        div.textContent = `通知内容: ${notification.content} (状态: ${notification.status.statusID === 4 ? "未读" : "已读"})`;
+
+                        output.appendChild(div);
+                    });
+                } else {
+                    alert("获取通知失败，请检查顾客ID！");
+                }
+            } catch (error) {
+                console.error("获取通知时发生错误:", error);
+                alert("无法获取通知，请稍后再试！");
+            }
+        }
+
+        // 新增通知
+        async function createNotification() {
+            const notification = {
+                notificationType: { notificationTypeID: document.getElementById("createNotificationTypeID").value },
+                customer: { customerID: document.getElementById("createCustomerID").value },
+                content: document.getElementById("createContent").value
+            };
+
+            if (!notification.notificationType.notificationTypeID || !notification.customer.customerID || !notification.content) {
+                alert("请填写完整的通知信息！");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/create`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notification)
+                });
+
+                if (response.ok) {
+                    alert("新增通知成功！");
+                    getNotifications(); // 刷新通知列表
+                } else {
+                    alert("新增通知失败，请检查输入！");
+                }
+            } catch (error) {
+                console.error("新增通知时发生错误:", error);
+                alert("无法新增通知，请稍后再试！");
+            }
+        }
+
+        // 更新通知
+        async function updateNotification() {
+            const notificationID = document.getElementById("updateNotificationID").value;
+            const notification = {
+                notificationType: { notificationTypeID: document.getElementById("updateNotificationTypeID").value },
+                customer: { customerID: document.getElementById("updateCustomerID").value },
+                content: document.getElementById("updateContent").value
+            };
+
+            if (!notificationID || !notification.notificationType.notificationTypeID || !notification.customer.customerID || !notification.content) {
+                alert("请填写完整的通知信息！");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/update/${notificationID}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(notification)
+                });
+
+                if (response.ok) {
+                    alert("更新通知成功！");
+                    getNotifications(); // 刷新通知列表
+                } else {
+                    alert("更新通知失败，请检查输入！");
+                }
+            } catch (error) {
+                console.error("更新通知时发生错误:", error);
+                alert("无法更新通知，请稍后再试！");
+            }
+        }
+
+        // 删除通知
+        async function deleteNotification() {
+            const notificationID = document.getElementById("deleteNotificationID").value;
+
+            if (!notificationID) {
+                alert("请输入通知ID！");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/delete/${notificationID}`, {
+                    method: "DELETE"
+                });
+
+                if (response.ok) {
+                    alert("删除通知成功！");
+                    getNotifications(); // 刷新通知列表
+                } else {
+                    alert("删除通知失败，请检查通知ID！");
+                }
+            } catch (error) {
+                console.error("删除通知时发生错误:", error);
+                alert("无法删除通知，请稍后再试！");
+            }
+        }
+
+        // 一键标记所有通知为已读
+        async function markAllAsRead() {
+            const customerID = document.getElementById("markAllAsReadCustomerID").value;
+
+            if (!customerID) {
+                alert("请输入顾客ID！");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/mark-all-as-read/${customerID}`, {
+                    method: "PUT"
+                });
+
+                if (response.ok) {
+                    alert("所有通知已标记为已读！");
+                    getNotifications(); // 刷新通知列表
+                } else {
+                    alert("标记失败，请检查顾客ID！");
+                }
+            } catch (error) {
+                console.error("标记通知为已读时发生错误:", error);
+                alert("无法标记通知为已读，请稍后再试！");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>通知管理</h1>
+
+    <h2>获取顾客的通知</h2>
+    <input type="number" id="customerID" placeholder="输入顾客ID">
+    <button onclick="getNotifications()">获取通知</button>
+    <div id="output" style="margin-top: 20px; padding: 10px;"></div>
+
+    <h2>新增通知</h2>
+    <input type="number" id="createNotificationTypeID" placeholder="通知类型ID"><br>
+    <input type="number" id="createCustomerID" placeholder="顾客ID"><br>
+    <input type="text" id="createContent" placeholder="通知内容"><br>
+    <button onclick="createNotification()">新增通知</button>
+
+    <h2>更新通知</h2>
+    <input type="number" id="updateNotificationID" placeholder="通知ID"><br>
+    <input type="number" id="updateNotificationTypeID" placeholder="通知类型ID"><br>
+    <input type="number" id="updateCustomerID" placeholder="顾客ID"><br>
+    <input type="text" id="updateContent" placeholder="通知内容"><br>
+    <button onclick="updateNotification()">更新通知</button>
+
+    <h2>删除通知</h2>
+    <input type="number" id="deleteNotificationID" placeholder="通知ID">
+    <button onclick="deleteNotification()">删除通知</button>
+
+    <h2>一键标记所有通知为已读</h2>
+    <input type="number" id="markAllAsReadCustomerID" placeholder="顾客ID">
+    <button onclick="markAllAsRead()">一键标记所有通知为已读</button>
+</body>
+</html>
