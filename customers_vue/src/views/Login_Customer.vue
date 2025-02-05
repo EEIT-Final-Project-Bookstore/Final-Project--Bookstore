@@ -14,7 +14,7 @@
         <div class="form-group">
           <label for="password">會員密碼</label>
           <input v-model="loginForm.password" type="password" id="password" placeholder="請輸入密碼" />
-          <a href="http://localhost:5173/forget" class="forgot">忘記密碼</a>
+          <a href="http://192.168.23.112:5173/forget" class="forgot">忘記密碼</a>
         </div>
         <div class="form-actions">
           <button type="submit" class="btn login-btn">登入</button>
@@ -43,7 +43,7 @@ export default {
 
     const handleLogin = async () => {
       try {
-        const response = await axios.post("http://localhost:8080/api/customers/login", {
+        const response = await axios.post("http://192.168.23.112:8080/api/customers/login", {
           username: loginForm.value.account,
           password: loginForm.value.password,
         });

@@ -44,7 +44,7 @@
         alert('重新載入驗證碼');
       },
       navigateToRegister() {
-        window.location.href = 'http://localhost:5173/register';
+        window.location.href = 'http://192.168.23.112:5173/register';
       },
     },
   };

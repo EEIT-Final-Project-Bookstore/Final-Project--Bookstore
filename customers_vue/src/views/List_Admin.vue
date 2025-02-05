@@ -101,7 +101,7 @@
       // 獲取客戶列表
       fetchCustomers() {
         axios
-          .get("http://localhost:8080/api/customers") // 修改為你的後端 API 地址
+          .get("http://192.168.23.112:8080/api/customers") // 修改為你的後端 API 地址
           .then((response) => {
             this.customers = response.data;
           })
@@ -136,7 +136,7 @@
         const encodedPassword = btoa(password);
   
         axios
-          .put(`http://localhost:8080/api/customers/${customerId}`, {
+          .put(`http://192.168.23.112:8080/api/customers/${customerId}`, {
             customerName,
             email,
             phoneNumber,
@@ -162,7 +162,7 @@
       deleteCustomer(customerId) {
         if (confirm("確定要刪除此會員嗎？")) {
           axios
-            .delete(`http://localhost:8080/api/customers/${customerId}`)
+            .delete(`http://192.168.23.112:8080/api/customers/${customerId}`)
             .then(() => {
               alert("會員刪除成功！");
               this.fetchCustomers(); // 刷新列表

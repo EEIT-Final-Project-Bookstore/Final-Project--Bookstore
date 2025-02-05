@@ -110,7 +110,7 @@ export default {
     // 從後端獲取客戶資料
     fetchCustomerData() {
       axios
-        .get(`http://localhost:8080/api/customer/${this.username}`)
+        .get(`http://192.168.23.112:8080/api/customer/${this.username}`)
         .then((response) => {
           this.customer = response.data;
         })
@@ -151,7 +151,7 @@ export default {
 
       // 發送更新請求到後端
       axios
-        .put(`http://localhost:8080/api/customer/${this.username}`, {
+        .put(`http://192.168.23.112:8080/api/customer/${this.username}`, {
           customerName: this.editableCustomer.customerName,
           password: encodedPassword, // 傳遞編碼後的密碼
           phoneNumber: this.editableCustomer.phoneNumber,

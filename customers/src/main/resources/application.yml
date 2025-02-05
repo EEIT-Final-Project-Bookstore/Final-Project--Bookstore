@@ -7,10 +7,21 @@ spring:
     basename: i18N.messages
     encoding: UTF-8
     fallback-to-system-locale: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: eeit195.bookstore@gmail.com
+    password: sjzj kloj quxa tfey
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://localhost:1433;database=storedb;trustServerCertificate=true
+    url: jdbc:sqlserver://192.168.23.112:1433;database=storedb;trustServerCertificate=true
     username: sa
     password: P@ssw0rd
 
