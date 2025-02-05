@@ -1,11 +1,11 @@
 <template>
     <div class="book-info-card">
       <h1>{{ title }}</h1>
-      <p><strong>ISBN：</strong>{{ isbn }}</p>
+      <p><strong>分類：</strong>{{ category }} > {{ subcategory }}</p>
       <p><strong>作者：</strong>{{ author }}</p>
       <p><strong>出版社：</strong>{{ publisher }}</p>
       <p><strong>出版日期：</strong>{{ publishDate }}</p>
-      <p><strong>裝訂 / 頁數：</strong>平裝 / {{ pages }}頁</p>
+   
     </div>
   </template>
   

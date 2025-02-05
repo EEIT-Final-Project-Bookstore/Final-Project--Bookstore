@@ -3,7 +3,7 @@
     <header>
       <nav>
         <router-link to="/">首頁</router-link>
-        <router-link to="/book/123">書籍商品頁</router-link>
+        <router-link :to="'/book/' + book.id">書籍商品頁</router-link>
         <router-link to="/manage">書籍管理</router-link>
       </nav>
     </header>
@@ -16,6 +16,11 @@
 <script>
 export default {
   name: "App",
+  data() {
+    return {
+      book: { id: 4 } // 假設 `id = 2`，這樣 `router-link` 才會生效
+    };
+  }
 };
 </script>
 
