@@ -1,6 +1,8 @@
 package customers.domain;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -74,12 +76,14 @@ public class CustomerBean {
 		this.customerName = customerName;
 	}
 
-	public byte[] getPassword() {
-		return password;
+	// 🔹 存入資料庫時，把 String 轉成 byte[]
+	public void setPassword(String password) {
+		this.password = password.getBytes(StandardCharsets.UTF_8);
 	}
 
-	public void setPassword(byte[] password) {
-		this.password = password;
+	// 🔹 從資料庫取出時，把 byte[] 轉回 String
+	public String getPassword() {
+		return new String(this.password, StandardCharsets.UTF_8);
 	}
 
 	public String getEmail() {

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
-// <-- 把需要的 Annotation 都 import 進來
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +58,7 @@ public class CustomerController {
 	}
 
 	// 2. 檢查 Email 是否已存在
-	@GetMapping("/check-email")
+	@GetMapping("/checkEmail")
 	public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
 		boolean exists = customerRepository.existsByEmail(email);
 		Map<String, Boolean> response = new HashMap<>();
@@ -110,5 +110,15 @@ public class CustomerController {
 		} else {
 			return ResponseEntity.notFound().build();
 		}
+	}
+
+	@GetMapping("/checkUsername")
+	public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam String username) {
+		// 從資料庫檢查是否有這個 username
+		boolean exists = customerRepository.existsByUsername(username);
+		// 回傳 JSON => { "exists": true/false }
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("exists", exists);
+		return ResponseEntity.ok(response);
 	}
 }

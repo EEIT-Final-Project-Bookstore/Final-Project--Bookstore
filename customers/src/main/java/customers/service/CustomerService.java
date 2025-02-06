@@ -1,5 +1,6 @@
 package customers.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,21 +21,26 @@ public class CustomerService {
 	private CustomerRepository customerRepository;
 
 	public CustomerBean login(String username, String password) {
-		if(username!=null && username.length()!=0 &&
-				password!=null && password.length()!=0) {
+		if (username != null && !username.isEmpty() && password != null && !password.isEmpty()) {
 			Optional<CustomerBean> optional = customerRepository.findByUsername(username);
-			if(optional.isPresent()) {
+			if (optional.isPresent()) {
 				CustomerBean bean = optional.get();
-				byte[] pass = bean.getPassword();	//資料庫抓出
-				byte[] temp = password.getBytes();	//使用者輸入
-				if(Arrays.equals(pass, temp)) {
+
+				// 從資料庫取得的密碼
+				String storedPassword = bean.getPassword(); // 這已經是 `String`，來自 `getPassword()`
+
+				// 使用者輸入的密碼，轉成相同格式（Base64 或 UTF-8）
+				String inputPassword = new String(password.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+
+				// 比對密碼
+				if (storedPassword.equals(inputPassword)) {
 					return bean;
 				}
 			}
 		}
 		return null;
 	}
-	
+
 	public List<CustomerBean> select(CustomerBean bean) {
 		List<CustomerBean> result = null;
 		if (bean != null && bean.getCustomerID() != null && bean.getCustomerID() > 0) {
@@ -109,7 +115,7 @@ public class CustomerService {
 			Long customerID = obj.isNull("customerID") ? null : obj.getLong("customerID");
 			String username = obj.isNull("username") ? null : obj.getString("username");
 			String customerName = obj.isNull("customerName") ? null : obj.getString("customerName");
-			byte[] password = obj.isNull("password") ? null : obj.getString("password").getBytes();
+			String password = obj.isNull("password") ? null : obj.getString("password");
 			String email = obj.isNull("email") ? null : obj.getString("email");
 			String phoneNumber = obj.isNull("phoneNumber") ? null : obj.getString("phoneNumber");
 			String mobileNumber = obj.isNull("mobileNumber") ? null : obj.getString("mobileNumber");
@@ -138,7 +144,7 @@ public class CustomerService {
 			Long customerID = obj.isNull("customerID") ? null : obj.getLong("customerID");
 			String username = obj.isNull("username") ? null : obj.getString("username");
 			String customerName = obj.isNull("customerName") ? null : obj.getString("customerName");
-			byte[] password = obj.isNull("password") ? null : obj.getString("password").getBytes();
+			String password = obj.isNull("password") ? null : obj.getString("password");
 			String email = obj.isNull("email") ? null : obj.getString("email");
 			String phoneNumber = obj.isNull("phoneNumber") ? null : obj.getString("phoneNumber");
 			String mobileNumber = obj.isNull("mobileNumber") ? null : obj.getString("mobileNumber");
