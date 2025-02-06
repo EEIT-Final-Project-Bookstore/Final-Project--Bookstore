@@ -28,8 +28,9 @@
 <script>
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/authStore"; // Pinia Store
-import { useRouter } from "vue-router"; 
+import { useRouter } from "vue-router";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
   setup() {
@@ -52,7 +53,7 @@ export default {
         if (data.success) {
           // 從後端取回 token、user 等資訊
           const token = data.token;
-          const user = data.user; // email or username
+          const user = data.user;
           const customerName = data.customerName;
           const customerID = data.customerID;
 
@@ -64,14 +65,29 @@ export default {
             customerID,
           });
 
-          // 登入後跳轉首頁
-          router.push("/");
+          // 顯示登入成功提示
+          Swal.fire({
+            title: "登入成功",
+            icon: "success",
+            text:"即將轉跳至首頁"
+          }).then(() => {
+            // 登入後跳轉首頁
+            router.push("/");
+          });
         } else {
-          alert(data.message || "登入失敗，請稍後重試");
+          Swal.fire({
+            icon: "error",
+            title: "登入失敗",
+            text: "請檢查帳號密碼是否輸入正確。",
+          });
         }
       } catch (error) {
         console.error("登入時發生錯誤:", error);
-        alert("登入失敗");
+        Swal.fire({
+          icon: "error",
+          title: "登入失敗",
+          text: "請檢查帳號密碼是否輸入正確。",
+        });
       }
     };
 
@@ -87,6 +103,7 @@ export default {
   },
 };
 </script>
+
 
   
   <style scoped>
