@@ -1,42 +1,88 @@
 <template>
-    <div class="login-container">
-      <div class="login-content">
+  <div class="login-container">
+    <div class="login-content">
       <h2>忘記密碼</h2>
+
+      <!-- Step 1: 帳號 + Email + 驗證碼 -->
       <div v-if="step === 1">
+        <!-- 帳號 -->
         <div class="form-group">
           <label for="username">帳號</label>
-          <input type="text" id="username" v-model="username" placeholder="請輸入帳號">
+          <input
+            type="text"
+            id="username"
+            v-model="form.username"
+            placeholder="請輸入帳號"
+            @blur="checkUserEmail"
+          />
         </div>
+        <!-- Email -->
         <div class="form-group">
           <label for="email">電子郵件</label>
-          <input type="email" id="email" v-model="email" placeholder="請輸入電子郵件">
+          <input
+            type="email"
+            id="email"
+            v-model="form.email"
+            placeholder="請輸入電子郵件"
+            @blur="checkUserEmail"
+          />
         </div>
-        <div class="form-actions">
-          <button class="btn login-btn" @click="nextStep">下一步</button>
+        <!-- 錯誤訊息 -->
+        <p v-if="errors.userEmail" class="error">{{ errors.userEmail }}</p>
+
+        <!-- 寄送驗證碼按鈕 -->
+        <div class="form-actions" style="margin-top: 10px;">
+          <button type="button" @click="sendCode">寄送驗證碼</button>
+          <span
+            v-if="sendCodeMessage"
+            :class="sendCodeError ? 'error' : 'black-text'"
+            style="margin-left: 10px;"
+          >
+            {{ sendCodeMessage }}
+          </span>
+        </div>
+
+        <!-- 驗證碼輸入 -->
+        <div class="form-group" style="margin-top: 20px;">
+          <label for="captcha">驗證碼</label>
+          <input
+            type="text"
+            id="captcha"
+            v-model="form.captcha"
+            placeholder="請輸入驗證碼"
+          />
+          <p class="error" v-if="errors.verifyCode">{{ errors.verifyCode }}</p>
+        </div>
+
+        <div class="form-actions" style="margin-top: 20px;">
+          <button class="btn login-btn" type="button" @click="checkCaptcha">
+            下一步
+          </button>
         </div>
       </div>
 
+      <!-- Step 2: 新密碼 -->
       <div v-else-if="step === 2">
         <div class="form-group">
-          <label for="captcha">驗證碼</label>
-          <div class="captcha-container">
-            <input type="text" id="captcha" v-model="captcha" placeholder="請輸入驗證碼">
-            <button @click="refreshCaptcha">重新寄送驗證碼</button>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button class="btn login-btn" @click="nextStep">下一步</button>
-        </div>
-      </div>
-
-      <div v-else-if="step === 3">
-        <div class="form-group">
           <label for="new-password">新密碼</label>
-          <input type="password" id="new-password" v-model="newPassword" placeholder="請輸入新密碼">
+          <input
+            type="password"
+            id="new-password"
+            v-model="form.newPassword"
+            placeholder="請輸入新密碼"
+            @input="validatePassword"
+          />
         </div>
         <div class="form-group">
           <label for="confirm-password">確認密碼</label>
-          <input type="password" id="confirm-password" v-model="confirmPassword" placeholder="請再次輸入新密碼">
+          <input
+            type="password"
+            id="confirm-password"
+            v-model="form.confirmPassword"
+            placeholder="請再次輸入新密碼"
+            @input="validatePassword"
+          />
+          <p class="error" v-if="errors.password">{{ errors.password }}</p>
         </div>
         <div class="form-actions">
           <button class="btn login-btn" @click="resetPassword">完成</button>
@@ -47,160 +93,248 @@
 </template>
 
 <script>
+import axios from "axios";
+import Swal from "sweetalert2"; // 引入 SweetAlert2
+
 export default {
   data() {
     return {
       step: 1,
-      username: '',
-      email: '',
-      captcha: '',
-      newPassword: '',
-      confirmPassword: ''
+      form: {
+        username: "",
+        email: "",
+        captcha: "",
+        newPassword: "",
+        confirmPassword: "",
+      },
+      errors: {
+        userEmail: "",
+        verifyCode: "",
+        password: "",
+      },
+      sendCodeMessage: "",
+      sendCodeError: false,
     };
   },
   methods: {
-    nextStep() {
-      if (this.step === 1 && this.username && this.email) {
-        this.step = 2;
-      } else if (this.step === 2 && this.captcha) {
-        this.step = 3;
+    // (1) 帳號 + Email 檢查
+    async checkUserEmail() {
+      this.errors.userEmail = "";
+      const { username, email } = this.form;
+      if (!username || !email) return;
+      if (!email.includes("@")) {
+        this.errors.userEmail = "電子郵件格式不正確";
+        return;
+      }
+      try {
+        // 檢查 email 是否存在
+        const resEmail = await axios.get(
+          `http://192.168.23.112:8080/api/customers/checkEmail?email=${email}`
+        );
+        if (!resEmail.data.exists) {
+          this.errors.userEmail = "此 Email 不存在系統中";
+          return;
+        }
+        // 檢查 username 是否存在
+        const resUser = await axios.get(
+          `http://192.168.23.112:8080/api/customers/${username}`
+        );
+        // 比對 email
+        if (resUser.data.email !== email) {
+          this.errors.userEmail = "帳號與 Email 不符";
+        }
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          this.errors.userEmail = "查無此帳號";
+        } else {
+          console.error("checkUserEmail 錯誤:", err);
+          this.errors.userEmail = "伺服器錯誤，請稍後再試";
+        }
       }
     },
-    resetPassword() {
-      if (this.newPassword === this.confirmPassword && this.newPassword) {
-        alert('密碼修改成功！');
-        // 清空資料並回到第一步
+
+    // (2) 寄送驗證碼
+    sendCode() {
+      if (this.errors.userEmail) {
+        this.sendCodeMessage = "請先修正帳號/Email錯誤後再發送驗證碼";
+        this.sendCodeError = true;
+        return;
+      }
+      if (!this.form.email) {
+        this.sendCodeMessage = "請先輸入Email";
+        this.sendCodeError = true;
+        return;
+      }
+      this.sendCodeMessage = "";
+      this.sendCodeError = false;
+      axios
+        .post("http://192.168.23.112:8080/api/auth/sendCode", {
+          email: this.form.email,
+        })
+        .then(() => {
+          this.sendCodeMessage = "驗證碼已寄出，請查看您的信箱。";
+          this.sendCodeError = false;
+        })
+        .catch((err) => {
+          console.error("寄送驗證碼錯誤:", err);
+          this.sendCodeMessage = "驗證碼寄送失敗，請稍後再試。";
+          this.sendCodeError = true;
+        });
+    },
+
+    // (3) 驗證碼檢查
+    checkCaptcha() {
+      this.errors.verifyCode = "";
+      if (!this.form.captcha) {
+        this.errors.verifyCode = "請輸入驗證碼";
+        return;
+      }
+      axios
+        .post("http://192.168.23.112:8080/api/auth/verifyCode", {
+          email: this.form.email,
+          code: this.form.captcha,
+        })
+        .then(() => {
+          this.step = 2; // 成功 -> 進入 Step2 輸入新密碼
+        })
+        .catch(() => {
+          this.errors.verifyCode = "驗證失敗或已過期，請重新嘗試";
+        });
+    },
+
+    // (4) 即時檢查密碼
+    validatePassword() {
+      this.errors.password = "";
+      const { newPassword, confirmPassword } = this.form;
+      if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+        this.errors.password = "新密碼與確認密碼不一致";
+        return;
+      }
+      const passRegex = /^[A-Za-z0-9]{6,20}$/;
+      if (newPassword && !passRegex.test(newPassword)) {
+        this.errors.password = "密碼必須為 6~20 位英文或數字";
+      }
+    },
+
+    // (5) 送出新密碼 -> 只改 password，不動其他欄位
+    async resetPassword() {
+      // 前端驗證
+      if (this.errors.password) return;
+      const { username, newPassword, confirmPassword } = this.form;
+      if (!newPassword || !confirmPassword) {
+        this.errors.password = "請輸入並確認新密碼";
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        this.errors.password = "新密碼與確認密碼不一致";
+        return;
+      }
+
+      // 1) 取得該 user 舊資料
+      let oldData;
+      try {
+        const getRes = await axios.get(`http://192.168.23.112:8080/api/customers/${username}`);
+        oldData = getRes.data; // 舊資料
+      } catch (err) {
+        console.error("取得舊資料失敗:", err);
+        Swal.fire({
+          icon: "error",
+          title: "錯誤",
+          text: "查無此帳號或伺服器錯誤，無法更新密碼。",
+        });
+        return;
+      }
+
+      // 2) 只改 password
+      const updatedData = { ...oldData, password: newPassword };
+
+      // 3) 呼叫PUT更新
+      try {
+        await axios.put(`http://192.168.23.112:8080/api/customers/${username}`, updatedData);
+
+        // === 修改成功後，使用 Swal.fire 彈窗 & 轉跳登入頁 ===
+        Swal.fire({
+          title: "修改成功",
+          icon: "success",
+          text: "即將轉跳到登入頁面",
+        }).then(() => {
+          // 彈窗關閉後執行跳轉
+          this.$router.push("/login"); 
+        });
+
+        // 清空表單
         this.step = 1;
-        this.username = '';
-        this.email = '';
-        this.captcha = '';
-        this.newPassword = '';
-        this.confirmPassword = '';
-      } else {
-        alert('密碼不一致，請重新輸入！');
+        Object.keys(this.form).forEach((key) => (this.form[key] = ""));
+        this.sendCodeMessage = "";
+        this.sendCodeError = false;
+      } catch (err) {
+        console.error("更新密碼失敗:", err);
+        Swal.fire({
+          icon: "error",
+          title: "更新失敗",
+          text: "更新密碼失敗，請稍後再試。",
+        });
       }
     },
-    refreshCaptcha() {
-      alert('驗證碼已刷新！');
-      // 這裡應該加入刷新驗證碼的邏輯
-    }
-  }
+  },
 };
 </script>
-  
-  <style scoped>
-  .login-container {
-    font-family: Arial, sans-serif;
-    margin: 0 auto;
-    padding: 20px;
-    max-width: 800px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .site-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .site-header .logo img {
-    max-height: 50px;
-  }
-  
-  .nav-bar ul {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-  }
-  
-  .nav-bar ul li a {
-    text-decoration: none;
-    color: #333;
-  }
-  
-  .login-content h2 {
-    color: #444;
-    margin-bottom: 15px;
-  }
-  
-  .benefits {
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #555;
-    list-style: disc;
-    padding-left: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .form-group .forgot {
-    font-size: 12px;
-    text-decoration: none;
-    color: #007bff;
-    float: right;
-  }
-  
-  .captcha-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .captcha-container img {
-    height: 40px;
-  }
-  
-  .captcha-container button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .form-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-  }
-  
-  .form-actions .btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .login-btn {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .register-btn {
-    background-color: #28a745;
-    color: #fff;
-  }
-  
-  
-  </style>
-  
+
+<style scoped>
+.login-container {
+  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 800px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login-content h2 {
+  color: #444;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+.form-group label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+.form-actions .btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.login-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* 錯誤文字：紅色 */
+.error {
+  margin-top: 5px;
+  color: #dc3545;
+}
+/* 成功訊息改為黑色 */
+.black-text {
+  color: #000;
+}
+</style>

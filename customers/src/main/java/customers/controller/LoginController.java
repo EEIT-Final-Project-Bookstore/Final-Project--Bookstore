@@ -30,29 +30,40 @@ public class LoginController {
         String password = obj.isNull("password") ? null : obj.getString("password");
 
         // 驗證資料
-        if (username == null || username.length() == 0 || password == null || password.length() == 0) {
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
             responseJson.put("success", false);
             responseJson.put("message", "請輸入帳號/密碼");
             return responseJson.toString();
         }
 
-        // 呼叫Model
+        // 呼叫 Service 進行登入驗證
         CustomerBean bean = customerService.login(username, password);
 
-        // 根據Model執行結果決定要呼叫的View
+        // 根據 Service 執行結果決定要回傳的內容
         if (bean == null) {
             responseJson.put("success", false);
-            responseJson.put("message", "登入失敗");
+            responseJson.put("message", "登入失敗，帳號或密碼錯誤。");
         } else {
             responseJson.put("success", true);
             responseJson.put("message", "登入成功");
 
-            JSONObject user = new JSONObject()
-                    .put("custumerID", bean.getCustomerID())
-                    .put("email", bean.getEmail());
-            String token = jsonWebTokenUtility.createToken(user.toString());
+            // 將要放入 JWT Payload 的使用者資訊
+            // 注意：這裡可以只放必要的欄位即可，不必全放
+            JSONObject userPayload = new JSONObject()
+                    .put("username", bean.getUsername()) // 重要：前端需要的 username
+                    .put("email", bean.getEmail())
+                    .put("customerID", bean.getCustomerID())
+                    .put("customerName", bean.getCustomerName());
+
+            // 產生 JWT Token
+            String token = jsonWebTokenUtility.createToken(userPayload.toString());
             responseJson.put("token", token);
-            responseJson.put("user", bean.getEmail());
+
+            // 回傳給前端的 "user" 欄位建議是一個 JSON 物件，內含 username 等欄位
+            // 以便前端存入 authStore.user 時能直接使用 user.username
+            responseJson.put("user", userPayload);
+
+            // 若前端同時需要分開的 customerName 與 customerID，也可額外放置
             responseJson.put("customerName", bean.getCustomerName());
             responseJson.put("customerID", bean.getCustomerID());
         }

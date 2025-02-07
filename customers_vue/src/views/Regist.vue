@@ -400,9 +400,9 @@ export default {
       // 市內電話 (若有輸入才檢查)
       if (this.form.phoneNumber) {
         const phone = this.form.phoneNumber.trim();
-        if (!/^0\d{6,7}$/.test(phone)) {
+        if (!/^0\d{7,9}$/.test(phone)) {
           this.errors.phoneNumber =
-            "市內電話格式不正確：必須以 0 開頭，並且總長 7 或 8 碼";
+            "市內電話格式不正確：必須以 0 開頭，並且總長 8 到 10 碼";
         }
       }
 

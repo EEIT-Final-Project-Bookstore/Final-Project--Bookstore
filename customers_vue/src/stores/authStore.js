@@ -1,4 +1,4 @@
-// authStore.js (範例完整可行版本)
+// stores/authStore.js
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
@@ -11,9 +11,9 @@ export const useAuthStore = defineStore("auth", {
         isAuthenticated: false,
     }),
 
-    // 2) 移除 "isAuthenticated" 這個 getter
+    // 2) getters: 移除 isAuthenticated，改用 state 屬性
     getters: {
-        // ...（如果有其他 getter，留在這裡，但不要再有 isAuthenticated）
+        // ...其餘 getters
     },
 
     actions: {
@@ -26,20 +26,18 @@ export const useAuthStore = defineStore("auth", {
             this.customerID = this.user ? this.user.customerID : null;
             this.customerName = this.user ? this.user.customerName : null;
 
-            // 因為我們現在用 state 裡的 isAuthenticated
-            // 可自行判斷是否要在這裡設定
             this.isAuthenticated = !!(this.user && this.token);
         },
 
         login(userData) {
+            // userData 裏面會包含 { user, token, customerName, customerID, ... }
             this.user = userData.user;
             this.token = userData.token;
             this.customerID = userData.customerID;
             this.customerName = userData.customerName;
-
-            // 這裡可以直接 set，因為現在 isAuthenticated 已是 state
             this.isAuthenticated = true;
 
+            // 將 user, token 寫入 localStorage
             localStorage.setItem("user", JSON.stringify(userData.user));
             localStorage.setItem("token", userData.token);
         },

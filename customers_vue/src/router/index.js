@@ -13,7 +13,7 @@ const routes = [
     { path: '/', name: 'Home', component: Home },
     { path: '/login', name: 'Login', component: Login_Customer },
     { path: '/register', name: 'Regist', component: Regist },
-    { path: '/forget', name: 'ForgetPassword', component: ForgetPassword },
+    { path: '/forgot', name: 'ForgetPassword', component: ForgetPassword },
     { path: '/customers', component: List_Customer },
     { path: '/modify', component: Modify },
     { path: '/admins', component: List_Admin },
