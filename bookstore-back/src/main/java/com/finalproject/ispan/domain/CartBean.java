@@ -28,7 +28,7 @@ public class CartBean {
     private Integer cartId;
 
     @Column(name = "CustomerID", nullable = false, unique = true)
-    private Integer customerId;
+    private Long customerId;
 
     @Column(name = "CreationTime", nullable = false)
     private LocalDateTime creationTime;
@@ -71,7 +71,7 @@ public class CartBean {
     public CartBean() {
 	}
 
-    public CartBean(Integer cartId, Integer customerId, LocalDateTime creationTime, LocalDateTime lastUpdatedTime,
+    public CartBean(Integer cartId, Long customerId, LocalDateTime creationTime, LocalDateTime lastUpdatedTime,
 			Integer quantity, StatusBean status, List<CartItemBean> items, List<BookBean> books,
 			CustomerBean customer) {
 		super();
@@ -108,11 +108,11 @@ public class CartBean {
 		this.cartId = cartId;
 	}
 
-	public Integer getCustomerId() {
+	public Long getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(Integer customerId) {
+	public void setCustomerId(Long customerId) {
 		this.customerId = customerId;
 	}
 

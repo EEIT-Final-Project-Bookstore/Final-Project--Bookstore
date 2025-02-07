@@ -13,7 +13,7 @@
 //    @Override
 //    public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(jsonWebTokenInterceptor)
-//            .addPathPatterns("api/cart/**");
+//            .addPathPatterns("api/cart/**")
 //            .addPathPatterns("api/order/**");
 //    }
 //}

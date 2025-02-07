@@ -1,7 +1,9 @@
 package com.finalproject.ispan.controller;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.finalproject.ispan.domain.CartBean;
 import com.finalproject.ispan.dto.CartItemDto;
 import com.finalproject.ispan.dto.CartItemRequest;
+import com.finalproject.ispan.repository.CartRepository;
 import com.finalproject.ispan.service.CartService;
 
 @RestController
@@ -20,21 +24,36 @@ import com.finalproject.ispan.service.CartService;
 public class CartController {
     @Autowired
     private CartService cartService;
+    @Autowired
+    private CartRepository cartRepository;
     
     //購物車相關:
     // 使用 POST 方法查詢顧客的購物車內容
     @GetMapping("/view/{customerId}")
-    public List<CartItemDto> viewCart(@PathVariable Integer customerId) {
+    public List<CartItemDto> viewCart(@PathVariable Long customerId) {
         return cartService.getCartItemDtos(customerId);  // 返回轉換後的 DTO
     }
     
     @PostMapping("/add")
-    public String addToCart(@RequestBody CartItemRequest cartItemRequest) {
-        // 使用封裝的 DTO 來執行業務邏輯
-        return cartService.addToCart(cartItemRequest.getCustomerId(), 
-                                     cartItemRequest.getBookId(), 
-                                     cartItemRequest.getQuantity());
+    public ResponseEntity<Map<String, Object>> addToCart(@RequestBody CartItemRequest cartItemRequest) {
+        Map<String, Object> response = cartService.addToCart(
+            cartItemRequest.getCustomerId(),
+            cartItemRequest.getBookId(),
+            cartItemRequest.getQuantity()
+        );
+        if (response.containsKey("cartId")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
+    //原版:
+//    public String addToCart(@RequestBody CartItemRequest cartItemRequest) {
+//        // 使用封裝的 DTO 來執行業務邏輯
+//        return cartService.addToCart(cartItemRequest.getCustomerId(), 
+//                                     cartItemRequest.getBookId(), 
+//                                     cartItemRequest.getQuantity());
+//    }
     
     @PutMapping("/update")
     public String updateCartItem(@RequestBody CartItemRequest cartItemRequest) {
@@ -50,7 +69,18 @@ public class CartController {
     }
     
     @DeleteMapping("/clear/{customerId}")
-    public String clearCart(@PathVariable Integer customerId) {
+    public String clearCart(@PathVariable Long customerId) {
         return cartService.clearCart(customerId);
+    }
+    
+    @GetMapping("/{customerId}")
+    public Integer getCartId(@PathVariable Long customerId) {
+        CartBean cart = cartRepository.findByCustomerId(customerId);
+        if (cart != null) {
+            return cart.getCartId();
+        } else {
+        	cart = new CartBean();
+        	return cart.getCartId();
+        }
     }
 }

@@ -126,8 +126,8 @@ public class EcpayController {
     
     // 3.取得付款結果
     @GetMapping("/paymentResult/{customerId}")
-    public ResponseEntity<Map<String, Object>> getPaymentResult(@PathVariable Integer customerId) {
-        OrderBean order = orderRepository.findTopByCustomer_CustomerIdOrderByOrderCreationTimeDesc(customerId);
+    public ResponseEntity<Map<String, Object>> getPaymentResult(@PathVariable Long customerId) {
+        OrderBean order = orderRepository.findTopByCustomer_CustomerIDOrderByOrderCreationTimeDesc(customerId);
         if (order == null) {
             return ResponseEntity.notFound().build();  // 如果沒找到訂單，回傳 404
         }

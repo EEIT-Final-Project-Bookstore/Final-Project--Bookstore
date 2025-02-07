@@ -1,8 +1,10 @@
 package com.finalproject.ispan.controller;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +41,7 @@ public class OrderController {
     
     // 2.查詢顧客所有訂單
     @GetMapping("/list/{customerId}")
-    public List<Map<String, Object>> getCustomerOrders(@PathVariable Integer customerId) {
+    public List<Map<String, Object>> getCustomerOrders(@PathVariable Long customerId) {
         return orderService.getAllOrdersByCustomer(customerId);
     }
     
@@ -47,5 +49,14 @@ public class OrderController {
     @GetMapping("/detail/{orderId}")
     public OrderDetailResponseDTO getOrderDetail(@PathVariable String orderId) {
         return orderService.getOrderDetailById(orderId);
+    }
+    
+    // 4.取消訂單 (只有"待付款"狀態才能取消)
+    @PostMapping("/cancel/{orderId}")
+    public ResponseEntity<Map<String, String>> cancelOrder(@PathVariable String orderId) {
+        String message = orderService.cancelOrder(orderId);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", message);
+        return ResponseEntity.ok(response);
     }
 }

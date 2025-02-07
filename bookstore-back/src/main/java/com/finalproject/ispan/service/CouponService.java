@@ -41,6 +41,7 @@ public class CouponService {
         // 查找購物車
         CartBean cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new IllegalArgumentException("購物車不存在"));
+     System.out.println("Applying coupon code: " + couponCode);
         // 查找優惠券
         CouponBean coupon = couponRepository.findByCouponCode(couponCode);
         if (coupon == null) {

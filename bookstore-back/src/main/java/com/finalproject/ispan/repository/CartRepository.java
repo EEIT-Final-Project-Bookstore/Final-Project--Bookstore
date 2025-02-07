@@ -9,6 +9,6 @@ import com.finalproject.ispan.domain.CartBean;
 import com.finalproject.ispan.domain.CustomerBean;
 
 public interface CartRepository extends JpaRepository<CartBean, Integer> {
-	CartBean findByCustomerId(Integer customerId);  // 根據顧客ID查詢購物車
+	CartBean findByCustomerId(Long customerID);  // 根據顧客ID查詢購物車
 	Optional<CartBean> findByCustomerAndBooks(CustomerBean customerBean, BookBean books);
 }

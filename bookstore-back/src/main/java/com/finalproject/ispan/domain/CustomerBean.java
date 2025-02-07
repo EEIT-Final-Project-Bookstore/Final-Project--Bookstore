@@ -21,7 +21,8 @@ public class CustomerBean {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "CustomerID")
-    private Integer customerId;
+//    private Integer customerId;
+	private Long customerID;
 
     @Column(name = "Username", unique = true, nullable = false, length = 50)
     private String username;
@@ -36,10 +37,12 @@ public class CustomerBean {
     private String email;
     
     @Column(name = "PhoneNumber", length = 50)
-    private Integer phoneNumber;
+//    private Integer phoneNumber;
+    private String phoneNumber;
     
     @Column(name = "MobileNumber", length = 50)
-    private Integer mobileNumber;
+//    private Integer mobileNumber;
+    private String mobileNumber;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "RegistrationTime", length = 50)
@@ -62,18 +65,30 @@ public class CustomerBean {
 	public CustomerBean(Integer customerId) {
 	}
 
+//	public String toString() {
+//		return "CustomerBean [" + customerId + "," + username + "," + customerName + "," + password + "," + email + ","
+//				+ phoneNumber + "," + registrationTime + "," + mobileNumber + "]";
+//	}
 	public String toString() {
-		return "CustomerBean [" + customerId + "," + username + "," + customerName + "," + password + "," + email + ","
+		return "CustomerBean [" + customerID + "," + username + "," + customerName + "," + password + "," + email + ","
 				+ phoneNumber + "," + registrationTime + "," + mobileNumber + "]";
 	}
-
-	public Integer getCustomerId() {
-		return customerId;
+	
+//	public Integer getCustomerId() {
+//		return customerId;
+//	}
+//
+//	public void setCustomerId(Integer customerId) {
+//		this.customerId = customerId;
+//	}
+	public Long getCustomerID() {
+		return customerID;
 	}
 
-	public void setCustomerId(Integer customerId) {
-		this.customerId = customerId;
+	public void setCustomerID(Long customerID) {
+		this.customerID = customerID;
 	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -106,22 +121,36 @@ public class CustomerBean {
 		this.email = email;
 	}
 
-	public Integer getPhoneNumber() {
+//	public Integer getPhoneNumber() {
+//		return phoneNumber;
+//	}
+//
+//	public void setPhoneNumber(Integer phoneNumber) {
+//		this.phoneNumber = phoneNumber;
+//	}
+//
+//	public Integer getMobileNumber() {
+//		return mobileNumber;
+//	}
+//
+//	public void setMobileNumber(Integer mobileNumber) {
+//		this.mobileNumber = mobileNumber;
+//	}
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(Integer phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-
-	public Integer getMobileNumber() {
+	public String getMobileNumber() {
 		return mobileNumber;
 	}
 
-	public void setMobileNumber(Integer mobileNumber) {
+	public void setMobileNumber(String mobileNumber) {
 		this.mobileNumber = mobileNumber;
 	}
-
+	
 	public LocalDateTime getRegistrationTime() {
 		return registrationTime;
 	}

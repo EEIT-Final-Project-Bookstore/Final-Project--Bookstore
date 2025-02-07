@@ -46,13 +46,14 @@ public class LoginController {
             responseJson.put("message", "登入成功");
 
             JSONObject user = new JSONObject()
-                    .put("custumerID", bean.getCustomerId())
+                    .put("custumerID", bean.getCustomerID())
                     .put("email", bean.getEmail());
             String token = jsonWebTokenUtility.createToken(user.toString());
             responseJson.put("token", token);
             responseJson.put("user", bean.getEmail());
+            responseJson.put("customerName", bean.getCustomerName());
+            responseJson.put("customerId", bean.getCustomerID());
         }
         return responseJson.toString();
     }
-
 }

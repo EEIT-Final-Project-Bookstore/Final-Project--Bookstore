@@ -1,6 +1,7 @@
 package com.finalproject.ispan.dto;
 
 public class CartItemDto {
+	private Integer bookId;
     private String bookName;    // 書籍名稱
     private String imageUrl;   // 書籍照片 (圖片 URL)
     private Integer quantity;   // 數量
@@ -10,13 +11,15 @@ public class CartItemDto {
     public CartItemDto() {
     }
     public CartItemDto(String imageUrl, String bookName, Integer quantity, Integer price, Integer subtotal) {
+//		this.bookId = bookId;
 		this.bookName = bookName;
 		this.imageUrl = imageUrl;
 		this.quantity = quantity;
 		this.price = price;
 		this.subtotal = subtotal;
 	}
-	public CartItemDto(String bookName, String imageUrl, Integer quantity, Integer price) {
+	public CartItemDto(Integer bookId, String bookName, String imageUrl, Integer quantity, Integer price, Integer subtotal) {
+        this.bookId = bookId;
         this.bookName = bookName;
         this.imageUrl = imageUrl;
         this.quantity = quantity;
@@ -24,10 +27,17 @@ public class CartItemDto {
         this.subtotal = price * quantity;
     }
     // Getters and Setters
+	
     public String getBookName() {
         return bookName;
     }
-    public void setBookName(String bookName) {
+    public Integer getBookId() {
+		return bookId;
+	}
+	public void setBookId(Integer bookId) {
+		this.bookId = bookId;
+	}
+	public void setBookName(String bookName) {
         this.bookName = bookName;
     }
     public String getImageUrl() {

@@ -1,16 +1,16 @@
 package com.finalproject.ispan.dto;
 
 public class CartItemRequest {
-    private Integer customerId;
+    private Long customerId;
     private Integer bookId;
     private Integer quantity;
 
     // Getters and Setters
-    public Integer getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Integer customerId) {
+    public void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
 

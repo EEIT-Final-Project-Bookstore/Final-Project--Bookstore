@@ -16,7 +16,7 @@ public class OrderBean {
 	private String orderId;  //Integer 改成 String Ex: BK202501311230001, ...002
 
 	@ManyToOne
-	@JoinColumn(name = "CustomerId", nullable = false)
+	@JoinColumn(name = "CustomerID", nullable = false)
 	private CustomerBean customer;
 	
 	@ManyToOne

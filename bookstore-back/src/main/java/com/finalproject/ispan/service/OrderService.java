@@ -51,7 +51,7 @@ public class OrderService {
 	
     // 1.新增1筆訂單
     public OrderResponseDTO createOrder(Integer cartId, String couponCode) {
-    	CartBean cart = cartService.getCartByCustomerId(cartId);
+    	CartBean cart = cartService.getCartById(cartId);
         // 檢查購物車是否有效
         if (cart == null || cart.getItems().isEmpty()) {
             throw new IllegalArgumentException("購物車為空，無法生成訂單。");
@@ -71,7 +71,6 @@ public class OrderService {
         	throw new IllegalArgumentException("支付方式 '信用卡' 不存在");
         }
         order.setPaymentMethod(paymentMethod);
-        // 設置購物車狀態為「已清空」
         StatusBean unpaidStatus = statusRepository.findByDetailedStatus("待付款");
         order.setStatus(unpaidStatus);
         // 查找顧客的購物車內容
@@ -107,9 +106,9 @@ public class OrderService {
             orderDetailRepository.save(detail);
         }
         // 清空購物車
-        cartService.clearCart(cart.getCustomer().getCustomerId());
-        cart.getItems().clear();  // 清空購物車中的所有商品
-        cartRepository.save(cart);  // 保存清空後的購物車
+//        cartService.clearCart(cart.getCustomer().getCustomerID());
+//        cart.getItems().clear();  // 清空購物車中的所有商品
+//        cartRepository.save(cart);  // 保存清空後的購物車
         // 包裝結果
         OrderResponseDTO responseDTO = new OrderResponseDTO();
         responseDTO.setOrderId(order.getOrderId());
@@ -128,8 +127,8 @@ public class OrderService {
     }
     
     // 2.查詢顧客所有訂單
-    public List<Map<String, Object>> getAllOrdersByCustomer(Integer customerId) {
-        return orderRepository.findByCustomer_CustomerIdOrderByOrderCreationTimeDesc(customerId)
+    public List<Map<String, Object>> getAllOrdersByCustomer(Long customerId) {
+        return orderRepository.findByCustomer_CustomerIDOrderByOrderCreationTimeDesc(customerId)
                 .stream()
                 .map(order -> {
                     Map<String, Object> result = new HashMap<>();
@@ -166,6 +165,30 @@ public class OrderService {
                 order.getInvoiceNumber(),
                 items
         );
+    }
+    
+    // 4.取消訂單 (只有"待付款"狀態才能取消)
+    public String cancelOrder(String orderId) {
+        Optional<OrderBean> orderOpt = orderRepository.findByOrderId(orderId);
+        if (orderOpt.isEmpty()) {
+            return "訂單不存在";
+        }
+        OrderBean order = orderOpt.get();
+        // 只有「待付款」的訂單可以取消
+        if (!"待付款".equals(order.getStatus().getDetailedStatus())) {
+            return "只有「待付款」狀態的訂單才能取消";
+        }
+        // 設定為「已取消」
+        StatusBean canceledStatus = statusRepository.findByDetailedStatus("已取消");
+        order.setStatus(canceledStatus);
+        // 清空購物車
+        CartBean cart = cartService.getCartById(order.getCustomer().getCart().getCartId()); // 透過顧客的購物車ID來取得購物車
+        cartService.clearCart(cart.getCustomer().getCustomerID());  // 清空購物車的內容
+        cart.getItems().clear();  // 清空購物車中的所有商品
+        cartRepository.save(cart);  // 保存清空後的購物車
+        order.setLastUpdatedTime(LocalDateTime.now());
+        orderRepository.save(order);
+        return "訂單已取消，購物車已清空";
     }
     
     public Optional<OrderBean> getOrderById(String orderID) {

@@ -14,9 +14,9 @@ import com.finalproject.ispan.domain.CustomerBean;
 public interface CouponOwnershipRepository extends JpaRepository<CouponOwnershipBean, Integer>{
 	// 根據用戶 ID 和優惠券代碼查詢記錄
 	@Query("SELECT co FROM CouponOwnershipBean co " +
-		       "WHERE co.customer.customerId = :customerId " +
+		       "WHERE co.customer.customerID = :customerID " +
 		       "AND co.coupon.couponId = :couponId")
-	CouponOwnershipBean findByCustomerIdAndCouponId(@Param("customerId") Integer customerId, 
+	CouponOwnershipBean findByCustomerIdAndCouponId(@Param("customerID") Long customerID, 
 		                                            @Param("couponId") Integer couponId);
 	
 	// 根據優惠券 ID 刪除所有擁有該優惠券的 CouponOwnership 記錄

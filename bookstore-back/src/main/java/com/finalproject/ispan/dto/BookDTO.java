@@ -6,9 +6,13 @@ public class BookDTO {
     private Integer bookId;             // 書籍ID
     private String bookName;            // 書名
     private Integer authorId;           // 作者ID
+    private String authorName; 	
     private Integer publisherId;        // 出版社ID
+    private String publisherName;
     private Integer languageId;         // 語言ID
     private Integer subcategoryId;      // 子分類ID
+    private String subcategoryName; 
+    private String categoryName;
     private Integer price;              // 價格
     private Integer stock;              // 庫存量
     private String description;         // 書籍描述
@@ -43,7 +47,15 @@ public class BookDTO {
         this.authorId = authorId;
     }
 
-    public Integer getPublisherId() {
+    public String getAuthorName() {
+		return authorName;
+	}
+
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
+	}
+
+	public Integer getPublisherId() {
         return publisherId;
     }
 
@@ -51,7 +63,15 @@ public class BookDTO {
         this.publisherId = publisherId;
     }
 
-    public Integer getLanguageId() {
+    public String getPublisherName() {
+		return publisherName;
+	}
+
+	public void setPublisherName(String publisherName) {
+		this.publisherName = publisherName;
+	}
+
+	public Integer getLanguageId() {
         return languageId;
     }
 
@@ -67,7 +87,23 @@ public class BookDTO {
         this.subcategoryId = subcategoryId;
     }
 
-    public Integer getPrice() {
+    public String getSubcategoryName() {
+		return subcategoryName;
+	}
+
+	public void setSubcategoryName(String subcategoryName) {
+		this.subcategoryName = subcategoryName;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public Integer getPrice() {
         return price;
     }
 
