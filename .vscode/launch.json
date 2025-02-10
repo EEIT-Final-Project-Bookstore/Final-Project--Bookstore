@@ -9,6 +9,16 @@
             "projectName": "customers",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-AdminsApplication<admins>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "admins.AdminsApplication",
+            "projectName": "admins",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
