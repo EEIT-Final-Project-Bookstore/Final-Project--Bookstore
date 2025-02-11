@@ -1,24 +1,42 @@
 <template>
+  <!-- 紅色框：登入框整體範圍 -->
   <div class="login-container">
     <div class="login-content">
       <h1>會員登入</h1>
-      <ul class="benefits">
-        <li>森途書店之各項優惠及會員折扣，限網路訂書使用。</li>
-      </ul>
-
       <form @submit.prevent="handleLogin">
         <div class="form-group">
+          <span style="font-size: 0.8rem">
+            還不是森途書店的會員嗎？
+            <a
+              href="http://192.168.23.112:5173/regist"
+              class="regist"
+              style="margin-left: 6px"
+              >加入會員</a>
+          </span>
+          <p></p>
           <label for="account">會員帳號</label>
-          <input v-model="loginForm.account" type="text" id="account" placeholder="請輸入帳號" />
+          <input
+            v-model="loginForm.account"
+            type="text"
+            id="account"
+            placeholder="請輸入帳號"
+            style="width: 450px;"
+          />
         </div>
         <div class="form-group">
           <label for="password">會員密碼</label>
-          <input v-model="loginForm.password" type="password" id="password" placeholder="請輸入密碼" />
-          <a href="http://192.168.23.112:5173/forgot" class="forgot">忘記密碼</a>
+          <input
+            v-model="loginForm.password"
+            type="password"
+            id="password"
+            placeholder="請輸入密碼"
+            style="width: 450px;"
+          />
+          <a href="http://192.168.23.112:5173/forgot" class="forgot" >忘記密碼</a>
         </div>
+        <br>
         <div class="form-actions">
           <button type="submit" class="btn login-btn">登入</button>
-          <button type="button" class="btn register-btn" @click="navigateToRegister">加入會員</button>
         </div>
       </form>
     </div>
@@ -45,16 +63,18 @@ export default {
     const handleLogin = async () => {
       try {
         // 向後端發送登入請求
-        const response = await axios.post("http://192.168.23.112:8080/api/customers/login", {
-          username: loginForm.value.account,
-          password: loginForm.value.password,
-        });
+        const response = await axios.post(
+          "http://192.168.23.112:8080/api/customers/login",
+          {
+            username: loginForm.value.account,
+            password: loginForm.value.password,
+          }
+        );
 
         const data = response.data;
         if (data.success) {
           // 從後端取回 token、user 等資訊
           const token = data.token;
-          // data.user 裡面需包含 username
           const user = data.user;
           const customerName = data.customerName;
           const customerID = data.customerID;
@@ -108,26 +128,25 @@ export default {
 </script>
 
 <style scoped>
+/* 紅色框整體：可視需要自行調整寬度、高度與背景色 */
 .login-container {
-  font-family: Arial, sans-serif;
-  margin: 0 auto;
-  padding: 20px;
-  max-width: 800px;
-  background-color: #f9f9f9;
+  width: 600px; /* 模擬紅色框的寬度 */
+  height: 400px; /* 模擬紅色框的高度 */
+  margin: 50px auto; /* 置中 */
+  background-color: #fff; /* 淺綠灰色背景，您可換成喜歡的顏色 */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-content {
+  width: 80%; /* 內部內容距離外框邊距 */
 }
 
 .login-content h1 {
   margin-bottom: 15px;
-}
-
-.benefits {
-  margin-bottom: 20px;
-  font-size: 14px;
-  color: #555;
-  list-style: disc;
-  padding-left: 20px;
 }
 
 .form-group {
@@ -150,8 +169,15 @@ export default {
 .form-group .forgot {
   font-size: 12px;
   text-decoration: none;
-  color: #007bff;
-  float: right;
+  color: #b2bfae;
+  float: left;
+}
+
+.regist {
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: #B2BFAE;
+  /* 如果需要額外間距或效果，在此調整 */
 }
 
 .form-actions {
@@ -160,7 +186,7 @@ export default {
   margin-top: 20px;
 }
 
-.form-actions .btn {
+.btn {
   flex: 1;
   padding: 10px;
   border: none;
@@ -169,12 +195,7 @@ export default {
 }
 
 .login-btn {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.register-btn {
-  background-color: #28a745;
+  background-color: #b2bfae;
   color: #fff;
 }
 </style>
