@@ -14,11 +14,36 @@
             </el-table-column>
         </el-table>
     </div>
+    <!-- 手動分頁 -->
+    <div class="pagination-container">
+        <button :disabled="currentPage === 1"
+            @click="changePage(currentPage - 1)"
+            class="page-item prev-next"
+        >
+            上一頁
+        </button>
+        <button
+            v-for="page in totalPagesArray"
+            :key="page"
+            :class="['page-item', { active: currentPage === page }]"
+            @click="changePage(page)"
+        >
+            {{ page }}
+        </button>
+        <button
+            :disabled="currentPage === totalPages"
+            @click="changePage(currentPage + 1)"
+            class="page-item prev-next"
+        >
+            下一頁
+        </button>
+    </div>
+
     <EditCouponDialog ref="editDialog" @coupon-updated="fetchCoupons" />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { ElTable, ElTableColumn, ElButton } from 'element-plus';
 import Swal from 'sweetalert2';
 import axiosapi from '@/plugins/axios.js';
@@ -26,16 +51,39 @@ import EditCouponDialog from './EditCouponDialog.vue';
 
 const coupons = ref([]);
 const editDialog = ref(null);
+// 分頁:
+const currentPage = ref(1);
+const pageSize = ref(5); // 每頁顯示 5 筆
+const totalPages = ref(1);
 
 const fetchCoupons = async () => {
-try {
-    const response = await axiosapi.get('/api/coupon/admin/coupons');
-    coupons.value = response.data;
-    console.log('查詢優惠券:', response.data);
-} catch (error) {
-    console.error('查詢優惠券失敗:', error);
-}
+    try {
+        const response = await axiosapi.post('/api/coupon/admin/coupons', {
+            page: currentPage.value - 1, //加上分頁功能
+            size: pageSize.value
+        });
+        coupons.value = response.data.content;
+        console.log('查詢優惠券:', response.data);
+        totalPages.value = response.data.totalPages;
+    } catch (error) {
+        console.error('查詢優惠券失敗:', error);
+    }
 };
+
+// 分頁變更時觸發
+const changePage = (pageNumber) => {
+    currentPage.value = pageNumber;
+    fetchCoupons();
+};
+
+// 獲取分頁頁碼陣列
+const totalPagesArray = computed(() => {
+    const pages = [];
+    for (let i = 1; i <= totalPages.value; i++) {
+        pages.push(i);
+    }
+    return pages;
+});
 
 const deleteCoupon = async (couponId) => {
     const result = await Swal.fire({
@@ -85,39 +133,84 @@ defineExpose({ fetchCoupons })
 </script>
 
 <style scoped>
-    .custom-table {
-        width: 100%;
-        --el-table-border-color: #cbc7c7;
-    }
-    .el-table :deep(.el-table__header) {
-        margin:0;
-    }
-    /* 讓表格標題變大 */
-    .el-table :deep(.el-table__header th) {
-        font-size: 18px; /* 表頭字體加大 */
-        text-align: center;
-        color: rgb(52, 51, 51);
-        border-color: rgb(84, 83, 83);
-    }
-    /* 調整表格標題與第一筆資料的間距 */
-    .el-table :deep(.el-table__body) {
-        margin-top: -2px; /* 減少標題與第一筆資料的間距 */
-    }
-    /* 讓所有欄位的內容置中 */
-    .el-table :deep(.el-table__cell) {
-        text-align: center;
-        font-size: 16px;
-        color: rgb(91, 90, 90);
-    }
-    /* 按鈕間距 */
-    .el-button {
-        margin: 0 4px;
-        font-size: 15px;
-        width: 53px;
-        height: 40px;
-    }
-    /* 表格 hover 時改變背景顏色 */
-    .el-table :deep(.el-table__row):hover {
-        background-color: #e5e7ea;
-    }
+.coupon-container {
+    width: 100%;
+}
+.custom-table {
+    --el-table-border-color: #cbc7c7;
+}
+.el-table :deep(.el-table__header) {
+    margin: 0;
+}
+/* 讓表格標題變大 */
+.el-table :deep(.el-table__header th) {
+    font-size: 18px; /* 表頭字體加大 */
+    text-align: center;
+    color: rgb(52, 51, 51);
+    border-color: rgb(84, 83, 83);
+}
+/* 調整表格標題與第一筆資料的間距 */
+.el-table :deep(.el-table__body) {
+    margin-top: -2px; /* 減少標題與第一筆資料的間距 */
+}
+/* 讓所有欄位的內容置中 */
+.el-table :deep(.el-table__cell) {
+    text-align: center;
+    font-size: 18px;
+    color: rgb(91, 90, 90);
+}
+/* 按鈕間距 */
+.el-button {
+    margin: 0 4px;
+    font-size: 15px;
+    width: 53px;
+    height: 40px;
+}
+/* 表格 hover 時改變背景顏色 */
+.el-table :deep(.el-table__row):hover {
+    background-color: #e0e1e4 !important;
+}
+/* 分頁: */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px; /* 調整按鈕和頁碼之間的間距 */
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.page-item {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #333;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.page-item:hover {
+    background-color: #1e88f8;
+    color: white;
+}
+.page-item.active {
+    background-color: #0056b3;
+    color: #fff;
+    border-color: #0056b3;
+}
+.page-item.disabled {
+    background-color: #f8f9fa;
+    border-color: #ddd;
+    color: #ccc;
+}
+.prev-next {
+    padding: 5px 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+.prev-next.page-item:disabled {
+    background-color: #e7e4e4;
+    color: black;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
 </style>

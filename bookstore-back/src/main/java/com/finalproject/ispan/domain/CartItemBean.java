@@ -98,6 +98,5 @@ public class CartItemBean {
     public void setPrice(Integer price) {
     	this.price = price;
     }
-    
 }
 

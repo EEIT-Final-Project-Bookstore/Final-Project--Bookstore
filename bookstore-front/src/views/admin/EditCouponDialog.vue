@@ -1,20 +1,20 @@
 <template>
     <el-dialog v-model="visible" title="修改優惠券" width="500px">
-        <el-form :model="form" label-width="100px">
+        <el-form :model="form" label-width="150px">
             <el-form-item label="優惠券代碼">
-                <el-input v-model="form.couponCode" disabled />
+                <el-input v-model="form.couponCode" style="width: 300px" />
             </el-form-item>
             <el-form-item label="折扣金額">
-                <el-input-number v-model="form.discount" :min="0" />
+                <el-input v-model="form.discount" :min="0" style="width: 300px" />
             </el-form-item>
             <el-form-item label="開始日期">
-                <el-date-picker v-model="form.startDate" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
+                <el-date-picker v-model="form.startDate" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" style="width: 300px" />
             </el-form-item>
             <el-form-item label="結束日期">
-                <el-date-picker v-model="form.endDate" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
+                <el-date-picker v-model="form.endDate" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" style="width: 300px" />
             </el-form-item>
             <el-form-item label="最低消費金額">
-                <el-input-number v-model="form.minimumAmount" :min="0" />
+                <el-input v-model="form.minimumAmount" :min="0" style="width: 300px" />
             </el-form-item>
         </el-form>
         <template #footer>
@@ -74,3 +74,9 @@ const updateCoupon = async () => {
 
 defineExpose({ open });
 </script>
+
+<style scoped>
+.el-form-item__label {
+    margin-left: auto;
+}
+</style>

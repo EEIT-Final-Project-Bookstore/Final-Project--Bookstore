@@ -1,39 +1,44 @@
 <template>
 	<div class="payment-result-container">
 	  <h2 class="payment-result-title">付款結果</h2>
-	  <div v-if="latestOrder" class="payment-info">
-		<p><strong>訂單編號：</strong>{{ latestOrder.orderId }}</p>
-		<p><strong>訂單狀態：</strong>{{ latestOrder.statusName }}</p>
-		<p><strong>付款時間：</strong>{{ latestOrder.paymentTime }}</p>
-		<p><strong>交易金額：</strong>${{ latestOrder.tradeAmt }}</p>
+	  <div v-if="orderStore.latestOrder" class="payment-info">
+		<p><strong>訂單編號：</strong>{{ orderStore.latestOrder.orderId }}</p>
+		<p><strong>訂單狀態：</strong>{{ orderStore.latestOrder.statusName }}</p>
+		<p><strong>付款時間：</strong>{{ orderStore.latestOrder.paymentTime }}</p>
+		<p><strong>交易金額：</strong>${{ orderStore.latestOrder.tradeAmt }}</p>
 	  </div>
 	  <p v-else class="loading-message">載入中...</p>
 	  <button @click="goToOrderList"  class="order-list-button">查看全部訂單</button>
 	</div>
 </template>
-  
+
 <script setup>
-import { ref, onMounted } from 'vue';
-import axiosapi from '@/plugins/axios.js';
+import { onMounted, watch } from 'vue';
 import { useRouter } from "vue-router";
+import { useAuthStore } from '@/stores/authStore';
+import { useCartStore } from "@/stores/cartStore";
+import { useOrderStore } from '@/stores/orderStore';
 
 const router = useRouter();
-const latestOrder = ref(null);
-const customerId = 1;  // 假設從 pinia 登入資訊獲取
+const authStore = useAuthStore();
+const cartStore = useCartStore();
+const orderStore = useOrderStore();
 
 onMounted(async () => {
-  try {
-    const response = await axiosapi.get(`/ecpay/paymentResult/${customerId}`);
-    latestOrder.value = response.data;
-	console.log(response.data);
-	
-  } catch (error) {
-    console.error("取得訂單失敗:", error);
+  if (authStore.customerId) {
+    await orderStore.fetchLatestOrder(authStore.customerId);
+  }
+});
+
+// 監聽訂單狀態變化，若狀態為 "已付款"，則清空購物車
+watch(() => orderStore.latestOrder?.statusName, (newStatus) => {
+  if (newStatus === "已付款") {
+    cartStore.clearCart(); // 清空購物車
   }
 });
 
 const goToOrderList = () => {
-  router.push(`/orderList`);
+  router.push(`/order/list`);
 };
 </script>
 

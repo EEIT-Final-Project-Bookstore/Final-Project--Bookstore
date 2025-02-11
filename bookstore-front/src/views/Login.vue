@@ -3,7 +3,7 @@
       <div class="login-content">
         <h1>會員登入</h1>
         <ul class="benefits">
-          <li>松鼠 之各項優惠及會員折扣，限網路訂書使用。</li>
+          <li>森途 之各項優惠及會員折扣，限網路訂書使用。</li>
         </ul>
   
         <form @submit.prevent="handleLogin">

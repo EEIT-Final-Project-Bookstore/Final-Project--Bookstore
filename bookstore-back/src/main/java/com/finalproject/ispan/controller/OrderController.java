@@ -1,9 +1,9 @@
 package com.finalproject.ispan.controller;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.finalproject.ispan.dto.OrderDetailResponseDTO;
 import com.finalproject.ispan.dto.OrderRequestDTO;
 import com.finalproject.ispan.dto.OrderResponseDTO;
+import com.finalproject.ispan.dto.PagingateRequestDTO;
 import com.finalproject.ispan.service.OrderService;
 
 @RestController
@@ -40,10 +41,17 @@ public class OrderController {
     }
     
     // 2.查詢顧客所有訂單
-    @GetMapping("/list/{customerId}")
-    public List<Map<String, Object>> getCustomerOrders(@PathVariable Long customerId) {
-        return orderService.getAllOrdersByCustomer(customerId);
+    @PostMapping("/list/{customerId}")
+    public Page<Map<String, Object>> getCustomerOrders(
+            @PathVariable Long customerId,
+            @RequestBody PagingateRequestDTO pageRequest) {
+        return orderService.getAllOrdersByCustomer(customerId, pageRequest.getPage(), pageRequest.getSize());
     }
+    //舊版(無分頁功能):
+//    @GetMapping("/list/{customerId}")
+//    public List<Map<String, Object>> getCustomerOrders(@PathVariable Long customerId) {
+//        return orderService.getAllOrdersByCustomer(customerId);
+//    }
     
     // 3.查詢訂單明細
     @GetMapping("/detail/{orderId}")

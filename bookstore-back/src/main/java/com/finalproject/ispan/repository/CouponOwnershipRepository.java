@@ -1,5 +1,6 @@
 package com.finalproject.ispan.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,8 +24,9 @@ public interface CouponOwnershipRepository extends JpaRepository<CouponOwnership
     @Transactional
     void deleteByCoupon_CouponId(Integer couponId);
     
- // 查詢指定 customer 和 coupon 的關聯
+    // 查詢指定 customer 和 coupon 的關聯
     Optional<CouponOwnershipBean> findByCustomerAndCoupon(CustomerBean customer, CouponBean coupon);
     
-//    List<CouponOwnershipBean> findByCustomer_CustomerId(Long customerId);
+    // 顧客查詢所有優惠券
+    List<CouponOwnershipBean> findByCustomerCustomerID(Long customerID);
 }

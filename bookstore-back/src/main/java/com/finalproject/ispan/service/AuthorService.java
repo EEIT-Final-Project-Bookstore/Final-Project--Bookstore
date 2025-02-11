@@ -31,6 +31,15 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    // 修改作者資訊
+    public AuthorBean updateAuthor(Integer id, AuthorBean updatedAuthor) {
+        return authorRepository.findById(id).map(author -> {
+            author.setAuthorName(updatedAuthor.getAuthorName());
+            author.setAuthorDescription(updatedAuthor.getAuthorDescription());
+            return authorRepository.save(author);
+        }).orElseThrow(() -> new RuntimeException("Author not found with ID: " + id));
+    }
+
     // 刪除作者
     public void deleteAuthor(Integer id) {
         if (!authorRepository.existsById(id)) {
@@ -38,5 +47,9 @@ public class AuthorService {
         }
         authorRepository.deleteById(id);
     }
-}
 
+    // 搜尋作者
+    public List<AuthorBean> searchAuthors(String keyword) {
+        return authorRepository.findByAuthorNameContaining(keyword);
+    }
+}

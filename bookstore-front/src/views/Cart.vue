@@ -1,53 +1,117 @@
 <template>
     <h1>🛒 購物車明細</h1>
-    <div>
-        <div>  <!-- 如果購物車有商品 -->
-        <CartTable
-            :cart-items="cartItems"
-            @update-quantity="updateQuantity" 
-            @remove-item="removeItem"
-            @select-items="selectItems">
-        </CartTable>
-        </div>
-
-<!-- *待做事項:
-  - pinia儲存顧客購物車資料 -> 因為刪除書籍後，重新整理網頁又回來了(沒有真的在資料庫刪掉購物車table中書籍)，要用pinia抓customerId和cartId(改動態取得)
-  - 點選書籍圖片和名字可以連到該書的網頁(最好是圖片和名字變成一整個方塊可以點選，或是分開就好)；點選每筆訂單編號可以連到該訂單明細頁面
-  - 可加上訂單分頁功能
-  - (如有多餘時間，可加上每頁上面"導覽連結"，像是: 首頁>會員資料>修改會員資料 -> Breadcrumbs)
- -->
-        <div class="cart-actions-container" v-if="cartItems && cartItems.length > 0">
+    <div class="whole-cart-container">
+        <CartTable />
+        <div class="cart-actions-container" v-if="cartStore.cartItems.length > 0">
             <div class="cart-actions">
-                <button @click="removeSelectedItems" :disabled="!selectedItems.length" class="delete-selected-btn">🗑️ 刪除選取項目</button>
+                <button @click="cartStore.removeSelectedItems" :disabled="!hasSelectedItems" class="delete-selected-btn">
+                🗑️ 刪除選取項目
+                </button>
                 <button @click="clearCart" class="clear-cart-btn">🗑️ 清空購物車</button>
-                <input v-model="couponCode" placeholder="輸入優惠碼" class="coupon-input" />
-                <button @click="applyCoupon" class="apply-coupon-btn">
+                <input v-model="cartStore.couponCode" placeholder="輸入優惠碼" class="coupon-input" />
+                <button @click="cartStore.applyCoupon" class="apply-coupon-btn">
                     🎫 套用優惠券
                 </button>
-                <button  v-if="discountAmount > 0" @click="removeCoupon" class="remove-coupon-btn">
+                <button  v-if="cartStore.discountAmount > 0" @click="cartStore.removeCoupon" class="remove-coupon-btn">
                     ❌
                 </button>
             </div>
         </div>
-
-        <div v-if="cartItems && cartItems.length > 0">
-            <CartSummary
-                :cartItems="cartItems" 
-                :total-items="totalItems"
-                :cart-items-count="cartItemsCount"
-                :total-price="totalPrice"
-                :discount-amount="discountAmount"
-                :final-price="finalPrice"
-                :coupon-code="couponCode"
-                @update:couponCode="(value) => couponCode = value"
-                @apply-coupon="applyCoupon"
-                @remove-coupon="removeCoupon">
-            </CartSummary>
+        <CartSummary />
+    <!-- 舊版 無pinia:
+        <h1>🛒 購物車明細</h1>
+        <div>
+            <div class="cart-table-container">
+            <CartTable
+                :cart-items="cartItems"
+                @update-quantity="updateQuantity" 
+                @remove-item="removeItem"
+                @select-items="selectItems">
+            </CartTable>
+            </div>
+            <div class="cart-actions-container" v-if="cartItems && cartItems.length > 0">
+                <div class="cart-actions">
+                    <button @click="removeSelectedItems" :disabled="!selectedItems.length" class="delete-selected-btn">🗑️ 刪除選取項目</button>
+                    <button @click="clearCart" class="clear-cart-btn">🗑️ 清空購物車</button>
+                    <input v-model="couponCode" placeholder="輸入優惠碼" class="coupon-input" />
+                    <button @click="applyCoupon" class="apply-coupon-btn">
+                        🎫 套用優惠券
+                    </button>
+                    <button  v-if="discountAmount > 0" @click="removeCoupon" class="remove-coupon-btn">
+                        ❌
+                    </button>
+                </div>
+            </div>
+            <div v-if="cartItems && cartItems.length > 0">
+                <CartSummary
+                    :cartItems="cartItems" 
+                    :total-items="totalItems"
+                    :cart-items-count="cartItemsCount"
+                    :total-price="totalPrice"
+                    :discount-amount="discountAmount"
+                    :final-price="finalPrice"
+                    :coupon-code="couponCode"
+                    @update:couponCode="(value) => couponCode = value"
+                    @apply-coupon="applyCoupon"
+                    @remove-coupon="removeCoupon">
+                </CartSummary>
+            </div>
         </div>
+    -->
     </div>
 </template>
     
 <script setup>
+import { onMounted, computed, ref } from "vue";
+import Swal from "sweetalert2";
+
+import { useAuthStore } from "@/stores/authStore";
+import { useCartStore } from "@/stores/cartStore";
+import CartTable from '@/components/CartTable.vue';
+import CartSummary from '@/components/CartSummary.vue';
+
+const authStore = useAuthStore();
+const cartStore = useCartStore();
+
+const couponCode = ref('');
+
+// 計算屬性：動態取得 customerId 和 cartId
+const customerId = computed(() => authStore.customerId);
+const cartId = computed(() => authStore.cartId);
+
+onMounted(() => {
+    if (!customerId.value) {
+        router.push('/login');
+        return;
+    }
+    cartStore.fetchCartItems();
+});
+ // 當頁面加載時，檢查是否有已儲存的優惠碼
+ onMounted(() => {
+      const savedCouponCode = localStorage.getItem("couponCode");
+      if (savedCouponCode) {
+        couponCode.value = savedCouponCode;
+      }
+    });
+
+// 計算是否有選取的商品
+const hasSelectedItems = computed(() => cartStore.cartItems.some(item => item.selected));
+
+const clearCart = async () => {
+  const result = await Swal.fire({
+    title: '確定要清空購物車嗎？',
+    text: '此操作無法復原！',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: '是的，清空',
+    cancelButtonText: '取消',
+  });
+  if (result.isConfirmed) {
+    await cartStore.clearCart(customerId.value, cartId.value);
+  }
+};
+
+/* 舊版 (無pinia)
 import { ref, computed, onMounted } from "vue";
 import axiosapi from '@/plugins/axios.js';
 import Swal from 'sweetalert2';
@@ -96,8 +160,9 @@ onMounted(async () => {
 // 更新數量
 async function updateQuantity(item, delta) {
     // 更新前端顯示的數量和小計 -> 舊版(無Pinia):
-    item.quantity += delta;
-    if (item.quantity < 1) item.quantity = 1;
+    const newQuantity = item.quantity + delta;
+    if (newQuantity < 1) return; // 防止數量變成 0 或負數
+    // if (newQuantity < 1) item.quantity = 1;
     item.subtotal = item.quantity * item.price; // 更新小計
 
     // 發送請求到後端更新數量
@@ -108,6 +173,8 @@ async function updateQuantity(item, delta) {
             quantity: item.quantity  // 新的數量
         });
         if (response.status === 200) {
+            item.quantity = newQuantity;
+            item.subtotal = newQuantity * item.price;  // 更新小計
             console.log("數量已更新到後端");
         } else {
             console.error("更新後端數量時出錯");
@@ -260,8 +327,9 @@ async function removeCoupon() {
     });
   }
 }
+*/
 </script>
-    
+
 <style scoped>
     h1 {
         text-align: center;
@@ -273,6 +341,7 @@ async function removeCoupon() {
         margin-inline-start: 0px;
         margin-inline-end: 0px;
         font-weight: bold;
+        margin-bottom: 10px;
     }
     button {
         cursor: pointer;
@@ -284,13 +353,12 @@ async function removeCoupon() {
     }
     .cart-actions {
         display: flex;
-        max-width: 1000px;
-        width: 90%; /* 設定寬度與 CartTable.vue 一致 */
+        width: 79%; /* 設定寬度與 CartTable.vue 一致 */
         justify-content: space-evenly;
-        padding: 10px;
-        border: 2px solid #f3f3f3;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        gap: 10px;
+        padding: 7px;
+        border: 1px solid rgb(223, 219, 219);
+        /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+        gap: 15px;
     }
     .cart-actions button {
         padding: 8px 8px;
@@ -300,34 +368,37 @@ async function removeCoupon() {
         cursor: pointer;
     }
     .delete-selected-btn {
-        width: 200px;
-        background-color: #f9665c; /* 橘色背景 */
-        color: #fff;
+        width: 210px;
+        background-color: rgb(236, 90, 80); /* 橘色背景 */
+        color: white;
         font-weight: bold;
+    }
+    .delete-selected-btn:hover {
+        background-color: #fa4242;
     }
     .delete-selected-btn:disabled {
         background-color: #ccc;
+        color: #ffffff;
         cursor: not-allowed;
     }
     .clear-cart-btn {
-        background-color: #f9665c; /* 紅色背景 */
+        background-color: rgb(236, 90, 80); /* 紅色背景 */
         color: #fff;
         font-weight: bold;
-        width: 180px;
+        width: 200px;
     }
     .clear-cart-btn:hover {
         background-color: #fc4242;
     }
     .coupon-input {
         flex: 1;
-        width: 300px;
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 16px;
         padding-left: 10px;
     }
     .apply-coupon-btn {
-        width: 180px;
+        width: 200px;
         background-color: #28a745;
         color: white;
         border: none;

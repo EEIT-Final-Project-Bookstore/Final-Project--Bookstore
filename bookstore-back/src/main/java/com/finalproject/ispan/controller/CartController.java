@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.finalproject.ispan.domain.CartBean;
 import com.finalproject.ispan.dto.CartItemDto;
@@ -27,8 +29,6 @@ public class CartController {
     @Autowired
     private CartRepository cartRepository;
     
-    //購物車相關:
-    // 使用 POST 方法查詢顧客的購物車內容
     @GetMapping("/view/{customerId}")
     public List<CartItemDto> viewCart(@PathVariable Long customerId) {
         return cartService.getCartItemDtos(customerId);  // 返回轉換後的 DTO
@@ -73,14 +73,24 @@ public class CartController {
         return cartService.clearCart(customerId);
     }
     
-    @GetMapping("/{customerId}")
-    public Integer getCartId(@PathVariable Long customerId) {
-        CartBean cart = cartRepository.findByCustomerId(customerId);
-        if (cart != null) {
-            return cart.getCartId();
-        } else {
-        	cart = new CartBean();
-        	return cart.getCartId();
+//    @GetMapping("/{customerId}")
+//    public Integer getCartId(@PathVariable Long customerId) {
+//        CartBean cart = cartRepository.findByCustomerId(customerId);
+//        if (cart != null) {
+//            return cart.getCartId();
+//        } else {
+//        	cart = new CartBean();
+//        	return cart.getCartId();
+//        }
+//    }
+    @GetMapping("/{customerId}") 
+    public Integer getCartId(@PathVariable String customerId) {
+        try {
+            Long id = Long.parseLong(customerId); // 確保是 Long
+            CartBean cart = cartRepository.findByCustomerId(id);
+            return (cart != null) ? cart.getCartId() : 0; // 避免 NullPointerException
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid customerId format");
         }
     }
 }

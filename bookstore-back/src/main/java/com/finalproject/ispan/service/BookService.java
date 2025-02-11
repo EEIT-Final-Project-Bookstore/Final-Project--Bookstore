@@ -126,4 +126,50 @@ public class BookService {
 
         return book;
     }
+    
+    // 亨
+    // 根據 BookID 查詢 BookBean
+    public BookBean findBookById(Integer bookId) {
+        return bookRepository.findByBookId(bookId)
+                .orElseThrow(() -> new IllegalArgumentException("Book not found with ID: " + bookId));
+    }
+
+ // 透過作者名稱（模糊搜尋）查詢書籍
+    public List<BookDTO> findBooksByAuthorName(String authorName) {
+        List<BookBean> books = bookRepository.findByAuthor_AuthorNameContainingIgnoreCase(authorName);
+        return books.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    // 透過出版社名稱（模糊搜尋）查詢書籍
+    public List<BookDTO> findBooksByPublisherName(String publisherName) {
+    	System.out.println("Publisher Name: " + publisherName);
+    	publisherName = publisherName.trim();
+        return bookRepository.findByPublisher_PublisherNameContainingIgnoreCase(publisherName)
+                .stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    // 透過子分類名稱（模糊搜尋）查詢書籍
+    public List<BookDTO> findBooksBySubcategoryName(String subcategoryName) {
+    	System.out.println("SubcategoryName: [" + subcategoryName + "]");
+    	subcategoryName = subcategoryName.trim();
+        
+        // 測試查詢結果
+        List<BookBean> books = bookRepository.findBySubcategory_SubcategoryNameContainingIgnoreCase(subcategoryName);
+        System.out.println("Books found: " + books); // 打印查詢結果
+
+        // 確保將查詢結果轉換為 DTO
+        return books.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    
+    // 透過類別名稱（模糊搜尋）查詢書籍
+    public List<BookDTO> findBooksByCategoryName(String categoryName) {
+        List<BookBean> books = bookRepository.findBySubcategory_Category_CategoryNameContainingIgnoreCase(categoryName);
+        categoryName = categoryName.trim();
+        System.out.println("CategoryName: [" + categoryName + "]");
+      
+        return books.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 }

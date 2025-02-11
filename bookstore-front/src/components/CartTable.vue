@@ -1,13 +1,11 @@
 <template>
-    <div>
-        <div v-if="cartItems && cartItems.length > 0">
+    <div class="cart-table-container">
+        <div v-if="cartStore.cartItems.length > 0">
             <table class="cart-table">
                 <thead>
                     <tr>
                         <th>
-                            <label for="">
-                                <input type="checkbox" v-model="selectAll" @change="toggleSelectAll">
-                            </label>
+                            <input type="checkbox" :checked="allSelected" @change="selectAllHandler">
                         </th>
                         <th>圖片</th>
                         <th>商品</th>
@@ -18,75 +16,65 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in cartItems" :key="item.bookName">
+                    <tr v-for="(item, index) in cartStore.cartItems" :key="item.bookId">
                         <td>
-                            <label for="" class="item-checkbox">
-                                <input type="checkbox" v-model="item.selected" @change="selectItem(item)">
-                            </label>
+                            <input type="checkbox"  :checked="item.selected"  @change="updateSelectedItems(item)">
                         </td>
-                        <td><img :src="item.imageUrl" alt="book image" class="product-image"></td>
+                        <td>
+                            <img :src="item.imageUrl" alt="book image" class="product-image">
+                        </td>
                         <td>{{ item.bookName }}</td>
                         <td class="quantity-btn">
                             <div class="quantity-box">
-                                <button @click="$emit('update-quantity', item, -1)">-</button>
+                                <button @click="cartStore.updateQuantity(item, -1)">-</button>
                                 {{ item.quantity }}
-                                <button @click="$emit('update-quantity', item, 1)">+</button>
+                                <button @click="cartStore.updateQuantity(item, 1)">+</button>
                             </div>
                         </td>
                         <td>${{ item.price }}</td>
                         <td>${{ item.subtotal }}</td>
                         <td>
-                            <button @click="$emit('remove-item', item.bookName)" class="remove-button">🗑️</button>
+                            <button @click="cartStore.removeItem(index)" class="remove-button">🗑️</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div v-else class="no-cartitems-block"> <!-- 如果購物車沒商品 -->
-            <b>您的購物車中，目前並無任何商品！</b>
-        </div>
+        <div v-else class="no-cartitems-block">您的購物車目前沒有商品！去逛逛吧!</div>
     </div>
 </template>
-    
+
 <script setup>
-import { ref } from 'vue';
+import { computed } from "vue";
+import { useCartStore } from "@/stores/cartStore";
 
-const selectAll = ref(false);
+const cartStore = useCartStore();
 
-const props = defineProps({
-  cartItems: {
-    type: Array,
-    required: true,
-  },
-});
+const allSelected = computed(() => cartStore.cartItems.every(item => item.selected));
 
-const emits = defineEmits(['update-quantity', 'remove-item']);
+// selectAllHandler 用來控制全選與取消全選
+const selectAllHandler = () => {
+  const newState = !allSelected.value;
+  cartStore.cartItems.forEach(item => {
+    item.selected = newState;  // 全選或取消全選
+  });
+};
 
-function toggleSelectAll() {  // 切換全選或取消全選
-    props.cartItems.forEach(item => {
-        item.selected = selectAll.value;
-    });
-}
-function selectItem() {
-  selectAll.value = props.cartItems.every(item => item.selected);
-}
+// updateSelectedItems 用來更新單個商品選擇狀態
+const updateSelectedItems = (item) => {
+  item.selected = !item.selected;  // 切換單個商品選擇狀態
+};
 </script>
 
-<style>
-    /* .cart-container {
-        max-width: 950px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    } */
+<style scoped>
     .cart-table {
-        width: 90%;
+        width: 80%;
         margin: auto;
         background: white;
         border-radius: 5px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgb(223, 219, 219);
+        border-bottom: 0;
+        /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
     }
     table {
         width: 100%;
@@ -98,9 +86,10 @@ function selectItem() {
         padding: 10px;
         text-align: center; /* 水平居中 */
         vertical-align: middle; /* 垂直居中 */
+        font-size: 18px;
     }
-    table th {
-        background-color: rgb(162, 178, 248);
+    table th {  /* 表格內header背景色 */
+        background-color: #b1daa5;
     }
     /* 選取框樣式 */
     input[type="checkbox"] {
@@ -148,19 +137,18 @@ function selectItem() {
         background-color: #fff;
     }
     tbody tr:nth-child(2n) {  /* 偶數row顏色 */
-        background-color: rgb(241, 241, 244);
+        background-color: rgb(228, 228, 230);
     }
-    tbody tr:hover {
-        background-color: #c2d7fd;
+    tbody tr:hover {  /* 鼠標移到表格中每行上面的背景色*/
+        background-color: #d5e7cd;
     }
     .no-cartitems-block {
         width: 1000px;
-        border: 2px solid rgb(56, 163, 250);
+        border: 2px solid #9fca90;
         border-radius: 5px;
-        text-align: center;
         display: flex;
         justify-content: center;
-        margin: 0 auto;
+        margin: auto;
         padding: 30px;
         background-color: #e5f3fe;
         color: #333;
@@ -175,13 +163,16 @@ function selectItem() {
     }
     .remove-button {
         border: none;
-        background-color: rgb(242, 237, 237);
+        background-color: white;
         width: 30px;
         height: 25px;
         font-size: large;
         padding: 0;
         padding-bottom: 10px;
         border-radius: 8px;
+    }
+    tbody tr:nth-child(2n) .remove-button{  /* 偶數 row 垃圾桶按鈕顏色 */
+        background-color: rgb(241, 241, 244);
     }
     .action-buttons {
         display: flex;

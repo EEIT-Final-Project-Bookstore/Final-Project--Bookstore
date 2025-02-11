@@ -8,6 +8,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,20 +130,34 @@ public class OrderService {
     }
     
     // 2.查詢顧客所有訂單
-    public List<Map<String, Object>> getAllOrdersByCustomer(Long customerId) {
-        return orderRepository.findByCustomer_CustomerIDOrderByOrderCreationTimeDesc(customerId)
-                .stream()
+    public Page<Map<String, Object>> getAllOrdersByCustomer(Long customerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return orderRepository.findByCustomer_CustomerIDOrderByOrderCreationTimeDesc(customerId, pageable)
                 .map(order -> {
                     Map<String, Object> result = new HashMap<>();
                     result.put("orderId", order.getOrderId());
-                    result.put("detailedStatus", order.getStatus().getDetailedStatus()); // 狀態名稱
-                    result.put("orderCreationTime", order.getOrderCreationTime().toLocalDate()); // 訂單建立時間
-                    result.put("finalAmount", order.getFinalAmount()); // 最終金額
-                    result.put("invoiceNumber", order.getInvoiceNumber()); // 發票號碼
+                    result.put("detailedStatus", order.getStatus().getDetailedStatus());
+                    result.put("orderCreationTime", order.getOrderCreationTime().toLocalDate());
+                    result.put("finalAmount", order.getFinalAmount());
+                    result.put("invoiceNumber", order.getInvoiceNumber());
                     return result;
-                })
-                .toList();
+                });
     }
+    //舊版(無分頁功能):
+//    public List<Map<String, Object>> getAllOrdersByCustomer(Long customerId) {
+//        return orderRepository.findByCustomer_CustomerIDOrderByOrderCreationTimeDesc(customerId)
+//                .stream()
+//                .map(order -> {
+//                    Map<String, Object> result = new HashMap<>();
+//                    result.put("orderId", order.getOrderId());
+//                    result.put("detailedStatus", order.getStatus().getDetailedStatus()); // 狀態名稱
+//                    result.put("orderCreationTime", order.getOrderCreationTime().toLocalDate()); // 訂單建立時間
+//                    result.put("finalAmount", order.getFinalAmount()); // 最終金額
+//                    result.put("invoiceNumber", order.getInvoiceNumber()); // 發票號碼
+//                    return result;
+//                })
+//                .toList();
+//    }
     
     // 3.查詢顧客訂單明細
     public OrderDetailResponseDTO getOrderDetailById(String orderId) {

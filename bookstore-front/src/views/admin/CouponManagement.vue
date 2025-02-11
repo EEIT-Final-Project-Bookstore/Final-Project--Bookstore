@@ -19,8 +19,27 @@
 					<el-menu-item index="1-1">查詢優惠券</el-menu-item>
 					<el-menu-item index="1-2">新增優惠券</el-menu-item>
 				</el-sub-menu>
+				<el-sub-menu index="2">
+                    <template #title>
+                        <el-icon>
+                            <Bell />
+                        </el-icon>
+                        <span>通知管理</span>
+                    </template>
+                    <el-menu-item index="2-1">查看通知</el-menu-item>
+                </el-sub-menu>
+				<el-sub-menu index="3">
+                    <template #title>
+                        <el-icon>
+                            <ChatSquare />
+                        </el-icon>
+                        <span>書籍評論管理</span>
+                    </template>
+                    <el-menu-item index="3-1">管理評論</el-menu-item>
+                </el-sub-menu>
+
 				<!-- 其他導航項目 -->
-				<el-menu-item index="2">
+				<el-menu-item index="4">
 					<span>其他功能(待整合)</span>
 				</el-menu-item>
 			</el-menu>
@@ -37,6 +56,14 @@
 			<h2>新增優惠券</h2>
 			<AddCoupon @couponAdded="refreshCoupons" />
 		</div>
+		<div v-show="activeMenu === '2-1'">
+			<h2>通知管理</h2>
+			<NotificationManagement />
+		</div>
+		<div v-show="activeMenu === '3-1'">
+			<h2>書籍評論管理</h2>
+			<ReviewManagement />
+		</div>
 	  </el-col>
 	</el-row>
 </template>
@@ -46,6 +73,8 @@ import { ref } from 'vue'
 import { Ticket } from '@element-plus/icons-vue'  // Element-plus 的 Icons
 import AddCoupon from './AddCoupon.vue'
 import SearchCoupon from './SearchCoupon.vue'
+import NotificationManagement from './NotificationManagement.vue'
+import ReviewManagement from './ReviewManagement.vue'
 
 // 定義當前選擇的菜單項目
 const activeMenu = ref('1-1')
@@ -63,6 +92,6 @@ const refreshCoupons = () => {
 };
 </script>
 
-<style>
-
+<style scoped>
+	
 </style>  

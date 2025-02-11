@@ -65,22 +65,11 @@ public class CustomerBean {
 	public CustomerBean(Integer customerId) {
 	}
 
-//	public String toString() {
-//		return "CustomerBean [" + customerId + "," + username + "," + customerName + "," + password + "," + email + ","
-//				+ phoneNumber + "," + registrationTime + "," + mobileNumber + "]";
-//	}
 	public String toString() {
 		return "CustomerBean [" + customerID + "," + username + "," + customerName + "," + password + "," + email + ","
 				+ phoneNumber + "," + registrationTime + "," + mobileNumber + "]";
 	}
 	
-//	public Integer getCustomerId() {
-//		return customerId;
-//	}
-//
-//	public void setCustomerId(Integer customerId) {
-//		this.customerId = customerId;
-//	}
 	public Long getCustomerID() {
 		return customerID;
 	}
@@ -104,6 +93,15 @@ public class CustomerBean {
 	public void setPassword(byte[] password) {
 		this.password = password;
 	}
+//	// 🔹 存入資料庫時，把 String 轉成 byte[]
+//	public void setPassword(String password) {
+//		this.password = password.getBytes(StandardCharsets.UTF_8);
+//	}
+//
+//	// 🔹 從資料庫取出時，把 byte[] 轉回 String
+//	public String getPassword() {
+//		return new String(this.password, StandardCharsets.UTF_8);
+//	}
 
 	public String getCustomerName() {
 		return customerName;

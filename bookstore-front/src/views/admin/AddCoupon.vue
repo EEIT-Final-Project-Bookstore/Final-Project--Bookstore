@@ -1,6 +1,6 @@
 <template>
     <div class="coupon-form-container">
-        <el-card class="coupon-card">
+        <el-card class="add-coupon-card">
             <el-form :model="coupon" label-width="auto" @submit.prevent="submitCoupon">
                 <el-form-item label="優惠券折扣碼">
                     <el-input
@@ -20,11 +20,13 @@
                 </el-form-item>
                 <el-form-item label="開始日期">
                     <el-date-picker
-                    v-model="coupon.startDate"
-                    type="datetime"
-                    placeholder="選擇開始日期及時間" required  
-                    class="input-large"
-                    style="width: 300px" />
+                        v-model="coupon.startDate"
+                        type="datetime"
+                        placeholder="選擇開始日期及時間" required  
+                        class="input-large"
+                        style="width: 300px" 
+                        :disabled-date="disabledStartDate"
+                    />
                 </el-form-item>
                 <el-form-item label="結束日期">
                     <el-date-picker
@@ -44,7 +46,7 @@
                     />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="submitCoupon">新增優惠券</el-button>
+                    <el-button type="primary" @click="submitCoupon" class="add-coupon-submit-button">新增優惠券</el-button>
                 </el-form-item>
             </el-form>
     </el-card>
@@ -66,6 +68,11 @@ const coupon = ref({
     endDate: '',
     minimumAmount: null
 });
+
+const disabledStartDate = (date) => {
+    const now = new Date();
+    return date.getTime() < now.getTime(); // 禁止選擇當前時間之前
+};
 
 const submitCoupon = async () => {
     if (!coupon.value.couponCode || !coupon.value.discount || !coupon.value.startDate || !coupon.value.endDate || !coupon.value.minimumAmount) {
@@ -108,42 +115,47 @@ const submitCoupon = async () => {
 </script>
 
 <style>
-    /* 主要容器，讓表單不要貼邊 */
-    .coupon-form-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 450px; /* 讓區塊置中 */
-        background-color: #f4f4f4;
-        /* padding: 20px; */
-    }
-    /* 卡片樣式 */
-    .coupon-card {
-        width: 500px;
-        height: 350px;
-        padding: 10px;
-        background: #fff;
-        border-radius: 15px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .el-card__body {
-        padding: 15px;
-        margin-top: 8px;
-    }
-    /* 深色標籤 */
-    .el-form-item__label {
-        font-size: 18px;
-        font-weight: 700;
-    }
-    /* 調整輸入框大小 */
-    .input-large {
-        width: 100%;
-        font-size: 16px;
-    }
-    /* 按鈕美化 */
-    .submit-button {
-        width: 100%;
-        font-size: 17px;
-        padding: 10px 0;
-    }
+/* 主要容器，讓表單不要貼邊 */
+.coupon-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;  /* 讓區塊置中 */
+    height: 450px;
+    background-color: #f4f4f4;
+}
+/* 卡片樣式 */
+.add-coupon-card {
+    width: 500px;
+    height: 380px;
+    padding: 15px;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.el-card__body {
+    padding: 15px !important;
+    margin-top: 8px !important;
+}
+/* 深色標籤 */
+.el-form-item__label {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+/* 讓日期選擇器彈出的面板也變大 */
+
+/* 調整星期欄位和日期選擇器內部元素的間距 */
+/* .el-date-picker__header {
+    font-size: 18px !important;
+} */
+/* 調整輸入框大小 */
+.input-large {
+    width: 100% !important;
+    font-size: 15px !important;
+}
+/* 按鈕美化 */
+.add-coupon-submit-button {
+    width: 200px !important;
+    font-size: 18px !important;
+    padding: 10px 0 !important;
+    margin: auto;
+}
 </style>

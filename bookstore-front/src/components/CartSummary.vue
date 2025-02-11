@@ -1,43 +1,47 @@
 <template>
-    <div class="cart-summary">
-        <p>{{ cartItemsCount }} 項商品, 共 {{ totalItems }} 件</p>
-        <p>購物車總金額：${{ totalPrice }}</p>
-        <p>折扣金額：${{ discountAmount }}</p>
-        <hr>
-        <p class="final-price">應付金額：${{ finalPrice }}</p>
-        <hr>
-        <button class="checkout-btn" @click="proceedToCheckout">前往付款</button>
+    <div class="cart-summary-wrapper" v-if="cartStore.cartItems.length > 0">
+        <div class="notice-block">
+            <p>購物車注意事項</p>
+            <ul>
+                <li>> 每筆訂單限用一張優惠券。</li>
+                <li>> 請確保前往付款前確認訂單內容。</li>
+                <li>> 訂單成立後不可修改商品。</li>
+                <li>> 點擊下方<strong>"前往付款"</strong>按鈕並確認前往，將立即建立訂單，並前往綠界支付頁面。</li>
+                <!-- <li>*如需更改訂單，請至我的訂單頁面取消訂單</li> -->
+            </ul>
+        </div>
+        <div class="cart-summary">
+            <p><span>{{ cartStore.cartItems.length }}</span> 項商品, 共 <span>{{ cartStore.totalItems }}</span> 件</p>
+            <p>購物車總金額：<span>${{ cartStore.totalPrice }}</span></p>
+            <p>折扣金額：<span>${{ cartStore.discountAmount }}</span></p>
+            <hr>
+            <p class="final-price">應付金額：<span>${{ cartStore.finalPrice }}</span></p>
+        </div>
     </div>
+        <div v-if="cartStore.cartItems.length > 0" class="checkout-btn" @click="proceedToCheckout">
+            <p class="checkout-p">前往付款</p>
+        </div>
 </template>
 
 <script setup>
-import Swal from 'sweetalert2';
-import axiosapi from '@/plugins/axios.js';
+import { useCartStore } from "@/stores/cartStore";
+import { useAuthStore } from "@/stores/authStore";
+import Swal from "sweetalert2";
+import axiosapi from "@/plugins/axios.js";
 
-const cartId = 1;    // 需更改成動態取得顧客登入帳號的cartId -> pinia?
-
-// 定義 props
-const props = defineProps({
-    cartItems: Array,
-    totalItems: Number,
-    cartItemsCount: Number,
-    totalPrice: Number,
-    discountAmount: Number,
-    finalPrice: Number,
-    couponCode: String,
-    selectedItems: Array,
-});
-
-// 定義 emit 事件 (必須使用 defineEmits)
-const emit = defineEmits(['apply-coupon', 'remove-coupon']);
-
-// 更新優惠碼
-const updateCouponCode = (value) => {
-  emit('update:couponCode', value);  // 正確觸發事件
-};
+const cartStore = useCartStore();
+const authStore = useAuthStore();
 
 // 前往綠界付款
 const proceedToCheckout = () => {
+    if (!authStore.cartId) {
+        Swal.fire({
+            title: "購物車錯誤",
+            text: "無法獲取購物車資訊，請稍後再試。",
+            icon: "error",
+        });
+        return;
+    }
     Swal.fire({
         title: "確定前往綠界支付結帳頁面？",
         icon: "question",
@@ -48,17 +52,17 @@ const proceedToCheckout = () => {
         if (result.isConfirmed) {
             // 創建訂單請求的資料
             const orderData = {
-                cartId,
-                couponCode: props.couponCode,
+                cartId: authStore.cartId,  // 使用 cartStore 的 cartId
+                couponCode: cartStore.couponCode, // 從 Pinia 取得優惠券
             };
             // 發送 POST 請求創建訂單
             axiosapi.post("/api/order/create", orderData)
-                .then((response) => {
+                .then(async (response) => {
                     console.log("訂單創建成功，返回資料:", response.data);
-                    const finalAmount = response.data.finalAmount;
-                    console.log("最終金額:", finalAmount);
-                    // 如果訂單創建成功，繼續發送下面 GET 請求來取得綠界支付表單
                     const orderId = response.data.orderId;
+            // // 清空購物車
+            // await cartStore.clearCart();
+                    // 如果訂單創建成功，繼續發送請求來取得綠界支付表單:
                     axiosapi.get(`/ecpay/checkout/${orderId}`)
                         .then((formResponse) => {
                             const formHtml = formResponse.data;
@@ -67,7 +71,7 @@ const proceedToCheckout = () => {
                             formContainer.innerHTML = formHtml;
                             // 將表單插入頁面
                             document.body.appendChild(formContainer);
-                            // 自動提交表單
+                            // 自動提交表單，跳轉到綠界付款頁面
                             formContainer.querySelector("form").submit();
                         })
                         .catch((error) => {
@@ -92,50 +96,75 @@ const proceedToCheckout = () => {
 };
 </script>
 
-<style>
-    .cart-summary {
-        width: 90%;
-        max-width: 1000px;
-        margin: auto;
-        margin-top: 0;
-        background: white;
-        padding: 19px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        text-align: right;
-    }
-    .cart-summary p {
-        margin: 10px 0;
-    }
-    /* 最終價格 */
-    .final-price {
-        font-size: 18px;
-        font-weight: bold;
-        color: #d9534f;
-    }
-    /* 前往付款按鈕 */
-    .checkout-btn {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        color: white;
-        background-color: #007bff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .checkout-btn:hover {
-        background-color: #0056b3;
-    }
-    /* .actions button {
-        padding: 10px 20px;
-        font-size: 16px;
-        color: white;
-        background-color: #007bff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .actions button:hover {
-        background-color: #0056b3;
-    } */
+<style scoped>
+.cart-summary-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+.cart-summary span {
+    font-weight: bold;
+}
+.notice-block {
+    width: 38%;  /* 跟下面 .cart-summary 的 width 要一樣寬 */
+    margin-left: auto;
+    background: white;
+    padding: 18px;
+    padding-top: 8px;
+    border: 1px solid rgb(223, 219, 219);
+    border-top: 0;
+    border-right: 0;
+    font-size: 17px;
+}
+.notice-block p {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.notice-block ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+.notice-block ul li {
+    margin: 5px 0;
+}
+.cart-summary {
+    width: 38%;  /* 跟上面 .notice-block 的 width 要一樣寬 */
+    background: white;
+    margin-right: auto;
+    padding: 17px;
+    border: 1px solid rgb(223, 219, 219);
+    border-top: 0;
+    text-align: right;
+    font-size: 17px;
+}
+.cart-summary p {
+    margin: 10px 0;
+}
+/* 最終價格 */
+.final-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d9534f;
+}
+/* 前往付款按鈕 */
+.checkout-btn {
+    width: 80%;
+    padding: 1px;
+    padding-bottom: 9px;
+    font-size: 18px;
+    color: white;
+    background-color: #2d91fc;
+    text-align: center;
+    margin: auto;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.checkout-btn:hover {
+    background-color: #1e72cc;
+}
+.checkout-p {
+    vertical-align: middle;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
 </style>

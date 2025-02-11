@@ -25,6 +25,4 @@ public class OrderRequestDTO {
 	public void setCouponCode(String couponCode) {
 		this.couponCode = couponCode;
 	}
-    
-    
 }

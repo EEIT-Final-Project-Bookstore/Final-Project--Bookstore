@@ -60,5 +60,4 @@ public class CouponOwnershipBean {
 	public void setStatus(StatusBean status) {
 		this.status = status;
 	}
-
 }
