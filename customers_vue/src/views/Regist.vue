@@ -14,6 +14,7 @@
         <div class="form-group">
           <label for="email">電子信箱</label>
           <input
+            style="width: 500px"
             ref="emailInput"
             v-model="form.email"
             type="email"
@@ -24,18 +25,21 @@
             required
           />
           <!-- 顯示 email 檢查結果 -->
-          <p 
-            v-if="emailMessage" 
-            :class="{ error: emailInvalid || emailExists, success: !emailInvalid && !emailExists }"
+          <p
+            v-if="emailMessage"
+            :class="{
+              error: emailInvalid || emailExists,
+              success: !emailInvalid && !emailExists,
+            }"
           >
             {{ emailMessage }}
           </p>
 
           <!-- 按下按鈕 -> 呼叫後端 /api/auth/sendCode -->
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <button 
-              type="button" 
-              @click="sendCode" 
+          <div style="display: flex; align-items: center; gap: 10px">
+            <button
+              type="button"
+              @click="sendCode"
               :disabled="emailInvalid || emailExists || !form.email"
             >
               發送驗證碼
@@ -51,6 +55,7 @@
           <label for="captcha">驗證碼</label>
           <div class="captcha">
             <input
+              style="width: 500px;"
               v-model="form.captcha"
               type="text"
               id="captcha"
@@ -64,13 +69,7 @@
 
         <div class="btn-group">
           <!-- 按下按鈕 -> 驗證碼檢查成功才進入下一步 -->
-          <button 
-            type="button" 
-            class="btn-submit" 
-            @click="nextStep"
-          >
-            下一步
-          </button>
+          <button type="button" class="btn-submit" @click="nextStep">下一步</button>
         </div>
       </div>
 
@@ -86,7 +85,10 @@
             required
             @blur="handleUsernameBlur"
           />
-          <p v-if="usernameCheckMessage" :class="{ error: !usernameValid, success: usernameValid }">
+          <p
+            v-if="usernameCheckMessage"
+            :class="{ error: !usernameValid, success: usernameValid }"
+          >
             {{ usernameCheckMessage }}
           </p>
         </div>
@@ -161,11 +163,7 @@
 
         <div class="btn-group">
           <!-- 未輸入正確格式的手機號碼前，送出鈕灰色 & disabled -->
-          <button 
-            type="submit" 
-            class="btn-submit" 
-            :disabled="!isMobileNumberValid"
-          >
+          <button type="submit" class="btn-submit" :disabled="!isMobileNumberValid">
             送出
           </button>
         </div>
@@ -355,7 +353,9 @@ export default {
         return;
       }
       axios
-        .get(`http://192.168.23.112:8080/api/customers/checkUsername?username=${username}`)
+        .get(
+          `http://192.168.23.112:8080/api/customers/checkUsername?username=${username}`
+        )
         .then((res) => {
           if (res.data.exists) {
             this.usernameCheckMessage = "此帳號已存在，請更換新帳號。";
@@ -412,8 +412,7 @@ export default {
       } else {
         const mobile = this.form.mobileNumber.trim();
         if (!/^09\d{8}$/.test(mobile)) {
-          this.errors.mobileNumber =
-            "手機號碼格式不正確：必須以09開頭，總長10碼";
+          this.errors.mobileNumber = "手機號碼格式不正確：必須以09開頭，總長10碼";
         }
       }
       // 若電話驗證失敗 -> 阻擋
@@ -459,10 +458,15 @@ export default {
 
 <style scoped>
 .container {
+  width: 1200px; /* 模擬紅色框的寬度 */
+  height: 450px; /* 模擬紅色框的高度 */
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;
-  font-family: Arial, sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: center;
 }
 .instructions {
   margin-bottom: 20px;
@@ -488,7 +492,7 @@ export default {
   gap: 10px;
 }
 .btn-submit {
-  background-color: #007bff;
+  background-color: #b2bfae;
   color: #fff;
   padding: 10px;
   border: none;

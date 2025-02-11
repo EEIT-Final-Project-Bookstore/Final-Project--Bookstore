@@ -8,7 +8,7 @@
           <span style="font-size: 0.8rem">
             還不是森途書店的會員嗎？
             <a
-              href="http://192.168.23.112:5173/regist"
+              href="http://192.168.23.112:5173/register"
               class="regist"
               style="margin-left: 6px"
               >加入會員</a>
@@ -197,5 +197,6 @@ export default {
 .login-btn {
   background-color: #b2bfae;
   color: #fff;
+  width: 470px;
 }
 </style>
