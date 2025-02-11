@@ -28,7 +28,11 @@ import bookstore.repository.CouponRepository;
 import bookstore.repository.OrderDetailRepository;
 import bookstore.repository.OrderRepository;
 import bookstore.repository.PaymentMethodRepository;
+<<<<<<< HEAD
 import bookstore.repository.StatusRepository;
+=======
+import bookstore.repository.StatusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
 
 @Service
@@ -49,7 +53,11 @@ public class OrderService {
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
     @Autowired
+<<<<<<< HEAD
     private StatusRepository statusesRepository;
+=======
+    private StatusesRepository statusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 	
     // 1.新增1筆訂單
     public OrderResponseDTO createOrder(Integer cartId, String couponCode) {

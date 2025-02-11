@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 import bookstore.domain.NotificationsBean;
 import bookstore.domain.StatusBean;
 import bookstore.repository.NotificationRepository;
+<<<<<<< HEAD
 import bookstore.repository.StatusRepository;
+=======
+import bookstore.repository.StatusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
 @Service
 public class NotificationsService {
@@ -18,7 +22,11 @@ public class NotificationsService {
     private NotificationRepository notificationRepository;
 
     @Autowired
+<<<<<<< HEAD
     private StatusRepository statusRepository;
+=======
+    private StatusesRepository statusRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
     /**
      * 根据顾客ID获取通知列表

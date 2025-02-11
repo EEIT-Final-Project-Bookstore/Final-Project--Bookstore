@@ -186,5 +186,8 @@ public class BookService {
         return books.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
+<<<<<<< HEAD
     
+=======
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 }

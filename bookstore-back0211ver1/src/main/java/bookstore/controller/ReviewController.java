@@ -32,7 +32,11 @@ public class ReviewController {
      *
      * @return 所有评论列表
      */
+<<<<<<< HEAD
     @GetMapping//前台
+=======
+    @GetMapping
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
     public ResponseEntity<List<ReviewBean>> getAllReviews() {
         List<ReviewBean> reviews = reviewService.getAllReviews();
         reviews.forEach(review -> {
@@ -49,7 +53,11 @@ public class ReviewController {
      * @param id 评论的 ID
      * @return 单个评论详情
      */
+<<<<<<< HEAD
     @GetMapping("/{id}")//前台
+=======
+    @GetMapping("/{id}")
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
     public ResponseEntity<ReviewBean> getReviewById(@PathVariable Integer id) {
         return reviewService.getReviewById(id)
                 .map(ResponseEntity::ok)
@@ -77,7 +85,11 @@ public class ReviewController {
      * @param review 评论内容
      * @return 保存的评论
      */
+<<<<<<< HEAD
     @PostMapping//前台
+=======
+    @PostMapping
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
     public ResponseEntity<ReviewBean> addReview(@RequestBody ReviewBean review) {
         try {
             System.out.println("Received Review: " + review);

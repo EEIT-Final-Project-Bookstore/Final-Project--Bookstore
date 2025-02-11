@@ -32,6 +32,9 @@ public interface BookRepository extends JpaRepository<BookBean, Integer> {
      
   // 透過類別名稱查詢書籍（模糊查詢）
      List<BookBean> findBySubcategory_Category_CategoryNameContainingIgnoreCase(String categoryName);
+<<<<<<< HEAD
      
 
+=======
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 }

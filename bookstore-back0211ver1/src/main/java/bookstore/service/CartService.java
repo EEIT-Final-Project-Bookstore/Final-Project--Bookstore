@@ -18,7 +18,11 @@ import bookstore.dto.CartItemDto;
 import bookstore.repository.BookRepository;
 import bookstore.repository.CartRepository;
 import bookstore.repository.CustomerRepository;
+<<<<<<< HEAD
 import bookstore.repository.StatusRepository;
+=======
+import bookstore.repository.StatusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
 @Service
 @Transactional
@@ -30,7 +34,11 @@ public class CartService {
     @Autowired
     private CustomerRepository customerRepository;
     @Autowired
+<<<<<<< HEAD
     private StatusRepository statusRepository;
+=======
+    private StatusesRepository statusRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
     // 1. 查詢顧客的購物車內容
     public List<CartItemDto> getCartItemDtos(Long customerId) {

@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import bookstore.domain.NotificationsBean;
 import bookstore.domain.StatusBean;
+<<<<<<< HEAD
 import bookstore.repository.StatusRepository;
+=======
+import bookstore.repository.StatusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 import bookstore.service.NotificationsService;
 
 @RestController
@@ -25,7 +29,11 @@ public class NotificationsController {
     private NotificationsService notificationsService;
 
     @Autowired
+<<<<<<< HEAD
     private StatusRepository statusesRepository;
+=======
+    private StatusesRepository statusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
     /**
      * 获取某个顾客的所有通知

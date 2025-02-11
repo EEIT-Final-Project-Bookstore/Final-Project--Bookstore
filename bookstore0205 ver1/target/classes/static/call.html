@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>綠界支付測試</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function send() {
+            // 從輸入框獲取 OrderID
+            const orderID = document.getElementById("orderID").value;
+
+            if (!orderID) {
+                alert("請輸入有效的訂單編號！");
+                return;
+            }
+
+            // 構建請求體
+            const body = {
+                orderID: orderID // 傳送 OrderID 給後端
+            };
+
+            // 發送請求到後端
+            axios.post("http://localhost:8080/pages/ecpay/send", body)
+                .then(function (response) {
+                    console.log("response", response);
+
+                    // 插入返回的表單並執行其內的腳本
+                    const container = document.getElementById("payment");
+                    container.innerHTML = response.data;
+
+                    // 確保返回的表單腳本可以執行
+                    const script = container.querySelector("script");
+                    if (script) {
+                        eval(script.textContent);
+                    }
+                })
+                .catch(function (error) {
+                    console.error("error", error);
+
+                    // 顯示錯誤信息
+                    document.getElementById("payment").innerHTML = `
+                        <p>發生錯誤，請稍後再試。</p>
+                        <p>錯誤詳情: ${error.message}</p>
+                    `;
+                });
+        }
+    </script>
+</head>
+<body>
+    <h2>綠界支付測試</h2>
+    <p>請輸入訂單編號：</p>
+    <input type="text" id="orderID" placeholder="請輸入訂單編號" />
+    <button onclick="send()">進行支付</button>
+    <div id="payment"></div>
+</body>
+</html>

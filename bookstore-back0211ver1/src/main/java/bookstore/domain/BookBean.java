@@ -16,6 +16,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+<<<<<<< HEAD
+=======
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -67,6 +72,27 @@ public class BookBean {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LastUpdated", nullable = false)
 	private Date lastUpdated;
+<<<<<<< HEAD
+=======
+	
+    // ✅ **合併 `@PrePersist` 方法**
+    @PrePersist
+    protected void onCreate() {
+        Date now = new Date();
+        if (this.shelfTime == null) {
+            this.shelfTime = now; // 🔹 `shelfTime` 預設當前時間
+        }
+        if (this.lastUpdated == null) {
+            this.lastUpdated = now; // 🔹 `lastUpdated` 也設置時間
+        }
+    }
+
+    // ✅ **確保 `lastUpdated` 在更新時更新**
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastUpdated = new Date();
+    }
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "PublishDate", nullable = false)
@@ -86,8 +112,12 @@ public class BookBean {
 
 	@OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<HomepageImagesBean> homepageImages;
+<<<<<<< HEAD
 	// One-to-Many 關聯到 HomepageImagesBean
    
+=======
+
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 	// Getter 和 Setter
 	public Integer getBookId() {
 		return bookId;

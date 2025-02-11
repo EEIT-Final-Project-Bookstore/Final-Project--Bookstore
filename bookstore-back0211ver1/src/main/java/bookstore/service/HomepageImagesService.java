@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import bookstore.domain.BookBean;
 import bookstore.domain.HomepageImagesBean;
 import bookstore.dto.HomepageImageDTO;
+<<<<<<< HEAD
 import bookstore.repository.BookRepository;
+=======
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 import bookstore.repository.HomepageImagesRepository;
 import jakarta.transaction.Transactional;
 @Transactional
@@ -95,7 +98,10 @@ public class HomepageImagesService {
         return  homepageImagesRepository.save(existingImage);
     }
     
+<<<<<<< HEAD
     public List<HomepageImagesBean> getTop10BooksByStock() {
         return homepageImagesRepository.findTop10HomepageImagesByBookStockAsc();
     }
+=======
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 }

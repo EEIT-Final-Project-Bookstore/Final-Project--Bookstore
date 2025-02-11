@@ -1,11 +1,15 @@
 package bookstore.service;
 
 import java.time.LocalDateTime;
+<<<<<<< HEAD
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+=======
+import java.util.List;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +26,11 @@ import bookstore.repository.CouponOwnershipRepository;
 import bookstore.repository.CouponRepository;
 import bookstore.repository.CustomerRepository;
 import bookstore.repository.OrderRepository;
+<<<<<<< HEAD
 import bookstore.repository.StatusRepository;
+=======
+import bookstore.repository.StatusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
 @Service
 @Transactional
@@ -32,21 +40,32 @@ public class CouponService {
     @Autowired
     private CartRepository cartRepository;
     @Autowired
+<<<<<<< HEAD
     private StatusRepository statusRepository;
+=======
+    private StatusesRepository statusRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
     private CouponOwnershipRepository couponOwnershipRepository;
     @Autowired
     private CustomerRepository customerRepository;
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
     // **前台-顧客:**
     // 1. 套用優惠券
     public CouponResponseDTO applyCoupon(Integer cartId, String couponCode) {
         // 查找購物車
         CartBean cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new IllegalArgumentException("購物車不存在"));
+<<<<<<< HEAD
      System.out.println("Applying coupon code: " + couponCode);
+=======
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
         // 查找優惠券
         CouponBean coupon = couponRepository.findByCouponCode(couponCode);
         if (coupon == null) {
@@ -69,7 +88,11 @@ public class CouponService {
         }
         // 驗證優惠券是否符合最低消費金額門檻
         if (cart.getTotalAmount() < coupon.getMinimumAmount()) {
+<<<<<<< HEAD
             return new CouponResponseDTO(false, 0, "未達優惠券使用門檻，需滿 $"  + coupon.getMinimumAmount() + " 才能使用該優惠券");
+=======
+            return new CouponResponseDTO(false, 0, "未達優惠券使用門檻，需滿 $" + coupon.getMinimumAmount() + " 才能使用該優惠券");
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
         }
         // 計算折扣金額
         Integer discountAmount = Math.min(coupon.getDiscount(), cart.getTotalAmount());
@@ -81,8 +104,13 @@ public class CouponService {
             statusRepository.save(usedStatus);
         }
         // 更新優惠券的使用狀態
+<<<<<<< HEAD
         ownership.setStatus(usedStatus);  // 使用已儲存的狀態
         couponOwnershipRepository.save(ownership);   // 保存變更
+=======
+        ownership.setStatus(usedStatus); // 使用已儲存的狀態
+        couponOwnershipRepository.save(ownership); // 保存變更
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
         return new CouponResponseDTO(true, discountAmount, "優惠券使用成功");
     }
 
@@ -109,6 +137,7 @@ public class CouponService {
         }
         // 更新優惠券的使用狀態為「未使用」
         ownership.setStatus(unusedStatus);
+<<<<<<< HEAD
         couponOwnershipRepository.save(ownership);  // 保存更新後的 CouponOwnership
         // 返回結果
         return new CouponResponseDTO(true, 0, "優惠券已成功移除");
@@ -198,10 +227,80 @@ public class CouponService {
       return new CouponResponseDTO(false, 0, "該優惠券不存在");
      }
      // 檢查是否有訂單仍在使用該優惠券
+=======
+        couponOwnershipRepository.save(ownership); // 保存更新後的 CouponOwnership
+        // 返回結果
+        return new CouponResponseDTO(true, 0, "優惠券已成功移除");
+    }
+
+    // **後台-管理者:**
+    // 1. 新增並發放優惠券給所有顧客(後台)
+    public String addCouponAndAssignToAll(CouponBean coupon) {
+        // 1. 檢查並新增優惠券
+        if (coupon == null || coupon.getCouponCode() == null || coupon.getCouponCode().isEmpty()) {
+            return "新增失敗：優惠券代碼不可為空";
+        }
+        CouponBean existingCoupon = couponRepository.findByCouponCode(coupon.getCouponCode());
+        if (existingCoupon != null) {
+            return "新增失敗：優惠券代碼已存在";
+        }
+        CouponBean savedCoupon = couponRepository.save(coupon);
+        // 2. 發放給所有顧客
+        List<CustomerBean> customers = customerRepository.findAll();
+        StatusBean unusedStatus = statusRepository.findByDetailedStatus("未使用");
+        for (CustomerBean customer : customers) {
+            CouponOwnershipBean ownership = new CouponOwnershipBean();
+            ownership.setCustomer(customer);
+            ownership.setCoupon(savedCoupon);
+            ownership.setStatus(unusedStatus);
+            couponOwnershipRepository.save(ownership);
+        }
+        return "優惠券已成功新增並發放給所有顧客";
+    }
+
+    // 3. 修改優惠券(後台)
+    public CouponResponseDTO updateCoupon(Integer couponId, CouponBean coupon) {
+        if (coupon == null) {
+            return new CouponResponseDTO(false, 0, "優惠券資料不完整");
+        }
+        // 用 couponId 查找優惠券
+        CouponBean existingCoupon = couponRepository.findById(couponId).orElse(null);
+        if (existingCoupon == null) {
+            return new CouponResponseDTO(false, 0, "該優惠券不存在");
+        }
+        // // 處理日期格式，假設傳入的 startDate 和 endDate 是字串
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd
+        // HH:mm:ss");
+        // LocalDateTime startDate =
+        // LocalDateTime.parse(coupon.getStartDate().format(formatter), formatter);
+        // LocalDateTime endDate =
+        // LocalDateTime.parse(coupon.getEndDate().format(formatter), formatter);
+        // 更新優惠券屬性
+        existingCoupon.setCouponCode(coupon.getCouponCode());
+        existingCoupon.setDiscount(coupon.getDiscount());
+        existingCoupon.setStartDate(coupon.getStartDate()); // 使用 @JsonFormat 處理的日期
+        existingCoupon.setEndDate(coupon.getEndDate()); // 使用 @JsonFormat 處理的日期
+        existingCoupon.setMinimumAmount(coupon.getMinimumAmount());
+        couponRepository.save(existingCoupon);
+        return new CouponResponseDTO(true, 0, "優惠券更新成功");
+    }
+
+    // 4. 刪除優惠券(後台)
+    public CouponResponseDTO deleteCoupon(Integer couponId) {
+        if (couponId == null) {
+            return new CouponResponseDTO(false, 0, "優惠券ID不可為空");
+        }
+        CouponBean coupon = couponRepository.findById(couponId).orElse(null);
+        if (coupon == null) {
+            return new CouponResponseDTO(false, 0, "該優惠券不存在");
+        }
+        // 檢查是否有訂單仍在使用該優惠券
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
         long orderCount = orderRepository.countOrdersByCouponId(couponId);
         if (orderCount > 0) {
             return new CouponResponseDTO(false, 0, "該優惠券已被訂單使用，無法刪除");
         }
+<<<<<<< HEAD
      // 先刪除與該優惠券相關的 CouponOwnership 資料
         couponOwnershipRepository.deleteByCoupon_CouponId(couponId);
         // 再刪除優惠券
@@ -212,5 +311,17 @@ public class CouponService {
     // 4. 查詢優惠券(後台)
     public List<CouponBean> getAllCoupons() {
      return couponRepository.findAll();
+=======
+        // 先刪除與該優惠券相關的 CouponOwnership 資料
+        couponOwnershipRepository.deleteByCoupon_CouponId(couponId);
+        // 再刪除優惠券
+        couponRepository.delete(coupon);
+        return new CouponResponseDTO(true, 0, "優惠券刪除成功");
+    }
+
+    // 5. 查詢優惠券(後台)
+    public List<CouponBean> getAllCoupons() {
+        return couponRepository.findAll(); // 這裡假設你有一個 CouponRepository，可以從資料庫查詢所有優惠券
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
     }
 }

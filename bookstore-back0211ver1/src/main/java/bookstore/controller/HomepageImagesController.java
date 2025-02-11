@@ -33,11 +33,15 @@ public class HomepageImagesController {
 	public List<HomepageImageDTO> getAllHomepageImages() {
 		return homepageImagesService.getAllHomepageImages();
 	}
+<<<<<<< HEAD
 	
 	 @GetMapping("/top10")
 	    public List<HomepageImagesBean> getTop10BooksByStock() {
 	        return homepageImagesService.getTop10BooksByStock();
 	    }
+=======
+
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 	// 根據 BookId 查詢單筆首頁圖片
 	@GetMapping("/books/image-by-book")
 	public HomepageImageDTO getHomepageImageByBookID(@RequestParam Integer bookId) {

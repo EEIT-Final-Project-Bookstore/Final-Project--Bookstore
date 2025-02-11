@@ -22,7 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import bookstore.domain.OrderBean;
 import bookstore.domain.StatusBean;
 import bookstore.repository.OrderRepository;
+<<<<<<< HEAD
 import bookstore.repository.StatusRepository;
+=======
+import bookstore.repository.StatusesRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 import bookstore.service.OrderService;
 import ecpay.payment.integration.AllInOne;
 import ecpay.payment.integration.domain.AioCheckOutOneTime;
@@ -39,7 +43,11 @@ public class EcpayController {
 	@Autowired
 	private OrderRepository orderRepository;
 	@Autowired
+<<<<<<< HEAD
 	private StatusRepository statusRepository;
+=======
+	private StatusesRepository statusRepository;
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 
 	// 1.生成綠界支付頁面
 	@GetMapping("/checkout/{orderId}")

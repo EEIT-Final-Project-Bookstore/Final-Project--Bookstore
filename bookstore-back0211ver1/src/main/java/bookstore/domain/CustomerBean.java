@@ -4,8 +4,11 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+=======
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,11 +48,17 @@ public class CustomerBean {
 	@Column(name = "MobileNumber")
 	private String mobileNumber;
 
+<<<<<<< HEAD
 	@JsonIgnore
 	@OneToMany(mappedBy = "customer")
 	private List<OrderBean> orders;
 
 	@JsonIgnore
+=======
+	@OneToMany(mappedBy = "customer")
+	private List<OrderBean> orders;
+
+>>>>>>> a54bf433a72d9698fcf5758036056789b27b8af3
 	@OneToOne(mappedBy = "customer")
 	private CartBean cart;
 
