@@ -87,6 +87,8 @@ export default {
             customerID,
           });
 
+          sessionStorage.setItem("customerID",customerID);
+
           // 顯示登入成功提示
           Swal.fire({
             title: "登入成功",

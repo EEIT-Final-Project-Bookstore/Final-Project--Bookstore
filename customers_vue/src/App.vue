@@ -16,10 +16,41 @@
       <!-- 導覽選單 -->
       <nav class="nav-bar">
         <ul>
-          <li><router-link to="/"><img src="./image/home.png" height="20px" />首頁</router-link></li>
-          <li><a href="#" @click.prevent="openModal"><img src="./image/volume.png" height="20px">通知</a></li>
-          <li><router-link to="/login"><img src="./image/user.png" height="20px" />登入帳號</router-link></li>
-          <li><router-link to="/cart"><img src="./image/shopping-cart.png" height="20px" />購物車</router-link></li>
+          <!-- 首頁 + [已登入時顯示 "歡迎, XXX" 與登出按鈕] -->
+          <li>
+            <!-- 僅在已登入時顯示 -->
+            <span v-if="authStore.isAuthenticated" style="margin-left: 10px;">
+              歡迎, {{ authStore.customerName }}
+              <button @click="logout">登出</button>
+            </span>
+            <p style="padding-right: 20px;"></p>
+            <router-link to="/">
+              <img src="./image/home.png" height="20px" />首頁
+            </router-link>
+          </li>
+          <!-- 通知 -->
+          <li>
+            <a href="#" @click.prevent="openModal">
+              <img src="./image/volume.png" height="20px">通知
+            </a>
+          </li>
+          <!-- 登入會員 / 修改會員 （依登入狀態切換）-->
+          <li v-if="!authStore.isAuthenticated">
+            <router-link to="/login">
+              <img src="./image/user.png" height="20px" />登入會員
+            </router-link>
+          </li>
+          <li v-else>
+            <router-link to="/modify">
+              <img src="./image/user.png" height="20px" />修改會員
+            </router-link>
+          </li>
+          <!-- 購物車 -->
+          <li>
+            <router-link to="/cart">
+              <img src="./image/shopping-cart.png" height="20px" />購物車
+            </router-link>
+          </li>
         </ul>
       </nav>
     </header>
@@ -29,8 +60,8 @@
       <router-view />
     </transition>
 
-<!-- 通知模態框 -->
-<div v-if="isModalOpen" class="modal-overlay">
+    <!-- 通知模態框 -->
+    <div v-if="isModalOpen" class="modal-overlay">
       <div class="modal">
         <div class="modal-header">
           <h3>系統通知</h3>
@@ -62,6 +93,9 @@
 </template>
 
 <script>
+import Swal from "sweetalert2"; // ✅ 引入 SweetAlert2
+import { useAuthStore } from "@/stores/authStore"; // 引入 authStore
+
 export default {
   name: "App",
   data() {
@@ -70,32 +104,60 @@ export default {
       notifications: [],
     };
   },
+  computed: {
+    // 將 authStore 放入 computed，方便在模板使用
+    authStore() {
+      return useAuthStore();
+    },
+  },
   methods: {
-    // 打開模態框並獲取通知
+    // ======== 登出方法 ========
+    logout() {
+      this.authStore.logout();
+    },
+
+    // ======== 打開模態框並獲取通知 ========
     openModal() {
+      const customerID = sessionStorage.getItem("customerID");
+      if (!customerID) {
+        // 顯示 SweetAlert2 提示
+        Swal.fire({
+          icon: "warning",
+          title: "未檢測到用戶登錄",
+          text: "請先登入以查看通知！",
+          confirmButtonText: "確定",
+          confirmButtonColor: "#3085d6",
+        });
+        return; // 阻止模態框顯示
+      }
+
       this.isModalOpen = true;
       this.fetchNotifications();
     },
-    // 關閉模態框
+    // ======== 關閉模態框 ========
     closeModal() {
       this.isModalOpen = false;
     },
-    // 獲取通知
+    // ======== 獲取通知 ========
     async fetchNotifications() {
       const customerID = sessionStorage.getItem("customerID");
       if (!customerID) {
-        alert("未檢測到用戶登錄，請先登錄！");
+        Swal.fire({
+          icon: "warning",
+          title: "未檢測到用戶登錄",
+          text: "請先登入以查看通知！",
+          confirmButtonText: "確定",
+          confirmButtonColor: "#3085d6",
+        });
         return;
       }
 
-
-      const apiUrl = `http://localhost:8080/admin/notifications/customer/${customerID}`;
+      const apiUrl = `http://192.168.23.112:8080/admin/notifications/customer/${customerID}`;
       try {
         const response = await fetch(apiUrl, { method: "GET" });
         if (!response.ok) {
           throw new Error(`HTTP 錯誤！狀態碼: ${response.status}`);
         }
-
 
         const data = await response.json();
         this.notifications = data.map((notification) => ({
@@ -105,44 +167,72 @@ export default {
         }));
       } catch (error) {
         console.error("獲取通知時發生錯誤：", error);
-        alert("伺服器錯誤，請稍後再試！");
+        Swal.fire({
+          icon: "error",
+          title: "伺服器錯誤",
+          text: "請稍後再試！",
+          confirmButtonText: "確定",
+        });
       }
     },
-    // 標記所有通知為已讀
+    // ======== 標記所有通知為已讀 ========
     async markAllAsRead() {
       const customerID = sessionStorage.getItem("customerID");
       if (!customerID) {
-        alert("未檢測到用戶登錄，請先登錄！");
+        Swal.fire({
+          icon: "warning",
+          title: "未檢測到用戶登錄",
+          text: "請先登入！",
+          confirmButtonText: "確定",
+          confirmButtonColor: "#3085d6",
+        });
         return;
       }
 
-
       try {
         const response = await fetch(
-          `http://localhost:8080/admin/notifications/mark-all-as-read/${customerID}`,
+          `http://192.168.23.112:8080/admin/notifications/mark-all-as-read/${customerID}`,
           {
             method: "PUT",
           }
         );
 
-
         if (response.ok) {
-          alert("所有通知已標記為已讀！");
+          Swal.fire({
+            icon: "success",
+            title: "成功！",
+            text: "所有通知已標記為已讀！",
+            confirmButtonText: "確定",
+          });
+
           this.notifications = this.notifications.map((notification) => ({
             ...notification,
             status: { ...notification.status, statusId: 11 },
           }));
         } else {
-          alert("標記失敗，請稍後再試！");
+          Swal.fire({
+            icon: "error",
+            title: "標記失敗",
+            text: "請稍後再試！",
+            confirmButtonText: "確定",
+          });
         }
       } catch (error) {
         console.error("標記通知為已讀時發生錯誤：", error);
-        alert("伺服器錯誤，請稍後再試！");
+        Swal.fire({
+          icon: "error",
+          title: "伺服器錯誤",
+          text: "請稍後再試！",
+          confirmButtonText: "確定",
+        });
       }
     },
   },
+  // 當元件掛載時，初始化 Auth 狀態
+  mounted() {
+    this.authStore.initializeAuth();
+  },
 };
-
 </script>
 
 <style scoped>
@@ -277,5 +367,42 @@ body {
 .footer-col p {
   color: #404040; /* 次要文字色 */
   margin: 5px 0;
+}
+
+/* 通知框相關 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #fff;
+  width: 400px;
+  max-width: 80%;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body ul {
+  padding: 0;
+  list-style: none;
+}
+
+.unread {
+  font-weight: bold;
+  color: red;
 }
 </style>
