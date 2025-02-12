@@ -1,4 +1,5 @@
 <template>
+  <!-- 紅色框：登入/忘記密碼框整體範圍 -->
   <div class="login-container">
     <div class="login-content">
       <h2>忘記密碼</h2>
@@ -31,8 +32,10 @@
         <p v-if="errors.userEmail" class="error">{{ errors.userEmail }}</p>
 
         <!-- 寄送驗證碼按鈕 -->
-        <div class="form-actions" style="margin-top: 10px;">
-          <button type="button" @click="sendCode">寄送驗證碼</button>
+        <div class="form-actions">
+          <button type="button" class="btn login-btn" @click="sendCode" style="width: 150px;">
+            寄送驗證碼
+          </button>
           <span
             v-if="sendCodeMessage"
             :class="sendCodeError ? 'error' : 'black-text'"
@@ -41,9 +44,9 @@
             {{ sendCodeMessage }}
           </span>
         </div>
-
+        <br>
         <!-- 驗證碼輸入 -->
-        <div class="form-group" style="margin-top: 20px;">
+        <div class="form-group">
           <label for="captcha">驗證碼</label>
           <input
             type="text"
@@ -54,7 +57,7 @@
           <p class="error" v-if="errors.verifyCode">{{ errors.verifyCode }}</p>
         </div>
 
-        <div class="form-actions" style="margin-top: 20px;">
+        <div class="form-actions">
           <button class="btn login-btn" type="button" @click="checkCaptcha">
             下一步
           </button>
@@ -94,7 +97,7 @@
 
 <script>
 import axios from "axios";
-import Swal from "sweetalert2"; // 引入 SweetAlert2
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -259,7 +262,7 @@ export default {
           text: "即將轉跳到登入頁面",
         }).then(() => {
           // 彈窗關閉後執行跳轉
-          this.$router.push("/login"); 
+          this.$router.push("/login");
         });
 
         // 清空表單
@@ -281,21 +284,33 @@ export default {
 </script>
 
 <style scoped>
+/* ========== 套用 B 的外觀，並保留 A 原本的錯誤訊息樣式 ========== */
+
+/* 紅色框整體：可視需要自行調整寬度、高度與背景色 */
 .login-container {
-  font-family: Arial, sans-serif;
-  margin: 0 auto;
-  padding: 20px;
-  max-width: 800px;
-  background-color: #f9f9f9;
+  width: 600px; /* 模擬紅色框的寬度 */
+  height: 450px; /* 模擬紅色框的高度 */
+  margin: 50px auto; /* 置中 */
+  background-color: #fff; 
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  /* 讓內容能置中排列 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.login-content {
+  width: 80%; /* 內部內容距離外框邊距 */
+}
+
+/* 讓 h2 與 B 的 h1 保持類似間距 */
 .login-content h2 {
-  color: #444;
   margin-bottom: 15px;
 }
 
+/* form-group 與其 label、input */
 .form-group {
   margin-bottom: 15px;
 }
@@ -311,21 +326,27 @@ export default {
   border-radius: 4px;
 }
 
+/* 操作區域 (按鈕) */
 .form-actions {
   display: flex;
   gap: 15px;
   margin-top: 20px;
 }
-.form-actions .btn {
-  flex: 1;
+
+/* 按鈕共用樣式 */
+.btn {
+  flex: 1; /* 佔滿該列 */
   padding: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
+
+/* 登入(或送出)按鈕外觀，模擬 B 的灰綠色 */
 .login-btn {
-  background-color: #007bff;
+  background-color: #b2bfae;
   color: #fff;
+  width: 470px;
 }
 
 /* 錯誤文字：紅色 */
@@ -333,7 +354,7 @@ export default {
   margin-top: 5px;
   color: #dc3545;
 }
-/* 成功訊息改為黑色 */
+/* 提示文字：黑色 */
 .black-text {
   color: #000;
 }
