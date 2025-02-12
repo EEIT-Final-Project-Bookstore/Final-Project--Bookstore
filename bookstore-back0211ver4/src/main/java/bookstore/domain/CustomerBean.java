@@ -29,7 +29,8 @@ public class CustomerBean {
 
 	@Column(name = "CustomerName")
 	private String customerName;
-
+	
+        @JsonIgnore
 	@Column(name = "Password")
 	private byte[] password;
 
