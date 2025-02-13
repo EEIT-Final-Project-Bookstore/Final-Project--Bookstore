@@ -93,13 +93,15 @@ export default {
 </script>
 <style scoped>
 .login-container {
-  font-family: Arial, sans-serif;
-  margin: 0 auto;
-  padding: 20px;
-  max-width: 800px;
-  background-color: #f9f9f9;
+  width: 600px; /* 模擬紅色框的寬度 */
+  height: 400px; /* 模擬紅色框的高度 */
+  margin: 50px auto; /* 置中 */
+  background-color: #fff; /* 淺綠灰色背景，您可換成喜歡的顏色 */
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display:flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login-content h1 {
@@ -125,7 +127,7 @@ export default {
 }
 
 .form-group input {
-  width: 100%;
+  width: 350px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -150,6 +152,7 @@ export default {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  background-color: #b2bfae
 }
 
 .login-btn {
