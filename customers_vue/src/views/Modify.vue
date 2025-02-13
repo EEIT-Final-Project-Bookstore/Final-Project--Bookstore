@@ -104,6 +104,7 @@
 import axios from "axios";
 import { useAuthStore } from "@/stores/authStore";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 export default {
   name: "CustomerDetails",
@@ -245,9 +246,8 @@ export default {
           mobileNumber: this.editableCustomer.mobileNumber,
         })
         .then(() => {
-          alert("會員資料更新成功！");
+          Swal.fire({ title: "會員資料更新成功！", icon: "success", timer: 1500, showConfirmButton: false });
           this.isEditMode = false;
-
           // 同步更新前端顯示
           this.customer.customerName = this.editableCustomer.customerName;
           this.customer.password =
@@ -256,7 +256,7 @@ export default {
           this.customer.mobileNumber = this.editableCustomer.mobileNumber;
         })
         .catch((error) => {
-          console.error("更新會員資料失敗:", error);
+          Swal.fire({ title: "會員資料更新失敗，請稍後再試。", icon: "error", timer: 2000, showConfirmButton: false });
         });
     },
     // 取消修改
