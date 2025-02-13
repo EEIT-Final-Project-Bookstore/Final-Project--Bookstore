@@ -6,7 +6,6 @@
       <button class="btn-edit" @click="toggleEditMode">
         {{ isEditMode ? "取消修改" : "修改資料" }}
       </button>
-
       <table class="customer-table">
         <tbody>
           <tr>
@@ -73,7 +72,7 @@
           <tr>
             <th>手機</th>
             <td>
-              <span v-if="!isEditMode">0{{ customer.mobileNumber }}</span>
+              <span v-if="!isEditMode">{{ customer.mobileNumber }}</span>
               <div v-else>
                 <input
                   v-model="editableCustomer.mobileNumber"
@@ -218,10 +217,9 @@ export default {
         this.editableCustomer.mobileNumber &&
         this.editableCustomer.mobileNumber !== this.customer.mobileNumber
       ) {
-        // 規則：9 碼且以「9」開頭 (不含前面的 0)
-        const phoneRegex = /^9\d{8}$/;
+        const phoneRegex = /^09\d{8}$/;
         if (!phoneRegex.test(this.editableCustomer.mobileNumber)) {
-          this.errors.mobileNumber = "手機號碼必須為 9 碼，且以 9 開頭";
+          this.errors.mobileNumber = "手機號碼必須為 10 碼，且以 09 開頭";
           hasError = true;
         }
       }
@@ -279,86 +277,86 @@ export default {
 </script>
 
 <style scoped>
+/* 1. 外層容器：套用與 B 相似的外觀、置中方式 */
 .customerList-container {
-  font-family: Arial, sans-serif;
-  margin: 0 auto;
-  padding: 20px;
-  max-width: 1200px;
-  background-color: #f9f9f9;
+  width: 700px;
+  height: 600px;
+  margin: 50px auto;
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 讓內容水平居中 */
 }
 
+
+/* 2. 內層容器：模擬 .login-content */
+.customer-details {
+  width: 80%;
+}
+
+/* 與 B 相同，標題底部加一點間距 */
+.customer-details h1 {
+  margin-bottom: 15px;
+}
+
+/* 3. 原本的 table 仍保留，但改成較簡潔的風格 */
 .customer-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+  height: 350px;
+  border-collapse: collapse; /* 取消表格的預設間隙 */
+  margin-top: 15px;          /* 與標題區分 */
+  margin-bottom: 15px;       /* 與下方按鈕區分 */
 }
 
 .customer-table th,
 .customer-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
+  padding: 8px 0;            /* 與 B 相似的上下內距 */
+  border: none;              /* 移除格線 */
+  text-align: left;          /* 與 B 相同，左對齊 */
+  vertical-align: middle;
 }
 
 .customer-table th {
-  background-color: #f4f4f4;
-  font-weight: bold;
+  font-weight: bold;         /* B 中 label 的字體較粗 */
+  width: 100px;              /* 視需要可自行調整寬度 */
 }
 
-.customer-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.customer-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
+/* 4. 編輯模式下的輸入框：套用 B 類似的 input 風格 */
 .editable-input {
-  width: 85%;
-  padding: 6px;
+  width: 90%;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
-/* 錯誤訊息提示樣式 */
+/* 錯誤訊息提示樣式 (與 A 保持相同，或自行調整) */
 .error-message {
   margin-top: 5px;
   color: red;
   font-size: 14px;
 }
 
-.btn-edit {
-  background-color: #007bff;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+/* 5. 編輯狀態下的動作按鈕區域：模擬 B 的 form-actions */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
 }
 
-.btn-save {
-  background-color: #28a745;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
+/* 6. 按鈕風格：參考 B 的 .btn + .login-btn */
+.btn-edit,
+.btn-save,
 .btn-cancel {
-  background-color: #6c757d;
-  color: white;
-  padding: 5px 10px;
+  flex: 1;                  /* 讓按鈕在同一行時自動分配空間 */
+  padding: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  background-color: #b2bfae; /* 與 B 相同的灰綠色 */
+  color: #fff;
 }
+
 </style>

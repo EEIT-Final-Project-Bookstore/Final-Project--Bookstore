@@ -4,26 +4,20 @@
     <header class="site-header">
       <!-- 左側LOGO / 網站名稱 -->
       <div class="header-left">
-        <h1 class="site-title">
-          森途書店 <span>Sentu</span>
-        </h1>
+        <h1 class="site-title">森途書店 <span>Sentu</span></h1>
       </div>
       <!-- 中間搜尋框 -->
-      <div class="header-center">
-        <input type="text" placeholder="搜尋" class="search-bar"/>
-        <img src="./image/search.png" height="30px">
-      </div>
       <!-- 導覽選單 -->
       <nav class="nav-bar">
         <ul>
           <!-- 首頁 + [已登入時顯示 "歡迎, XXX" 與登出按鈕] -->
           <li>
             <!-- 僅在已登入時顯示 -->
-            <span v-if="authStore.isAuthenticated" style="margin-left: 10px;">
+            <span v-if="authStore.isAuthenticated" style="margin-left: 10px">
               歡迎, {{ authStore.customerName }}
               <button @click="logout">登出</button>
             </span>
-            <p style="padding-right: 20px;"></p>
+            <p style="padding-right: 20px"></p>
             <router-link to="/">
               <img src="./image/home.png" height="20px" />首頁
             </router-link>
@@ -31,7 +25,7 @@
           <!-- 通知 -->
           <li>
             <a href="#" @click.prevent="openModal">
-              <img src="./image/volume.png" height="20px">通知
+              <img src="./image/volume.png" height="20px" />通知
             </a>
           </li>
           <!-- 登入會員 / 修改會員 （依登入狀態切換）-->
@@ -53,6 +47,11 @@
           </li>
         </ul>
       </nav>
+      <br>
+      <div class="header-center">
+        <input type="text" placeholder="搜尋" class="search-bar" />
+        <img src="./image/search.png" height="30px" />
+      </div>
     </header>
 
     <!-- 主要內容 (路由切換) -->
