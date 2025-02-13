@@ -66,7 +66,8 @@
                 class="editable-input"
               />
               <div v-if="errors.phoneNumber" class="error-message">
-                {{ errors.phoneNumber }}</div>
+                {{ errors.phoneNumber }}
+              </div>
             </td>
           </tr>
           <tr>
@@ -163,7 +164,7 @@ export default {
       this.isEditMode = !this.isEditMode;
       if (this.isEditMode) {
         // 複製 customer 但不帶入舊密碼，確保新密碼欄位一開始是空的
-        this.editableCustomer = { 
+        this.editableCustomer = {
           ...this.customer,
           password: "",
         };
@@ -209,7 +210,8 @@ export default {
       ) {
         const phoneRegex = /^0\d{7,9}$/;
         if (!phoneRegex.test(this.editableCustomer.phoneNumber)) {
-          this.errors.phoneNumber = "市內電話格式不正確：必須以 0 開頭，並且總長 8 到 10 碼";
+          this.errors.phoneNumber =
+            "市內電話格式不正確：必須以 0 開頭，並且總長 8 到 10 碼";
           hasError = true;
         }
       }
@@ -233,20 +235,25 @@ export default {
       // -----------------------
       // (3) 若通過檢查，準備送出 PUT
       // -----------------------
-      // 若有輸入新密碼，則進行 Base64 編碼，否則維持原密碼
-      const encodedPassword = this.editableCustomer.password
-        ? btoa(this.editableCustomer.password)
+      // 若有輸入新密碼，就用新密碼；否則維持舊密碼
+      const passwordToUpdate = this.editableCustomer.password
+        ? this.editableCustomer.password
         : this.customer.password;
 
       axios
         .put(`http://192.168.23.112:8080/api/customers/${this.customer.username}`, {
           customerName: this.editableCustomer.customerName,
-          password: encodedPassword,
+          password: passwordToUpdate,
           phoneNumber: this.editableCustomer.phoneNumber,
           mobileNumber: this.editableCustomer.mobileNumber,
         })
         .then(() => {
-          Swal.fire({ title: "會員資料更新成功！", icon: "success", timer: 1500, showConfirmButton: false });
+          Swal.fire({
+            title: "會員資料更新成功！",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+          });
           this.isEditMode = false;
           // 同步更新前端顯示
           this.customer.customerName = this.editableCustomer.customerName;
@@ -256,7 +263,12 @@ export default {
           this.customer.mobileNumber = this.editableCustomer.mobileNumber;
         })
         .catch((error) => {
-          Swal.fire({ title: "會員資料更新失敗，請稍後再試。", icon: "error", timer: 2000, showConfirmButton: false });
+          Swal.fire({
+            title: "會員資料更新失敗，請稍後再試。",
+            icon: "error",
+            timer: 2000,
+            showConfirmButton: false,
+          });
         });
     },
     // 取消修改
@@ -290,7 +302,6 @@ export default {
   align-items: center; /* 讓內容水平居中 */
 }
 
-
 /* 2. 內層容器：模擬 .login-content */
 .customer-details {
   width: 80%;
@@ -306,21 +317,21 @@ export default {
   width: 100%;
   height: 350px;
   border-collapse: collapse; /* 取消表格的預設間隙 */
-  margin-top: 15px;          /* 與標題區分 */
-  margin-bottom: 15px;       /* 與下方按鈕區分 */
+  margin-top: 15px; /* 與標題區分 */
+  margin-bottom: 15px; /* 與下方按鈕區分 */
 }
 
 .customer-table th,
 .customer-table td {
-  padding: 8px 0;            /* 與 B 相似的上下內距 */
-  border: none;              /* 移除格線 */
-  text-align: left;          /* 與 B 相同，左對齊 */
+  padding: 8px 0; /* 與 B 相似的上下內距 */
+  border: none; /* 移除格線 */
+  text-align: left; /* 與 B 相同，左對齊 */
   vertical-align: middle;
 }
 
 .customer-table th {
-  font-weight: bold;         /* B 中 label 的字體較粗 */
-  width: 100px;              /* 視需要可自行調整寬度 */
+  font-weight: bold; /* B 中 label 的字體較粗 */
+  width: 100px; /* 視需要可自行調整寬度 */
 }
 
 /* 4. 編輯模式下的輸入框：套用 B 類似的 input 風格 */
@@ -350,7 +361,7 @@ export default {
 .btn-edit,
 .btn-save,
 .btn-cancel {
-  flex: 1;                  /* 讓按鈕在同一行時自動分配空間 */
+  flex: 1; /* 讓按鈕在同一行時自動分配空間 */
   padding: 10px;
   border: none;
   border-radius: 4px;
@@ -358,5 +369,4 @@ export default {
   background-color: #b2bfae; /* 與 B 相同的灰綠色 */
   color: #fff;
 }
-
 </style>
