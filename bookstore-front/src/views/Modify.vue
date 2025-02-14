@@ -1,0 +1,364 @@
+<template>
+  <div class="customerList-container">
+    <h1>修改會員資料</h1>
+    <div class="customer-details">
+      <!-- 切換編輯模式按鈕 -->
+      <button class="btn-edit" @click="toggleEditMode">
+        {{ isEditMode ? "取消修改" : "修改資料" }}
+      </button>
+
+      <table class="customer-table">
+        <tbody>
+          <tr>
+            <th>姓名</th>
+            <td>
+              <span v-if="!isEditMode">{{ customer.customerName }}</span>
+              <input
+                v-else
+                v-model="editableCustomer.customerName"
+                type="text"
+                class="editable-input"
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>帳號</th>
+            <td>{{ customer.username }}</td>
+          </tr>
+          <tr>
+            <th>密碼</th>
+            <td>
+              <!-- 未進入編輯模式時顯示原密碼 -->
+              <span v-if="!isEditMode">{{ customer.password }}</span>
+
+              <!-- 編輯模式時顯示「新密碼 / 確認密碼」欄位，預設為空 -->
+              <div v-else>
+                <input
+                  v-model="editableCustomer.password"
+                  type="text"
+                  placeholder="新密碼，若無變更毋需填寫"
+                  class="editable-input"
+                />
+                <input
+                  v-model="confirmPassword"
+                  type="text"
+                  placeholder="確認新密碼，若無變更毋需填寫"
+                  class="editable-input"
+                />
+                <!-- 密碼錯誤訊息 -->
+                <div v-if="errors.password" class="error-message">
+                  {{ errors.password }}
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>電子郵件</th>
+            <td>{{ customer.email }}</td>
+          </tr>
+          <tr>
+            <th>電話</th>
+            <td>
+              <span v-if="!isEditMode">{{ customer.phoneNumber }}</span>
+              <input
+                v-else
+                v-model="editableCustomer.phoneNumber"
+                type="text"
+                class="editable-input"
+              />
+              <div v-if="errors.phoneNumber" class="error-message">
+                {{ errors.phoneNumber }}</div>
+            </td>
+          </tr>
+          <tr>
+            <th>手機</th>
+            <td>
+              <span v-if="!isEditMode">0{{ customer.mobileNumber }}</span>
+              <div v-else>
+                <input
+                  v-model="editableCustomer.mobileNumber"
+                  type="text"
+                  class="editable-input"
+                />
+                <!-- 手機錯誤訊息 -->
+                <div v-if="errors.mobileNumber" class="error-message">
+                  {{ errors.mobileNumber }}
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 編輯狀態下的動作按鈕 -->
+      <div v-if="isEditMode" class="form-actions">
+        <button class="btn-save" @click="saveChanges" style="justify-content: center">
+          保存
+        </button>
+        <button class="btn-cancel" @click="cancelChanges">取消</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
+
+export default {
+  name: "CustomerDetails",
+  data() {
+    return {
+      isEditMode: false,
+      // 初始的 customer 資料
+      customer: {
+        customerName: "",
+        username: "",
+        password: "",
+        email: "",
+        phoneNumber: "",
+        mobileNumber: "",
+      },
+      editableCustomer: {},
+      confirmPassword: "",
+      errors: {
+        password: "",
+        mobileNumber: "",
+      },
+    };
+  },
+  created() {
+    const authStore = useAuthStore();
+    const router = useRouter();
+
+    // 如果 store 尚未初始化，先初始化
+    authStore.initializeAuth();
+
+    // 確認是否已登入，且是否有 username
+    if (!authStore.isAuthenticated || !authStore.user || !authStore.user.username) {
+      alert("您尚未登入或無效的使用者資訊，請先登入。");
+      router.push("/login"); // 導回登入頁
+      return;
+    }
+
+    // 取得登入者的 username
+    const loggedInUsername = authStore.user.username;
+    this.fetchCustomerData(loggedInUsername);
+  },
+  methods: {
+    // 根據 username 從後端獲取會員資料
+    fetchCustomerData(username) {
+      axios
+        .get(`http://localhost:8080/api/customers/${username}`)
+        .then((response) => {
+          this.customer = response.data;
+        })
+        .catch((error) => {
+          console.error("無法獲取會員資料:", error);
+        });
+    },
+    // 切換編輯模式
+    toggleEditMode() {
+      this.isEditMode = !this.isEditMode;
+      if (this.isEditMode) {
+        // 複製 customer 但不帶入舊密碼，確保新密碼欄位一開始是空的
+        this.editableCustomer = { 
+          ...this.customer,
+          password: "",
+        };
+        this.confirmPassword = "";
+      } else {
+        this.editableCustomer = {};
+        this.confirmPassword = "";
+        this.resetErrors();
+      }
+    },
+    // 保存修改
+    saveChanges() {
+      // 先清空錯誤訊息
+      this.resetErrors();
+      let hasError = false;
+
+      // -----------------------
+      // (1) 檢查「新密碼」欄位
+      // -----------------------
+      // 只有在使用者輸入了新密碼時，才做以下檢查
+      if (this.editableCustomer.password) {
+        // (A) 新密碼 與 確認新密碼 是否一致
+        if (this.editableCustomer.password !== this.confirmPassword) {
+          this.errors.password = "新密碼與確認密碼不一致";
+          hasError = true;
+        } else {
+          // (B) 新密碼格式檢查：6~20碼英文或數字
+          const passwordRegex = /^[A-Za-z0-9]{6,20}$/;
+          if (!passwordRegex.test(this.editableCustomer.password)) {
+            this.errors.password = "密碼必須為6-20字的英文或數字";
+            hasError = true;
+          }
+        }
+      }
+
+      // -----------------------
+      // (2) 檢查「手機號碼」欄位
+      // -----------------------
+      // 只有當有更動手機號碼時，才做以下檢查
+      if (
+        this.editableCustomer.phoneNumber &&
+        this.editableCustomer.phoneNumber !== this.customer.phoneNumber
+      ) {
+        const phoneRegex = /^0\d{7,9}$/;
+        if (!phoneRegex.test(this.editableCustomer.phoneNumber)) {
+          this.errors.phoneNumber = "市內電話格式不正確：必須以 0 開頭，並且總長 8 到 10 碼";
+          hasError = true;
+        }
+      }
+
+      if (
+        this.editableCustomer.mobileNumber &&
+        this.editableCustomer.mobileNumber !== this.customer.mobileNumber
+      ) {
+        // 規則：9 碼且以「9」開頭 (不含前面的 0)
+        const phoneRegex = /^9\d{8}$/;
+        if (!phoneRegex.test(this.editableCustomer.mobileNumber)) {
+          this.errors.mobileNumber = "手機號碼必須為 9 碼，且以 9 開頭";
+          hasError = true;
+        }
+      }
+
+      // 若有任何錯誤，不進行 PUT 請求
+      if (hasError) {
+        return;
+      }
+
+      // -----------------------
+      // (3) 若通過檢查，準備送出 PUT
+      // -----------------------
+      // 若有輸入新密碼，則進行 Base64 編碼，否則維持原密碼
+      const encodedPassword = this.editableCustomer.password
+        ? btoa(this.editableCustomer.password)
+        : this.customer.password;
+
+      axios
+        .put(`http://localhost:8080/api/customers/${this.customer.username}`, {
+          customerName: this.editableCustomer.customerName,
+          password: encodedPassword,
+          phoneNumber: this.editableCustomer.phoneNumber,
+          mobileNumber: this.editableCustomer.mobileNumber,
+        })
+        .then(() => {
+          alert("會員資料更新成功！");
+          this.isEditMode = false;
+
+          // 同步更新前端顯示
+          this.customer.customerName = this.editableCustomer.customerName;
+          this.customer.password =
+            this.editableCustomer.password || this.customer.password;
+          this.customer.phoneNumber = this.editableCustomer.phoneNumber;
+          this.customer.mobileNumber = this.editableCustomer.mobileNumber;
+        })
+        .catch((error) => {
+          console.error("更新會員資料失敗:", error);
+        });
+    },
+    // 取消修改
+    cancelChanges() {
+      this.isEditMode = false;
+      this.editableCustomer = {};
+      this.confirmPassword = "";
+      this.resetErrors();
+    },
+    // 重置錯誤訊息
+    resetErrors() {
+      this.errors.password = "";
+      this.errors.mobileNumber = "";
+      this.errors.phoneNumber = "";
+    },
+  },
+};
+</script>
+
+<style scoped>
+.customerList-container {
+  font-family: Arial, sans-serif;
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 1200px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.customer-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.customer-table th,
+.customer-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.customer-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.customer-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.customer-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.editable-input {
+  width: 85%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* 錯誤訊息提示樣式 */
+.error-message {
+  margin-top: 5px;
+  color: red;
+  font-size: 14px;
+}
+
+.btn-edit {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+</style>
