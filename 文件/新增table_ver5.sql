@@ -233,7 +233,7 @@ CREATE TABLE Notifications (
 --25
 CREATE TABLE OrderDetails (
     DetailID INT PRIMARY KEY, -- 明細ID
-    OrderID INT NOT NULL, -- 訂單ID，外鍵
+    OrderID VARCHAR(50) NOT NULL, -- 訂單ID，外鍵
     BookID INT NOT NULL, -- 書籍ID，外鍵
     TotalAmount INT NOT NULL, -- 總金額
     Quantity INT NOT NULL, -- 數量
