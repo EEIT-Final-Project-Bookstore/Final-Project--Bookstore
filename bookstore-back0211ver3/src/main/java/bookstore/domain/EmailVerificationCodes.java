@@ -27,4 +27,35 @@ public class EmailVerificationCodes {
     private LocalDateTime expirationTime;
     @Column(name = "created_at")
     private LocalDateTime createTime;
+
+     public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public LocalDateTime getExpirationTime() {
+		return expirationTime;
+	}
+	public void setExpirationTime(LocalDateTime expirationTime) {
+		this.expirationTime = expirationTime;
+	}
+	public LocalDateTime getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(LocalDateTime createTime) {
+		this.createTime = createTime;
+	}
 }
