@@ -166,14 +166,16 @@ CREATE TABLE Books (
 
 --20
 CREATE TABLE Orders (
-    OrderID INT IDENTITY(1,1) PRIMARY KEY, -- 訂單ID
+    OrderID VARCHAR(50) NOT NULL PRIMARY KEY, -- 訂單ID，INT改VARCHAR(50) (-> Integer改String)
     CustomerID INT NOT NULL, -- 顧客ID，外鍵
     TotalAmount INT NOT NULL, -- 訂單總金額
-    OrderStatus VARCHAR(50) NOT NULL, -- 訂單狀態 (待處理、已付款、已出貨)
+	FinalAmount INT NOT NULL, -- 訂單最終金額
+    -- OrderStatus VARCHAR(50) NOT NULL, -- 訂單狀態 (待處理、已付款、已出貨)
     OrderCreationTime DATETIME NOT NULL DEFAULT GETDATE(), -- 訂單生成時間，默認為當前時間
+	LastUpdatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- 訂單最近更新時間
     PaymentMethodID INT NOT NULL, -- 支付方式ID，外鍵
-    StatusID INT NOT NULL, -- 狀態ID，外鍵
-    Address NVARCHAR(200), -- 地址
+    StatusID INT NOT NULL, -- 狀態ID，外鍵 (待付款、已付款、已出貨、已完成)
+    -- Address NVARCHAR(200), -- 地址
     InvoiceNumber VARCHAR(50), -- 發票號碼
     IssuedTime DATETIME, -- 開立時間
     CouponID INT, -- 優惠券ID，外鍵
@@ -182,6 +184,7 @@ CREATE TABLE Orders (
     FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID), -- 外鍵關聯狀態表
     FOREIGN KEY (CouponID) REFERENCES Coupons(CouponID) -- 外鍵關聯優惠券表
 );
+
 
 --21
 CREATE TABLE HomepageImages (
