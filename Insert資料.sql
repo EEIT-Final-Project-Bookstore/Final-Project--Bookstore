@@ -1,4 +1,13 @@
-﻿﻿﻿-- Insert表格資料順序:
+-- ==========================================
+-- ** 下方書籍圖片之版權聲明 (Image Copyright Disclaimer) **
+-- 本 SQL 檔案內的書籍圖片網址 (ImageURL 欄位) 來自「三民書局」官網，
+-- 僅作為學術研究與開發測試用途，無任何商業用途。
+-- 這些圖片不會儲存在本專案內，僅保留其 URL。
+-- 如果有版權問題，請通知我們，我們將立即移除相關資料。
+-- 圖片來源: https://www.sanmin.com.tw/
+-- ==========================================
+
+-- Insert SQL 表格資料順序:
 -- 1 分類Insert
 USE storedb
 INSERT INTO Categories (CategoryID, CategoryName)
