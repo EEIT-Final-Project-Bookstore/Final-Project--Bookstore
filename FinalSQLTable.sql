@@ -1,286 +1,282 @@
 --CREATE DATABASE storedb COLLATE Chinese_Taiwan_Stroke_CI_AS
-/* §ó§ï¬ö¿ý:
-  ¦³¨ÇIDÄæ¦ì¥[¤W/¨ú®ø IDENTITY(1,1) ¬y¤ô¸¹¡ACustomersªíªº2­Ó¹q¸Ü¸¹½X§ï¦¨varchar(50)¡A
-  Users §ï¦¨ Customers¡A²¾°£ªí®æBooks_Languages ©M Books_Authors¡A¦h·s¼Wªí®æ#30,#31 Email_Verifications 
-  ©M CartItems
-*/
+
 USE storedb
 --1
 CREATE TABLE Customers (
-    CustomerID INT IDENTITY(1,1) PRIMARY KEY,  --«áºÝInteger§ïLong
+    CustomerID INT IDENTITY(1,1) PRIMARY KEY,  --å¾Œç«¯Integeræ”¹Long
     CustomerName NVARCHAR(100),
     Username VARCHAR(50) UNIQUE NOT NULL,
-    Password VARCHAR(50) NOT NULL,  --«áºÝString§ïbyte[]
+    Password VARCHAR(50) NOT NULL,  --å¾Œç«¯Stringæ”¹byte[]
     Email VARCHAR(100) UNIQUE NOT NULL,
-    PhoneNumber VARCHAR(50),   --INT§ïVARCHAR(50) (<-> Integer§ïString)
-    MobileNumber VARCHAR(50),  --INT§ïVARCHAR(50) (<-> Integer§ïString)
+    PhoneNumber VARCHAR(50),   --INTæ”¹VARCHAR(50) (<-> Integeræ”¹String)
+    MobileNumber VARCHAR(50),  --INTæ”¹VARCHAR(50) (<-> Integeræ”¹String)
 	RegistrationTime DATETIME DEFAULT GETDATE()
 );
 
 --2
 CREATE TABLE Ranks (
-    RankID INT IDENTITY(1,1) PRIMARY KEY, -- ¥DÁä
-    RankName NVARCHAR(50) NOT NULL -- ¶¥¯Å¦WºÙ
+    RankID INT IDENTITY(1,1) PRIMARY KEY, -- ä¸»éµ
+    RankName NVARCHAR(50) NOT NULL -- éšŽç´šåç¨±
 );
 
 --3
 CREATE TABLE Admins (
-    AdminID INT IDENTITY(1,1) PRIMARY KEY, -- ¥DÁä
-    AdminsAccount VARCHAR(50) UNIQUE NOT NULL, -- ±b¸¹
-    Password VARCHAR(50) NOT NULL, -- ±K½X
-    Email VARCHAR(100) NOT NULL, -- ¹q¤l¶l¥ó
-    RankID INT NOT NULL, -- ¶¥¯ÅID¡A¥~Áä
-    FOREIGN KEY (RankID) REFERENCES Ranks(RankID) -- ¥~ÁäÃöÁp¨ì¶¥¯Åªí
+    AdminID INT IDENTITY(1,1) PRIMARY KEY, -- ä¸»éµ
+    AdminsAccount VARCHAR(50) UNIQUE NOT NULL, -- å¸³è™Ÿ
+    Password VARCHAR(50) NOT NULL, -- å¯†ç¢¼
+    Email VARCHAR(100) NOT NULL, -- é›»å­éƒµä»¶
+    RankID INT NOT NULL, -- éšŽç´šIDï¼Œå¤–éµ
+    FOREIGN KEY (RankID) REFERENCES Ranks(RankID) -- å¤–éµé—œè¯åˆ°éšŽç´šè¡¨
 );
 
 --4
 CREATE TABLE PasswordResetRequests (
-    RequestID INT PRIMARY KEY, -- ¥DÁä
-    CustomerID INT UNIQUE NOT NULL, -- ¥~Áä¥B°ß¤@¡A»P«È¤áªí¤@¹ï¤@Ãö«Y
-    ResetCode VARCHAR(100) NOT NULL, -- ÃÑ§O­«³]½Ð¨Dªº¥N½X
-    RequestTime DATETIME NOT NULL, -- ÅU«Èµo°_­«³]½Ð¨Dªº®É¶¡
-    ExpirationTime DATETIME NOT NULL, -- ½Ð¨D¹L´Á®É¶¡
-    Status NVARCHAR(50) NOT NULL, -- ­«³]½Ð¨Dªºª¬ºA
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) -- ¥~ÁäÃöÁp¨ì«È¤áªí
+    RequestID INT PRIMARY KEY, -- ä¸»éµ
+    CustomerID INT UNIQUE NOT NULL, -- å¤–éµä¸”å”¯ä¸€ï¼Œèˆ‡å®¢æˆ¶è¡¨ä¸€å°ä¸€é—œä¿‚
+    ResetCode VARCHAR(100) NOT NULL, -- è­˜åˆ¥é‡è¨­è«‹æ±‚çš„ä»£ç¢¼
+    RequestTime DATETIME NOT NULL, -- é¡§å®¢ç™¼èµ·é‡è¨­è«‹æ±‚çš„æ™‚é–“
+    ExpirationTime DATETIME NOT NULL, -- è«‹æ±‚éŽæœŸæ™‚é–“
+    Status NVARCHAR(50) NOT NULL, -- é‡è¨­è«‹æ±‚çš„ç‹€æ…‹
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) -- å¤–éµé—œè¯åˆ°å®¢æˆ¶è¡¨
 );
 
 --5
 CREATE TABLE Statuses (
-    StatusID INT PRIMARY KEY, -- ª¬ºAID
-    DetailedStatus NVARCHAR(50) NOT NULL -- ¸Ô²Óª¬ºA¡A¨Ò¦p¤w¶}¥ß¡B¤w§@¼o¡B¤w¨Ï¥Î
+    StatusID INT PRIMARY KEY, -- ç‹€æ…‹ID
+    DetailedStatus NVARCHAR(50) NOT NULL -- è©³ç´°ç‹€æ…‹ï¼Œä¾‹å¦‚å·²é–‹ç«‹ã€å·²ä½œå»¢ã€å·²ä½¿ç”¨
 );
 
 --6
 CREATE TABLE PaymentMethods (
-    PaymentMethodID INT PRIMARY KEY, -- ¤ä¥I¤è¦¡ID
-    PaymentMethodName VARCHAR(50) NOT NULL -- ¤ä¥I¤è¦¡¦WºÙ (¨Ò¦p¡G«H¥Î¥d¡B³f¨ì¥I´Ú)
+    PaymentMethodID INT PRIMARY KEY, -- æ”¯ä»˜æ–¹å¼ID
+    PaymentMethodName VARCHAR(50) NOT NULL -- æ”¯ä»˜æ–¹å¼åç¨± (ä¾‹å¦‚ï¼šä¿¡ç”¨å¡ã€è²¨åˆ°ä»˜æ¬¾)
 );
 
 --7
 CREATE TABLE Coupons (
-    CouponID INT IDENTITY(1,1) PRIMARY KEY, -- Àu´f¨éID
-    CouponCode VARCHAR(50) UNIQUE NOT NULL, -- Àu´f½X
-    Discount INT NOT NULL, -- §é¦© (% ©Î -$)  FLOAT ¤]¥i§ï¦¨ INT (¦pªG¬O©T©w¾ã¼Æª÷ÃB§é¦©)
-    StartDate DATETIME NOT NULL, -- ¶}©l¤é´Á
-    EndDate DATETIME NOT NULL, -- µ²§ô¤é´Á
-    MinimumAmount INT NOT NULL -- ¾A¥Îªº³Ì§C®ø¶Oª÷ÃB
+    CouponID INT IDENTITY(1,1) PRIMARY KEY, -- å„ªæƒ åˆ¸ID
+    CouponCode VARCHAR(50) UNIQUE NOT NULL, -- å„ªæƒ ç¢¼
+    Discount INT NOT NULL, -- æŠ˜æ‰£ (% æˆ– -$)  FLOAT ä¹Ÿå¯æ”¹æˆ INT (å¦‚æžœæ˜¯å›ºå®šæ•´æ•¸é‡‘é¡æŠ˜æ‰£)
+    StartDate DATETIME NOT NULL, -- é–‹å§‹æ—¥æœŸ
+    EndDate DATETIME NOT NULL, -- çµæŸæ—¥æœŸ
+    MinimumAmount INT NOT NULL -- é©ç”¨çš„æœ€ä½Žæ¶ˆè²»é‡‘é¡
 );
 
 --8
 CREATE TABLE CouponOwnership (
-    SerialID INT IDENTITY(1,1) PRIMARY KEY, -- ¬y¤ô¸¹
-    CustomerID INT NOT NULL, -- ÅU«ÈID¡A¥~Áä  --INT§ïBIGINT (Integer§ïLong)
-    CouponID INT NOT NULL, -- Àu´f¨éID¡A¥~Áä
-    StatusID INT NOT NULL, -- ª¬ºAID¡A¥~Áä (-> ¥¼¨Ï¥Î¡B¤w¨Ï¥Î¡B¤w¹L´Á)
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- ¥~ÁäÃöÁp¨ì¥Î¤áªí
-    FOREIGN KEY (CouponID) REFERENCES Coupons(CouponID), -- ¥~ÁäÃöÁp¨ìÀu´f¨éªí
-    FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID) -- ¥~ÁäÃöÁp¨ìª¬ºAªí
+    SerialID INT IDENTITY(1,1) PRIMARY KEY, -- æµæ°´è™Ÿ
+    CustomerID INT NOT NULL, -- é¡§å®¢IDï¼Œå¤–éµ  --INTæ”¹BIGINT (Integeræ”¹Long)
+    CouponID INT NOT NULL, -- å„ªæƒ åˆ¸IDï¼Œå¤–éµ
+    StatusID INT NOT NULL, -- ç‹€æ…‹IDï¼Œå¤–éµ (-> æœªä½¿ç”¨ã€å·²ä½¿ç”¨ã€å·²éŽæœŸ)
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- å¤–éµé—œè¯åˆ°ç”¨æˆ¶è¡¨
+    FOREIGN KEY (CouponID) REFERENCES Coupons(CouponID), -- å¤–éµé—œè¯åˆ°å„ªæƒ åˆ¸è¡¨
+    FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID) -- å¤–éµé—œè¯åˆ°ç‹€æ…‹è¡¨
 );
 
 --9
 CREATE TABLE Carts (
-    CartID INT IDENTITY(1,1) PRIMARY KEY, -- ÁÊª«¨®ID
-    CustomerID INT UNIQUE NOT NULL, -- ÅU«ÈID¡A¥~Áä (¤@¹ï¤@Ãö«Y + °ß¤@)
-    CreationTime DATETIME NOT NULL DEFAULT GETDATE(), -- ÁÊª«¨®³Ð«Ø®É¶¡
-    LastUpdatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- ÁÊª«¨®³Ìªñ§ó·s®É¶¡
-    Quantity INT NOT NULL, -- ÁÊ¶R¼Æ¶q
-    StatusID INT, -- ª¬ºAID («O¯d¡B²¾°£)
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- ¥~ÁäÃöÁp¨ì¥Î¤áªí
-	FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID) -- ¥~ÁäÃöÁp¨ìª¬ºAªí  **§ï¦¨¦³¥~Áä
+    CartID INT IDENTITY(1,1) PRIMARY KEY, -- è³¼ç‰©è»ŠID
+    CustomerID INT UNIQUE NOT NULL, -- é¡§å®¢IDï¼Œå¤–éµ (ä¸€å°ä¸€é—œä¿‚ + å”¯ä¸€)
+    CreationTime DATETIME NOT NULL DEFAULT GETDATE(), -- è³¼ç‰©è»Šå‰µå»ºæ™‚é–“
+    LastUpdatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- è³¼ç‰©è»Šæœ€è¿‘æ›´æ–°æ™‚é–“
+    Quantity INT NOT NULL, -- è³¼è²·æ•¸é‡
+    StatusID INT, -- ç‹€æ…‹ID (ä¿ç•™ã€ç§»é™¤)
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- å¤–éµé—œè¯åˆ°ç”¨æˆ¶è¡¨
+	FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID) -- å¤–éµé—œè¯åˆ°ç‹€æ…‹è¡¨  **æ”¹æˆæœ‰å¤–éµ
 );
 
 --10
 CREATE TABLE EBookshelves (
-    EBookshelfID INT PRIMARY KEY, -- ¹q¤l®ÑÂdID
-    CustomerID INT UNIQUE NOT NULL, -- ÅU«ÈID¡A¥~Áä¡A°ß¤@¡A¤@¹ï¤@Ãö«Y
-    PurchaseDate DATE NOT NULL, -- ÁÊ¶R¤é´Á
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) -- ¥~ÁäÃöÁp¥Î¤áªí
+    EBookshelfID INT PRIMARY KEY, -- é›»å­æ›¸æ«ƒID
+    CustomerID INT UNIQUE NOT NULL, -- é¡§å®¢IDï¼Œå¤–éµï¼Œå”¯ä¸€ï¼Œä¸€å°ä¸€é—œä¿‚
+    PurchaseDate DATE NOT NULL, -- è³¼è²·æ—¥æœŸ
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) -- å¤–éµé—œè¯ç”¨æˆ¶è¡¨
 );
 
 --11
 CREATE TABLE Wishlists (
-    WishlistID INT PRIMARY KEY, -- Ä@±æ²M³æID
-    CustomerID INT UNIQUE NOT NULL, -- ÅU«ÈID¡A¥~Áä¡A°ß¤@¡A¤@¹ï¤@Ãö«Y
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) -- ¥~ÁäÃöÁp¨ì¥Î¤áªí
+    WishlistID INT PRIMARY KEY, -- é¡˜æœ›æ¸…å–®ID
+    CustomerID INT UNIQUE NOT NULL, -- é¡§å®¢IDï¼Œå¤–éµï¼Œå”¯ä¸€ï¼Œä¸€å°ä¸€é—œä¿‚
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID) -- å¤–éµé—œè¯åˆ°ç”¨æˆ¶è¡¨
 );
 
 --12
 CREATE TABLE Categories (
-    CategoryID INT PRIMARY KEY, -- ¤ÀÃþID
-    CategoryName NVARCHAR(100) NOT NULL -- ¤ÀÃþ¦WºÙ
+    CategoryID INT PRIMARY KEY, -- åˆ†é¡žID
+    CategoryName NVARCHAR(100) NOT NULL -- åˆ†é¡žåç¨±
 );
 
 --13
 CREATE TABLE Subcategories (
-    SubcategoryID INT PRIMARY KEY, -- ¤l¤ÀÃþID
-    SubcategoryName NVARCHAR(100) NOT NULL, -- ¤l¤ÀÃþ¦WºÙ
-    CategoryID INT NOT NULL, -- ¤ÀÃþID¡A¥~Áä
-    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID) -- ¥~ÁäÃöÁp¨ì¤ÀÃþªí
+    SubcategoryID INT PRIMARY KEY, -- å­åˆ†é¡žID
+    SubcategoryName NVARCHAR(100) NOT NULL, -- å­åˆ†é¡žåç¨±
+    CategoryID INT NOT NULL, -- åˆ†é¡žIDï¼Œå¤–éµ
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID) -- å¤–éµé—œè¯åˆ°åˆ†é¡žè¡¨
 );
 
 --14
 CREATE TABLE Languages (
-    LanguageID INT PRIMARY KEY, -- »yºØID
-    Language NVARCHAR(100) NOT NULL -- »y¨¥¦WºÙ
+    LanguageID INT PRIMARY KEY, -- èªžç¨®ID
+    Language NVARCHAR(100) NOT NULL -- èªžè¨€åç¨±
 );
 
 --15
 CREATE TABLE Authors (
-    AuthorID INT PRIMARY KEY, -- §@ªÌID
-    AuthorName NVARCHAR(100) NOT NULL, -- §@ªÌ©m¦W
-    AuthorDescription NVARCHAR(MAX) -- §@ªÌÂ²¤¶
+    AuthorID INT PRIMARY KEY, -- ä½œè€…ID
+    AuthorName NVARCHAR(100) NOT NULL, -- ä½œè€…å§“å
+    AuthorDescription NVARCHAR(MAX) -- ä½œè€…ç°¡ä»‹
 );
 
 --16
 CREATE TABLE Publishers (
-    PublisherID INT PRIMARY KEY, -- ¥Xª©ªÀID
-    PublisherName NVARCHAR(200) NOT NULL, -- ¥Xª©ªÀ¦WºÙ
-    PublisherDescription NVARCHAR(MAX) -- ¥Xª©ªÀÂ²¤¶
+    PublisherID INT PRIMARY KEY, -- å‡ºç‰ˆç¤¾ID
+    PublisherName NVARCHAR(200) NOT NULL, -- å‡ºç‰ˆç¤¾åç¨±
+    PublisherDescription NVARCHAR(MAX) -- å‡ºç‰ˆç¤¾ç°¡ä»‹
 );
 
 --17
 CREATE TABLE PurchaseableVersions (
-    VersionID INT PRIMARY KEY, -- ¥iÁÊ¶Rª©¥»ID
-    VersionName NVARCHAR(100) NOT NULL -- ¥iÁÊ¶Rª©¥»¦WºÙ
+    VersionID INT PRIMARY KEY, -- å¯è³¼è²·ç‰ˆæœ¬ID
+    VersionName NVARCHAR(100) NOT NULL -- å¯è³¼è²·ç‰ˆæœ¬åç¨±
 );
 
 --18
 CREATE TABLE NotificationTypes (
-    NotificationTypeID INT PRIMARY KEY, -- ³qª¾Ãþ«¬ID
-    NotificationType VARCHAR(100) NOT NULL -- ³qª¾Ãþ«¬¦WºÙ (¨Ò¦p¡G­q³æ³qª¾¡B¯S»ù²M³æ³qª¾)
+    NotificationTypeID INT PRIMARY KEY, -- é€šçŸ¥é¡žåž‹ID
+    NotificationType VARCHAR(100) NOT NULL -- é€šçŸ¥é¡žåž‹åç¨± (ä¾‹å¦‚ï¼šè¨‚å–®é€šçŸ¥ã€ç‰¹åƒ¹æ¸…å–®é€šçŸ¥)
 );
 
 --19
 CREATE TABLE Books (
-    BookID INT IDENTITY(1,1) PRIMARY KEY, -- ®ÑÄyID
-    BookName NVARCHAR(200) NOT NULL, -- ®Ñ¦W
-    PublisherID INT NOT NULL, -- ¥Xª©ªÀID¡A¥~Áä
-    AuthorID INT NOT NULL, -- ¥Xª©ªÀID¡A¥~Áä
-    LanguageID INT NOT NULL, -- ¥Xª©ªÀID¡A¥~Áä
-    Price INT NOT NULL, -- »ù®æ
-    Stock INT NOT NULL, -- ®w¦s¶q
-    Description NVARCHAR(MAX), -- ®ÑÄy´y­z
-    ShelfTime DATETIME NOT NULL DEFAULT GETDATE(), -- ®ÑÄy¤W¬[®É¶¡
-    LastUpdated DATETIME NOT NULL DEFAULT GETDATE(), -- ³Ì«á§ó·s®É¶¡
-    PublishDate DATE NOT NULL, -- ¥Xª©¤é´Á
-    SubcategoryID INT NOT NULL, -- ®ÑÄy¤lÃþ§OID¡A¥~Áä
-    ImageURL VARCHAR(200), -- ¹Ï¤ùURL
-    ImageDescription NVARCHAR(200), -- ¹Ï¤ù»¡©ú
-    FOREIGN KEY (PublisherID) REFERENCES Publishers(PublisherID), -- ¥~ÁäÃöÁp¨ì¥Xª©ªÀªí
-    FOREIGN KEY (SubcategoryID) REFERENCES Subcategories(SubcategoryID), -- ¥~ÁäÃöÁp¨ì¤l¤ÀÃþªí
-    FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID), -- ¥~ÁäÃöÁp¨ì§@ªÌ
-    FOREIGN KEY (LanguageID) REFERENCES Languages(LanguageID) -- ¥~ÁäÃöÁp¨ì»y¨¥
+    BookID INT IDENTITY(1,1) PRIMARY KEY, -- æ›¸ç±ID
+    BookName NVARCHAR(200) NOT NULL, -- æ›¸å
+    PublisherID INT NOT NULL, -- å‡ºç‰ˆç¤¾IDï¼Œå¤–éµ
+    AuthorID INT NOT NULL, -- å‡ºç‰ˆç¤¾IDï¼Œå¤–éµ
+    LanguageID INT NOT NULL, -- å‡ºç‰ˆç¤¾IDï¼Œå¤–éµ
+    Price INT NOT NULL, -- åƒ¹æ ¼
+    Stock INT NOT NULL, -- åº«å­˜é‡
+    Description NVARCHAR(MAX), -- æ›¸ç±æè¿°
+    ShelfTime DATETIME NOT NULL DEFAULT GETDATE(), -- æ›¸ç±ä¸Šæž¶æ™‚é–“
+    LastUpdated DATETIME NOT NULL DEFAULT GETDATE(), -- æœ€å¾Œæ›´æ–°æ™‚é–“
+    PublishDate DATE NOT NULL, -- å‡ºç‰ˆæ—¥æœŸ
+    SubcategoryID INT NOT NULL, -- æ›¸ç±å­é¡žåˆ¥IDï¼Œå¤–éµ
+    ImageURL VARCHAR(200), -- åœ–ç‰‡URL
+    ImageDescription NVARCHAR(200), -- åœ–ç‰‡èªªæ˜Ž
+    FOREIGN KEY (PublisherID) REFERENCES Publishers(PublisherID), -- å¤–éµé—œè¯åˆ°å‡ºç‰ˆç¤¾è¡¨
+    FOREIGN KEY (SubcategoryID) REFERENCES Subcategories(SubcategoryID), -- å¤–éµé—œè¯åˆ°å­åˆ†é¡žè¡¨
+    FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID), -- å¤–éµé—œè¯åˆ°ä½œè€…
+    FOREIGN KEY (LanguageID) REFERENCES Languages(LanguageID) -- å¤–éµé—œè¯åˆ°èªžè¨€
 );
 
 --20
 CREATE TABLE Orders (
-    OrderID VARCHAR(50) NOT NULL PRIMARY KEY, -- ­q³æID¡AINT§ïVARCHAR(50) (-> Integer§ïString)
-    CustomerID INT NOT NULL, -- ÅU«ÈID¡A¥~Áä
-    TotalAmount INT NOT NULL, -- ­q³æÁ`ª÷ÃB
-	FinalAmount INT NOT NULL, -- ­q³æ³Ì²×ª÷ÃB
-    -- OrderStatus VARCHAR(50) NOT NULL, -- ­q³æª¬ºA («Ý³B²z¡B¤w¥I´Ú¡B¤w¥X³f)
-    OrderCreationTime DATETIME NOT NULL DEFAULT GETDATE(), -- ­q³æ¥Í¦¨®É¶¡¡AÀq»{¬°·í«e®É¶¡
-	LastUpdatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- ­q³æ³Ìªñ§ó·s®É¶¡
-    PaymentMethodID INT NOT NULL, -- ¤ä¥I¤è¦¡ID¡A¥~Áä
-    StatusID INT NOT NULL, -- ª¬ºAID¡A¥~Áä («Ý¥I´Ú¡B¤w¥I´Ú¡B¤w¥X³f¡B¤w§¹¦¨)
-    -- Address NVARCHAR(200), -- ¦a§}
-    InvoiceNumber VARCHAR(50), -- µo²¼¸¹½X
-    IssuedTime DATETIME, -- ¶}¥ß®É¶¡
-    CouponID INT, -- Àu´f¨éID¡A¥~Áä
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- ¥~ÁäÃöÁp¥Î¤áªí
-    FOREIGN KEY (PaymentMethodID) REFERENCES PaymentMethods(PaymentMethodID), -- ¥~ÁäÃöÁp¤ä¥I¤è¦¡ªí
-    FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID), -- ¥~ÁäÃöÁpª¬ºAªí
-    FOREIGN KEY (CouponID) REFERENCES Coupons(CouponID) -- ¥~ÁäÃöÁpÀu´f¨éªí
+    OrderID VARCHAR(50) NOT NULL PRIMARY KEY, -- è¨‚å–®IDï¼ŒINTæ”¹VARCHAR(50) (-> Integeræ”¹String)
+    CustomerID INT NOT NULL, -- é¡§å®¢IDï¼Œå¤–éµ
+    TotalAmount INT NOT NULL, -- è¨‚å–®ç¸½é‡‘é¡
+	FinalAmount INT NOT NULL, -- è¨‚å–®æœ€çµ‚é‡‘é¡
+    -- OrderStatus VARCHAR(50) NOT NULL, -- è¨‚å–®ç‹€æ…‹ (å¾…è™•ç†ã€å·²ä»˜æ¬¾ã€å·²å‡ºè²¨)
+    OrderCreationTime DATETIME NOT NULL DEFAULT GETDATE(), -- è¨‚å–®ç”Ÿæˆæ™‚é–“ï¼Œé»˜èªç‚ºç•¶å‰æ™‚é–“
+	LastUpdatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- è¨‚å–®æœ€è¿‘æ›´æ–°æ™‚é–“
+    PaymentMethodID INT NOT NULL, -- æ”¯ä»˜æ–¹å¼IDï¼Œå¤–éµ
+    StatusID INT NOT NULL, -- ç‹€æ…‹IDï¼Œå¤–éµ (å¾…ä»˜æ¬¾ã€å·²ä»˜æ¬¾ã€å·²å‡ºè²¨ã€å·²å®Œæˆ)
+    -- Address NVARCHAR(200), -- åœ°å€
+    InvoiceNumber VARCHAR(50), -- ç™¼ç¥¨è™Ÿç¢¼
+    IssuedTime DATETIME, -- é–‹ç«‹æ™‚é–“
+    CouponID INT, -- å„ªæƒ åˆ¸IDï¼Œå¤–éµ
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- å¤–éµé—œè¯ç”¨æˆ¶è¡¨
+    FOREIGN KEY (PaymentMethodID) REFERENCES PaymentMethods(PaymentMethodID), -- å¤–éµé—œè¯æ”¯ä»˜æ–¹å¼è¡¨
+    FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID), -- å¤–éµé—œè¯ç‹€æ…‹è¡¨
+    FOREIGN KEY (CouponID) REFERENCES Coupons(CouponID) -- å¤–éµé—œè¯å„ªæƒ åˆ¸è¡¨
 );
 
 --21
 CREATE TABLE HomepageImages (
-    ID INT IDENTITY(1,1) PRIMARY KEY, -- ¬y¤ô¸¹ID¡A¦Û°Ê»¼¼W¡A§@¬°¥DÁä
-    ImageID INT NOT NULL UNIQUE,      -- ­º­¶¹Ï¤ùID¡A°ß¤@¼ÐÃÑ
-    BookID INT NOT NULL,              -- ÃöÁpªº®ÑÄyID
-    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- ¥~ÁäÃöÁp¨ì Books ªí
+    ID INT IDENTITY(1,1) PRIMARY KEY, -- æµæ°´è™ŸIDï¼Œè‡ªå‹•éžå¢žï¼Œä½œç‚ºä¸»éµ
+    ImageID INT NOT NULL UNIQUE,      -- é¦–é åœ–ç‰‡IDï¼Œå”¯ä¸€æ¨™è­˜
+    BookID INT NOT NULL,              -- é—œè¯çš„æ›¸ç±ID
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- å¤–éµé—œè¯åˆ° Books è¡¨
 );
 
 --22
 CREATE TABLE Reviews (
-    ReviewID INT IDENTITY(1,1) PRIMARY KEY, -- µû½×ID
-    CustomerID INT NOT NULL, -- ÅU«ÈID¡A¥~Áä
-    Rating INT NOT NULL CHECK (Rating BETWEEN 1 AND 5), -- µû¤À¡]1¨ì5¤À¡^
-    Content NVARCHAR(MAX), -- µû½×¤º®e
-    ReviewTime DATETIME NOT NULL DEFAULT GETDATE(), -- µû½×®É¶¡
-    BookID INT NOT NULL, -- ®ÑÄyID¡A¥~Áä
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- ¥~ÁäÃöÁp¨ì¥Î¤áªí
-    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- ¥~ÁäÃöÁp¨ì®ÑÄyªí
+    ReviewID INT IDENTITY(1,1) PRIMARY KEY, -- è©•è«–ID
+    CustomerID INT NOT NULL, -- é¡§å®¢IDï¼Œå¤–éµ
+    Rating INT NOT NULL CHECK (Rating BETWEEN 1 AND 5), -- è©•åˆ†ï¼ˆ1åˆ°5åˆ†ï¼‰
+    Content NVARCHAR(MAX), -- è©•è«–å…§å®¹
+    ReviewTime DATETIME NOT NULL DEFAULT GETDATE(), -- è©•è«–æ™‚é–“
+    BookID INT NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµ
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- å¤–éµé—œè¯åˆ°ç”¨æˆ¶è¡¨
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- å¤–éµé—œè¯åˆ°æ›¸ç±è¡¨
 );
 
 --23
 CREATE TABLE Books_PurchaseableVersions (
-    VersionID INT NOT NULL, -- ¥iÁÊ¶Rª©¥»ID¡A¥~Áä
-    BookID INT NOT NULL, -- ®ÑÄyID¡A¥~Áä
-    PRIMARY KEY (VersionID, BookID), -- ½Æ¦X¥DÁä
-    FOREIGN KEY (VersionID) REFERENCES PurchaseableVersions(VersionID), -- ¥~ÁäÃöÁp¨ì¥iÁÊ¶Rª©¥»ªí
-    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- ¥~ÁäÃöÁp¨ì®ÑÄyªí
+    VersionID INT NOT NULL, -- å¯è³¼è²·ç‰ˆæœ¬IDï¼Œå¤–éµ
+    BookID INT NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµ
+    PRIMARY KEY (VersionID, BookID), -- è¤‡åˆä¸»éµ
+    FOREIGN KEY (VersionID) REFERENCES PurchaseableVersions(VersionID), -- å¤–éµé—œè¯åˆ°å¯è³¼è²·ç‰ˆæœ¬è¡¨
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- å¤–éµé—œè¯åˆ°æ›¸ç±è¡¨
 );
 
 --24
 CREATE TABLE Notifications (
-    NotificationID INT IDENTITY(1,1) PRIMARY KEY, -- ³qª¾ID
-    NotificationTypeID INT NOT NULL, -- ³qª¾Ãþ«¬ID¡A¥~Áä
-    CustomerID INT NOT NULL, -- ÅU«ÈID¡A¥~Áä
-    CreatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- «Ø¥ß®É¶¡
-    UpdatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- §ó·s®É¶¡
-    Content NVARCHAR(MAX), -- ³qª¾¤º®e
-    StatusID INT, -- ª¬ºAID¡A¥~Áä
-    FOREIGN KEY (NotificationTypeID) REFERENCES NotificationTypes(NotificationTypeID), -- ¥~ÁäÃöÁp¨ì³qª¾Ãþ«¬ªí
-    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- ¥~ÁäÃöÁp¨ì¥Î¤áªí
-    FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID) -- ¥~ÁäÃöÁp¨ìª¬ºAªí
+    NotificationID INT IDENTITY(1,1) PRIMARY KEY, -- é€šçŸ¥ID
+    NotificationTypeID INT NOT NULL, -- é€šçŸ¥é¡žåž‹IDï¼Œå¤–éµ
+    CustomerID INT NOT NULL, -- é¡§å®¢IDï¼Œå¤–éµ
+    CreatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- å»ºç«‹æ™‚é–“
+    UpdatedTime DATETIME NOT NULL DEFAULT GETDATE(), -- æ›´æ–°æ™‚é–“
+    Content NVARCHAR(MAX), -- é€šçŸ¥å…§å®¹
+    StatusID INT, -- ç‹€æ…‹IDï¼Œå¤–éµ
+    FOREIGN KEY (NotificationTypeID) REFERENCES NotificationTypes(NotificationTypeID), -- å¤–éµé—œè¯åˆ°é€šçŸ¥é¡žåž‹è¡¨
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID), -- å¤–éµé—œè¯åˆ°ç”¨æˆ¶è¡¨
+    FOREIGN KEY (StatusID) REFERENCES Statuses(StatusID) -- å¤–éµé—œè¯åˆ°ç‹€æ…‹è¡¨
 );
 
 --25
 CREATE TABLE OrderDetails (
-    DetailID INT IDENTITY(1,1) PRIMARY KEY, -- ©ú²ÓID
-    OrderID VARCHAR(50) NOT NULL, -- ­q³æID¡A¥~Áä
-    BookID INT NOT NULL, -- ®ÑÄyID¡A¥~Áä
-    Quantity INT NOT NULL, -- ¼Æ¶q
-	Subtotal INT NOT NULL, -- ¤p­p
-    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID), -- ¥~ÁäÃöÁp¨ì­q³æªí
-    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- ¥~ÁäÃöÁp¨ì®ÑÄyªí
+    DetailID INT IDENTITY(1,1) PRIMARY KEY, -- æ˜Žç´°ID
+    OrderID VARCHAR(50) NOT NULL, -- è¨‚å–®IDï¼Œå¤–éµ
+    BookID INT NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµ
+    Quantity INT NOT NULL, -- æ•¸é‡
+	Subtotal INT NOT NULL, -- å°è¨ˆ
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID), -- å¤–éµé—œè¯åˆ°è¨‚å–®è¡¨
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- å¤–éµé—œè¯åˆ°æ›¸ç±è¡¨
 );
 
 --26
 CREATE TABLE Cart_Books (
-    CartID INT NOT NULL, -- ÁÊª«¨®ID¡A¥~Áä
-    BookID INT NOT NULL, -- ®ÑÄyID¡A¥~Áä
-    FOREIGN KEY (CartID) REFERENCES Carts(CartID), -- ¥~ÁäÃöÁp¨ìÁÊª«¨®ªí
-    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- ¥~ÁäÃöÁp¨ì®ÑÄyªí
+    CartID INT NOT NULL, -- è³¼ç‰©è»ŠIDï¼Œå¤–éµ
+    BookID INT NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµ
+    FOREIGN KEY (CartID) REFERENCES Carts(CartID), -- å¤–éµé—œè¯åˆ°è³¼ç‰©è»Šè¡¨
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- å¤–éµé—œè¯åˆ°æ›¸ç±è¡¨
 );
 
 --27
 CREATE TABLE Books_Wishlist (
-    BookID INT NOT NULL, -- ®ÑÄyID¡A¥~Áä
-    WishlistID INT NOT NULL, -- Ä@±æ²M³æID¡A¥~Áä
-    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- ¥~ÁäÃöÁp¨ì®ÑÄyªí
-    FOREIGN KEY (WishlistID) REFERENCES Wishlists(WishlistID) -- ¥~ÁäÃöÁp¨ìÄ@±æ²M³æªí
+    BookID INT NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµ
+    WishlistID INT NOT NULL, -- é¡˜æœ›æ¸…å–®IDï¼Œå¤–éµ
+    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- å¤–éµé—œè¯åˆ°æ›¸ç±è¡¨
+    FOREIGN KEY (WishlistID) REFERENCES Wishlists(WishlistID) -- å¤–éµé—œè¯åˆ°é¡˜æœ›æ¸…å–®è¡¨
 );
 
 --28
 CREATE TABLE EBooks (
-    EBookID INT PRIMARY KEY, -- ¹q¤l®ÑID
-    BookID INT UNIQUE NOT NULL, -- ®ÑÄyID¡A¥~Áä¡A°ß¤@¡A¤@¹ï¤@Ãö«Y
-    FileFormat VARCHAR(50) NOT NULL, -- ÀÉ®×®æ¦¡
-    FileSize FLOAT NOT NULL, -- ÀÉ®×¤j¤p
-    FileURL VARCHAR(200) NOT NULL, -- ÀÉ®×URL
-    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- ¥~ÁäÃöÁp®ÑÄyªí
+    EBookID INT PRIMARY KEY, -- é›»å­æ›¸ID
+    BookID INT UNIQUE NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµï¼Œå”¯ä¸€ï¼Œä¸€å°ä¸€é—œä¿‚
+    FileFormat VARCHAR(50) NOT NULL, -- æª”æ¡ˆæ ¼å¼
+    FileSize FLOAT NOT NULL, -- æª”æ¡ˆå¤§å°
+    FileURL VARCHAR(200) NOT NULL, -- æª”æ¡ˆURL
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) -- å¤–éµé—œè¯æ›¸ç±è¡¨
 );
 
 --29
 CREATE TABLE Books_EBooks (
-    SerialID INT PRIMARY KEY, -- ¬y¤ô¸¹ID
-    BookID INT NOT NULL, -- ®ÑÂdID¡A¥~Áä
-    EBookID INT NOT NULL, -- ¹q¤l®ÑID¡A¥~Áä
-    ReadingProgress NVARCHAR(100), -- ¾\Åª¶i«×¡A²Ä~~­¶/??%
-    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- ¥~ÁäÃöÁp®ÑÂd
-    FOREIGN KEY (EBookID) REFERENCES EBooks(EBookID) -- ¥~ÁäÃöÁp¹q¤l®Ñ
+    SerialID INT PRIMARY KEY, -- æµæ°´è™ŸID
+    BookID INT NOT NULL, -- æ›¸æ«ƒIDï¼Œå¤–éµ
+    EBookID INT NOT NULL, -- é›»å­æ›¸IDï¼Œå¤–éµ
+    ReadingProgress NVARCHAR(100), -- é–±è®€é€²åº¦ï¼Œç¬¬~~é /??%
+    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- å¤–éµé—œè¯æ›¸æ«ƒ
+    FOREIGN KEY (EBookID) REFERENCES EBooks(EBookID) -- å¤–éµé—œè¯é›»å­æ›¸
 );
 
 --30
@@ -293,34 +289,34 @@ CREATE TABLE Email_Verifications (
 );
 --31
 CREATE TABLE CartItems (
-    CartItemID INT IDENTITY(1,1) PRIMARY KEY,  -- ¬y¤ô¸¹
-    CartID INT NOT NULL,                -- ÃöÁp¨ìCartsªí®æªºID
-    BookID INT NOT NULL,                -- ÃöÁp¨ìBooksªí®æªºID
-	CustomerID INT NOT NULL,            -- ÃöÁp¨ìCustomersªí®æªºID
+    CartItemID INT IDENTITY(1,1) PRIMARY KEY,  -- æµæ°´è™Ÿ
+    CartID INT NOT NULL,                -- é—œè¯åˆ°Cartsè¡¨æ ¼çš„ID
+    BookID INT NOT NULL,                -- é—œè¯åˆ°Booksè¡¨æ ¼çš„ID
+	CustomerID INT NOT NULL,            -- é—œè¯åˆ°Customersè¡¨æ ¼çš„ID
     Quantity INT NOT NULL,
 	Price INT NOT NULL,
 	Subtotal INT NOT NULL,
-    CONSTRAINT FK_CartItems_Cart FOREIGN KEY (CartID) REFERENCES Carts(CartID) ON DELETE CASCADE,    -- ¥~ÁäÃöÁpCartsªí®æ
-    CONSTRAINT FK_CartItems_Book FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE,    -- ¥~ÁäÃöÁpBooksªí®æ
-	CONSTRAINT FK_CartItems_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)  -- ¥~ÁäÃöÁpCustomersªí®æ
+    CONSTRAINT FK_CartItems_Cart FOREIGN KEY (CartID) REFERENCES Carts(CartID) ON DELETE CASCADE,    -- å¤–éµé—œè¯Cartsè¡¨æ ¼
+    CONSTRAINT FK_CartItems_Book FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE,    -- å¤–éµé—œè¯Booksè¡¨æ ¼
+	CONSTRAINT FK_CartItems_Customers FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)  -- å¤–éµé—œè¯Customersè¡¨æ ¼
 );
 
---23 §R°£
+--23 åˆªé™¤
 /* CREATE TABLE Books_Languages (
-    BookID INT NOT NULL, -- ®ÑÄyID¡A¥~Áä
-    LanguageID INT NOT NULL, -- »yºØID¡A¥~Áä
-    PRIMARY KEY (BookID, LanguageID), -- ½Æ¦X¥DÁä
-    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- ¥~ÁäÃöÁp¨ì®ÑÄyªí
-    FOREIGN KEY (LanguageID) REFERENCES Languages(LanguageID) -- ¥~ÁäÃöÁp¨ì»yºØªí
+    BookID INT NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµ
+    LanguageID INT NOT NULL, -- èªžç¨®IDï¼Œå¤–éµ
+    PRIMARY KEY (BookID, LanguageID), -- è¤‡åˆä¸»éµ
+    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- å¤–éµé—œè¯åˆ°æ›¸ç±è¡¨
+    FOREIGN KEY (LanguageID) REFERENCES Languages(LanguageID) -- å¤–éµé—œè¯åˆ°èªžç¨®è¡¨
 );
 */
 
---24 §R°£
+--24 åˆªé™¤
 /*CREATE TABLE Books_Authors (
-    BookID INT NOT NULL, -- ®ÑÄyID¡A¥~Áä
-    AuthorID INT NOT NULL, -- §@ªÌID¡A¥~Áä
-    PRIMARY KEY (BookID, AuthorID), -- ½Æ¦X¥DÁä
-    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- ¥~ÁäÃöÁp¨ì®ÑÄyªí
-    FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID) -- ¥~ÁäÃöÁp¨ì§@ªÌªí
+    BookID INT NOT NULL, -- æ›¸ç±IDï¼Œå¤–éµ
+    AuthorID INT NOT NULL, -- ä½œè€…IDï¼Œå¤–éµ
+    PRIMARY KEY (BookID, AuthorID), -- è¤‡åˆä¸»éµ
+    FOREIGN KEY (BookID) REFERENCES Books(BookID), -- å¤–éµé—œè¯åˆ°æ›¸ç±è¡¨
+    FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID) -- å¤–éµé—œè¯åˆ°ä½œè€…è¡¨
 );
 */
